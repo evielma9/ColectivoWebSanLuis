@@ -73,16 +73,11 @@
             <h2 class="text-2xl sm:text-4xl font-extrabold text-gray-900 mt-3 mb-2 tracking-tight">Artículos y Promociones Directas</h2>
             <p class="text-gray-500 text-xs sm:text-sm mb-6 px-2">Encuentra ropa, accesorios, hogar y más directo con los negocios de tu ciudad desde cualquier dispositivo.</p>
             
-            <!-- BUSCADOR Y FILTROS -->
-            <div class="bg-white p-2 rounded-xl shadow-md border flex flex-col md:flex-row gap-2">
+            <!-- BUSCADOR PRINCIPAL (Ancho completo sin selector de negocios) -->
+            <div class="bg-white p-2 rounded-xl shadow-md border flex gap-2">
                 <div class="flex-1 flex items-center bg-gray-50 px-3 rounded-lg border border-gray-200">
                     <i class="fa-solid fa-search text-gray-400 mr-2"></i>
-                    <input type="text" id="inputBuscar" oninput="filtrarProductos()" placeholder="¿Qué estás buscando hoy?" class="w-full py-2 bg-transparent text-sm focus:outline-none text-gray-800">
-                </div>
-                <div class="md:w-56">
-                    <select id="selectFiltroColectivo" onchange="filtrarProductos()" class="w-full py-2 px-3 bg-gray-50 rounded-lg border border-gray-200 text-sm text-gray-700 focus:outline-none">
-                        <option value="todos">Todos los Negocios</option>
-                    </select>
+                    <input type="text" id="inputBuscar" oninput="filtrarProductos()" placeholder="¿Qué estás buscando hoy? Escribe para ver coincidencias..." class="w-full py-2 bg-transparent text-sm focus:outline-none text-gray-800">
                 </div>
             </div>
         </div>
@@ -450,7 +445,6 @@
             cargarDatosFirebase();
         });
 
-        // FUNCIÓN PARA INCREMENTAR Y MOSTRAR EL CONTADOR DE VISITAS EN FIREBASE
         function registrarYMostrarVisitas() {
             const contadorRef = db.ref('contadorVisitas');
             contadorRef.transaction(current => {
@@ -504,7 +498,6 @@
                 }
                 
                 inicializarCategoriasUI();
-                actualizarSelectColectivosFiltro();
                 renderizarPromociones();
                 renderizarProductos();
                 if (colectivoActualId) {
@@ -516,17 +509,6 @@
                     renderizarCategoriasAdmin();
                 }
             });
-        }
-
-        function actualizarSelectColectivosFiltro() {
-            const select = document.getElementById("selectFiltroColectivo");
-            let html = '<option value="todos">Todos los Negocios</option>';
-            catGlobal.forEach(c => {
-                if (c.activo === false) return;
-                const tipo = c.tipoNegocio || 'Colectivo';
-                html += `<option value="${c.id}">${tipo}: ${c.nombre}</option>`;
-            });
-            select.innerHTML = html;
         }
 
         function renderizarPromociones() {
@@ -603,10 +585,10 @@
             }
         }
 
+        // RENDERIZAR PRODUCTOS Y COINCIDENCIAS DE BÚSQUEDA
         function renderizarProductos() {
             const grid = document.getElementById("gridProductos");
-            const txtBuscar = document.getElementById("inputBuscar").value.toLowerCase();
-            const filtroCol = document.getElementById("selectFiltroColectivo").value;
+            const txtBuscar = document.getElementById("inputBuscar").value.toLowerCase().trim();
             
             let html = "";
             let contador = 0;
@@ -624,9 +606,20 @@
                 const direccionCol = mostrarDir && col.direccion ? col.direccion : '<span class="text-emerald-700 font-extrabold bg-emerald-100 px-1 py-0.5 rounded">¡Envío Gratis!</span>';
                 const costoEnvio = p.envio ? `$${p.envio} MXN` : 'A consultar';
 
+                // Validación de categoría activa
                 if (categoriaActiva !== "Todos" && p.categoria !== categoriaActiva) return;
-                if (filtroCol !== "todos" && p.colectivoId !== filtroCol) return;
-                if (txtBuscar && !p.titulo.toLowerCase().includes(txtBuscar) && !p.descripcion.toLowerCase().includes(txtBuscar)) return;
+
+                // Validación de búsqueda por coincidencias (Título, Descripción, Categoría y Nombre del Negocio)
+                if (txtBuscar) {
+                    const matchTitulo = (p.titulo || "").toLowerCase().includes(txtBuscar);
+                    const matchDesc = (p.descripcion || "").toLowerCase().includes(txtBuscar);
+                    const matchCat = (p.categoria || "").toLowerCase().includes(txtBuscar);
+                    const matchNegocio = nombreCol.toLowerCase().includes(txtBuscar);
+
+                    if (!matchTitulo && !matchDesc && !matchCat && !matchNegocio) {
+                        return; // Omitir si no coincide con ninguno
+                    }
+                }
 
                 contador++;
                 const primeraFoto = (p.fotos && p.fotos.length > 0) ? p.fotos[0] : "https://via.placeholder.com/200x200?text=Sin+Foto";
