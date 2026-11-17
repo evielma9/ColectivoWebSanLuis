@@ -3,15 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ColectivoWebSanLuis - San Luis Río Colorado</title>
+    <title>ColectivoWebSanLuis - Especial de Navidad | San Luis Río Colorado</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts para toque elegante navideño -->
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <!-- Firebase SDKs (Compat para Realtime Database y App) -->
     <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
     <style>
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+        .font-navidad {
+            font-family: 'Playfair Display', serif;
+        }
         .line-clamp-2 {
             display: -webkit-box;
             -webkit-line-clamp: 2;
@@ -26,114 +34,139 @@
             -ms-overflow-style: none;
             scrollbar-width: none;
         }
+        /* Fondo sutil con patrón de nieve */
+        .snow-pattern {
+            background-image: radial-gradient(rgba(255, 255, 255, 0.18) 1.5px, transparent 1.5px),
+                              radial-gradient(rgba(251, 191, 36, 0.15) 1px, transparent 1px);
+            background-size: 48px 48px;
+            background-position: 0 0, 24px 24px;
+        }
     </style>
 </head>
-<body class="bg-gray-50 text-gray-800 font-sans min-h-screen flex flex-col">
+<body class="bg-stone-50 text-stone-800 min-h-screen flex flex-col">
 
-    <!-- HEADER RESPONSIVO -->
-    <header class="bg-white border-b shadow-sm sticky top-0 z-40">
+    <!-- HEADER RESPONSIVO NAVIDEÑO -->
+    <header class="bg-white/95 backdrop-blur-md border-b border-red-100 shadow-sm sticky top-0 z-40">
         <div class="max-w-7xl mx-auto px-3 sm:px-4 py-3 flex flex-col sm:flex-row justify-between items-center gap-3">
             <div class="flex items-center space-x-3 w-full sm:w-auto justify-between sm:justify-start">
                 <div class="flex items-center space-x-3">
-                    <div class="bg-sky-600 text-white p-2.5 rounded-xl shadow-md">
-                        <i class="fa-solid fa-store text-xl"></i>
+                    <div class="bg-gradient-to-br from-red-700 to-red-900 text-amber-300 p-2.5 rounded-xl shadow-md border border-amber-400/30 relative">
+                        <i class="fa-solid fa-sleigh text-xl"></i>
                     </div>
                     <div>
-                        <h1 class="text-base sm:text-xl font-bold text-sky-900 flex items-center gap-2">
-                            ColectivoWebSanLuis
+                        <h1 class="text-base sm:text-xl font-bold text-red-900 flex items-center gap-1.5 font-navidad tracking-tight">
+                            ColectivoWeb<span class="text-emerald-800">SanLuis</span>
+                            <i class="fa-solid fa-snowflake text-xs text-amber-500 animate-pulse"></i>
                         </h1>
-                        <p class="text-[11px] sm:text-xs text-gray-500">San Luis Río Colorado, Sonora</p>
+                        <p class="text-[11px] sm:text-xs text-stone-500">San Luis Río Colorado, Sonora • Edición Navideña</p>
                     </div>
                 </div>
             </div>
 
             <div class="flex items-center gap-2 w-full sm:w-auto justify-end">
-                <button onclick="abrirModalAdmin()" class="flex-1 sm:flex-initial bg-gray-100 hover:bg-gray-200 text-gray-700 px-3 py-2 rounded-lg text-xs font-semibold flex items-center justify-center gap-1 transition">
-                    <i class="fa-solid fa-shield-halved text-sky-600"></i> Admin
+                <button onclick="abrirModalAdmin()" class="flex-1 sm:flex-initial bg-stone-100 hover:bg-stone-200 text-stone-700 px-3 py-2 rounded-lg text-xs font-semibold flex items-center justify-center gap-1.5 transition border border-stone-200">
+                    <i class="fa-solid fa-shield-halved text-amber-600"></i> Admin
                 </button>
-                <button onclick="abrirModalColectivo()" class="flex-1 sm:flex-initial bg-sky-600 hover:bg-sky-700 text-white px-3 sm:px-4 py-2 rounded-lg text-xs font-semibold flex items-center justify-center gap-1.5 shadow transition">
-                    <i class="fa-solid fa-user-lock"></i> Acceso Negocios
+                <button onclick="abrirModalColectivo()" class="flex-1 sm:flex-initial bg-emerald-800 hover:bg-emerald-900 text-white px-3 sm:px-4 py-2 rounded-lg text-xs font-semibold flex items-center justify-center gap-1.5 shadow-sm transition border border-emerald-700">
+                    <i class="fa-solid fa-user-lock text-amber-300"></i> Acceso Negocios
                 </button>
             </div>
         </div>
     </header>
 
-    <!-- AVISO / BANNER DE COMUNIDAD -->
-    <div class="bg-amber-50 border-b border-amber-200 py-2 px-3 text-center text-xs text-amber-800 font-medium flex items-center justify-center gap-2">
-        <i class="fa-solid fa-shield-heart text-amber-600 shrink-0"></i>
-        <span class="line-clamp-1 sm:line-clamp-none"><strong>Comunidad San Luis Río Colorado:</strong> Colectivos, segundas, emprendedores y envíos a domicilio.</span>
+    <!-- AVISO / BANNER DE COMUNIDAD NAVIDEÑO -->
+    <div class="bg-gradient-to-r from-red-900 via-red-800 to-red-900 border-b border-amber-400/30 py-2 px-3 text-center text-xs text-amber-50 font-medium flex items-center justify-center gap-2 shadow-inner">
+        <i class="fa-solid fa-gifts text-amber-300 shrink-0"></i>
+        <span class="line-clamp-1 sm:line-clamp-none"><strong class="text-amber-300">Especial de Temporada SLRC:</strong> Regalos, colectivos, segundas, emprendedores y envíos a domicilio.</span>
     </div>
 
-    <!-- BANNER HERO -->
-    <section class="bg-white py-6 sm:py-8 px-4 text-center border-b">
-        <div class="max-w-3xl mx-auto">
-            <span class="bg-sky-100 text-sky-800 text-[11px] px-3 py-1 rounded-full font-semibold uppercase tracking-wide">
-                <i class="fa-solid fa-circle text-[8px] text-sky-600 mr-1"></i> Directorio Local en Línea
+    <!-- BANNER HERO ELEGANTE NAVIDEÑO -->
+    <section class="bg-gradient-to-br from-emerald-950 via-emerald-900 to-red-950 snow-pattern text-white py-6 sm:py-8 px-4 text-center border-b-4 border-amber-500/80 relative overflow-hidden">
+        <div class="max-w-3xl mx-auto relative z-10">
+            <span class="inline-flex items-center gap-1.5 bg-amber-400/15 text-amber-300 border border-amber-400/40 text-[11px] px-3.5 py-1 rounded-full font-semibold uppercase tracking-wider shadow-sm">
+                <i class="fa-solid fa-star text-[9px] text-amber-300"></i> Directorio Local Navideño 2026
             </span>
-            <h2 class="text-2xl sm:text-4xl font-extrabold text-gray-900 mt-3 mb-2 tracking-tight">Artículos y Promociones Directas</h2>
-            <p class="text-gray-500 text-xs sm:text-sm mb-6 px-2">Encuentra ropa, accesorios, hogar y más directo con los negocios de tu ciudad desde cualquier dispositivo.</p>
+            <h2 class="font-navidad text-2xl sm:text-3xl font-extrabold text-white mt-2 mb-1.5 tracking-tight leading-tight">
+                Regalos y Promociones <span class="text-amber-300">de Temporada</span>
+            </h2>
+            <p class="text-stone-200 text-xs sm:text-sm mb-4 px-2 max-w-xl mx-auto leading-relaxed">
+                Encuentra el detalle perfecto en ropa, accesorios, hogar y más directo con los negocios locales de San Luis Río Colorado.
+            </p>
             
-            <!-- BUSCADOR PRINCIPAL (Ancho completo sin selector de negocios) -->
-            <div class="bg-white p-2 rounded-xl shadow-md border flex gap-2">
-                <div class="flex-1 flex items-center bg-gray-50 px-3 rounded-lg border border-gray-200">
-                    <i class="fa-solid fa-search text-gray-400 mr-2"></i>
-                    <input type="text" id="inputBuscar" oninput="filtrarProductos()" placeholder="¿Qué estás buscando hoy? Escribe para ver coincidencias..." class="w-full py-2 bg-transparent text-sm focus:outline-none text-gray-800">
+            <!-- BUSCADOR PRINCIPAL -->
+            <div class="bg-white/95 backdrop-blur p-2 rounded-2xl shadow-xl border border-amber-300/50 flex gap-2 max-w-2xl mx-auto">
+                <div class="flex-1 flex items-center bg-stone-50 px-3.5 rounded-xl border border-stone-200 focus-within:border-red-700 focus-within:ring-2 focus-within:ring-red-700/20 transition">
+                    <i class="fa-solid fa-magnifying-glass text-red-700 mr-2.5"></i>
+                    <input type="text" id="inputBuscar" oninput="filtrarProductos()" placeholder="¿Qué regalo o artículo buscas hoy? Escribe aquí..." class="w-full py-2 bg-transparent text-sm focus:outline-none text-stone-800 placeholder-stone-400">
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- SECCIÓN DE PROMOCIONES DESTACADAS -->
-    <section class="max-w-7xl mx-auto px-3 sm:px-4 mt-6">
-        <div class="flex items-center justify-between mb-3">
-            <h3 class="text-xs sm:text-sm font-extrabold text-rose-700 uppercase tracking-wide flex items-center gap-1.5">
-                <i class="fa-solid fa-fire text-rose-600"></i> Promociones Destacadas
-            </h3>
-            <span class="text-[10px] bg-rose-100 text-rose-800 px-2 py-0.5 rounded-full font-semibold">Por tiempo limitado</span>
-        </div>
-        <div id="gridPromociones" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
-            <!-- Inyectado por JS -->
-        </div>
-    </section>
+    <!-- CONTENIDO PRINCIPAL: DISEÑO DE DOS COLUMNAS -->
+    <main class="max-w-7xl mx-auto px-3 sm:px-4 py-6 w-full flex-1">
+        <div class="grid grid-cols-1 lg:grid-cols-4 gap-6 items-start">
+            
+            <!-- COLUMNA IZQUIERDA: PROMOCIONES -->
+            <aside class="lg:col-span-1 space-y-4">
+                <div class="bg-white border border-stone-200 rounded-2xl p-3.5 shadow-xs">
+                    <div class="flex items-center justify-between mb-3 border-b border-stone-100 pb-2">
+                        <h3 class="text-xs font-extrabold text-red-800 uppercase tracking-wider flex items-center gap-1.5">
+                            <i class="fa-solid fa-candy-cane text-red-700"></i> Ofertas Navideñas
+                        </h3>
+                        <span class="text-[9px] bg-amber-100 text-amber-900 border border-amber-300 px-2 py-0.5 rounded-full font-bold">Promo</span>
+                    </div>
+                    <div id="gridPromociones" class="flex flex-col gap-3">
+                        <!-- Inyectado por JS -->
+                    </div>
+                </div>
+            </aside>
 
-    <!-- CATEGORÍAS TABS -->
-    <div class="max-w-7xl mx-auto px-3 sm:px-4 mt-6 w-full">
-        <div id="contenedorCategorias" class="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-none">
-            <!-- Generado dinámicamente -->
-        </div>
-    </div>
+            <!-- COLUMNA DERECHA: CATEGORÍAS Y ARTÍCULOS -->
+            <section class="lg:col-span-3 space-y-4">
+                <div class="w-full">
+                    <div id="contenedorCategorias" class="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-none">
+                        <!-- Generado dinámicamente -->
+                    </div>
+                </div>
 
-    <!-- MAIN CONTENT: GRILLA DE ARTÍCULOS -->
-    <main class="max-w-7xl mx-auto px-3 sm:px-4 py-4 sm:py-6 flex-1 w-full">
-        <div class="flex justify-between items-center mb-4">
-            <h3 id="tituloResultados" class="text-xs font-bold text-gray-600 uppercase tracking-wide">Catálogo General</h3>
-            <span id="contadorResultados" class="text-xs bg-gray-200 text-gray-700 px-2.5 py-0.5 rounded-full font-semibold">0 artículos</span>
-        </div>
+                <div class="bg-white border border-stone-200 rounded-2xl p-3.5 shadow-xs flex justify-between items-center">
+                    <h3 id="tituloResultados" class="text-xs font-extrabold text-emerald-900 uppercase tracking-wider flex items-center gap-1.5">
+                        <i class="fa-solid fa-tree text-emerald-700"></i> Catálogo General
+                    </h3>
+                    <span id="contadorResultados" class="text-xs bg-red-50 text-red-800 border border-red-200 px-3 py-0.5 rounded-full font-bold">0 artículos</span>
+                </div>
 
-        <div id="gridProductos" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-2.5 sm:gap-3">
-            <!-- Tarjetas inyectadas por JS -->
-        </div>
+                <div id="gridProductos" class="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-4 gap-3">
+                    <!-- Tarjetas inyectadas por JS -->
+                </div>
 
-        <div id="sinResultados" class="hidden text-center py-16">
-            <i class="fa-solid fa-box-open text-4xl text-gray-300 mb-2"></i>
-            <p class="text-gray-500 text-sm">No se encontraron artículos con esos criterios.</p>
+                <div id="sinResultados" class="hidden text-center py-16 bg-white rounded-2xl border border-stone-200 mt-2">
+                    <i class="fa-solid fa-gift text-4xl text-red-200 mb-2"></i>
+                    <p class="text-stone-500 text-sm">No se encontraron artículos con esos criterios.</p>
+                </div>
+            </section>
+
         </div>
     </main>
 
     <!-- FOOTER CON CONTADOR DE VISITAS -->
-    <footer class="bg-white border-t mt-12 py-4 text-center text-xs text-gray-500 px-4 space-y-1">
+    <footer class="bg-emerald-950 text-stone-300 border-t-4 border-red-800 mt-12 py-6 text-center text-xs px-4 space-y-1.5">
+        <p class="font-navidad text-base text-amber-300 font-bold">ColectivoWebSanLuis 🎄</p>
         <p>ColectivoWebSanLuis &copy; 2026 - San Luis Río Colorado, Sonora. Todos los derechos reservados.</p>
-        <p class="text-[11px] text-gray-400">
-            <i class="fa-solid fa-eye mr-1 text-sky-600"></i> Visitas totales a la plataforma: <span id="contadorVisitas" class="font-bold text-sky-600">...</span>
+        <p class="text-[11px] text-stone-400">
+            <i class="fa-solid fa-eye mr-1 text-amber-400"></i> Visitas totales a la plataforma: <span id="contadorVisitas" class="font-bold text-amber-300">...</span>
         </p>
     </footer>
 
     <!-- MODAL ACCESO COLECTIVO -->
-    <div id="modalColectivo" class="fixed inset-0 bg-black/60 hidden z-50 flex items-center justify-center p-3 sm:p-4">
-        <div class="bg-white rounded-2xl max-w-md w-full p-5 sm:p-6 shadow-2xl relative max-h-[90vh] overflow-y-auto">
-            <button onclick="cerrarModalColectivo()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600"><i class="fa-solid fa-xmark text-lg"></i></button>
-            <h3 class="text-base sm:text-lg font-bold text-sky-900 mb-1">Acceso a Negocios / Colectivos</h3>
-            <p class="text-xs text-gray-500 mb-4">Ingresa tus credenciales asignadas para gestionar tus artículos y promociones.</p>
+    <div id="modalColectivo" class="fixed inset-0 bg-black/60 backdrop-blur-xs hidden z-50 flex items-center justify-center p-3 sm:p-4">
+        <div class="bg-white rounded-2xl max-w-md w-full p-5 sm:p-6 shadow-2xl border-t-4 border-red-800 relative max-h-[90vh] overflow-y-auto">
+            <button onclick="cerrarModalColectivo()" class="absolute top-4 right-4 text-stone-400 hover:text-stone-600"><i class="fa-solid fa-xmark text-lg"></i></button>
+            <h3 class="text-base sm:text-lg font-bold text-red-900 mb-1 flex items-center gap-2">
+                <i class="fa-solid fa-store text-emerald-700"></i> Acceso a Negocios / Colectivos
+            </h3>
+            <p class="text-xs text-stone-500 mb-4">Ingresa tus credenciales asignadas para gestionar tus artículos y promociones.</p>
             
             <div id="alertaVencido" class="hidden bg-red-100 border border-red-400 text-red-700 px-3 py-2 rounded-lg text-xs mb-4">
                 <i class="fa-solid fa-triangle-exclamation mr-1"></i> <strong>Aviso:</strong> Tu cuenta requiere atención administrativa.
@@ -141,204 +174,213 @@
 
             <form id="formLoginColectivo" onsubmit="loginColectivo(event)" class="space-y-3">
                 <div>
-                    <label class="block text-xs font-semibold text-gray-700 mb-1">Usuario</label>
-                    <input type="text" id="loginUser" required class="w-full p-2.5 text-sm border rounded-lg focus:ring-2 focus:ring-sky-500 outline-none">
+                    <label class="block text-xs font-semibold text-stone-700 mb-1">Usuario</label>
+                    <input type="text" id="loginUser" required class="w-full p-2.5 text-sm border border-stone-300 rounded-lg focus:ring-2 focus:ring-emerald-600 outline-none">
                 </div>
                 <div>
-                    <label class="block text-xs font-semibold text-gray-700 mb-1">Contraseña</label>
-                    <input type="password" id="loginPass" required class="w-full p-2.5 text-sm border rounded-lg focus:ring-2 focus:ring-sky-500 outline-none">
+                    <label class="block text-xs font-semibold text-stone-700 mb-1">Contraseña</label>
+                    <input type="password" id="loginPass" required class="w-full p-2.5 text-sm border border-stone-300 rounded-lg focus:ring-2 focus:ring-emerald-600 outline-none">
                 </div>
-                <button type="submit" class="w-full bg-sky-600 hover:bg-sky-700 text-white py-2.5 rounded-lg text-sm font-semibold shadow transition">Entrar al Panel</button>
+                <button type="submit" class="w-full bg-emerald-800 hover:bg-emerald-900 text-white py-2.5 rounded-lg text-sm font-semibold shadow transition">Entrar al Panel</button>
             </form>
         </div>
     </div>
 
     <!-- MODAL PANEL DE COLECTIVO -->
-    <div id="modalPanelColectivo" class="fixed inset-0 bg-black/60 hidden z-50 flex items-center justify-center p-3 sm:p-4">
+    <div id="modalPanelColectivo" class="fixed inset-0 bg-black/60 backdrop-blur-xs hidden z-50 flex items-center justify-center p-3 sm:p-4">
         <div class="bg-white rounded-2xl max-w-4xl w-full p-4 sm:p-6 shadow-2xl relative max-h-[90vh] overflow-y-auto">
-            <button onclick="cerrarPanelColectivo()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600"><i class="fa-solid fa-xmark text-lg"></i></button>
+            <button onclick="cerrarPanelColectivo()" class="absolute top-4 right-4 text-stone-400 hover:text-stone-600"><i class="fa-solid fa-xmark text-lg"></i></button>
             
-            <div class="bg-gradient-to-r from-sky-900 to-sky-700 text-white p-4 rounded-xl mb-4 shadow flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
+            <div class="bg-gradient-to-r from-red-900 via-red-800 to-emerald-900 text-white p-4 rounded-xl mb-4 shadow flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 border border-amber-400/30">
                 <div>
-                    <span id="lblTipoNegocioBadge" class="text-[10px] bg-sky-800 text-sky-200 px-2 py-0.5 rounded font-semibold uppercase tracking-wider">Negocio</span>
-                    <h4 id="lblCodigoUnicoPanel" class="text-xl sm:text-2xl font-mono font-extrabold tracking-widest mt-1">---</h4>
-                    <p class="text-[11px] text-sky-100 mt-0.5">Identificador único de referencia.</p>
+                    <span id="lblTipoNegocioBadge" class="text-[10px] bg-amber-400/20 text-amber-300 border border-amber-400/30 px-2 py-0.5 rounded font-semibold uppercase tracking-wider">Negocio</span>
+                    <h4 id="lblCodigoUnicoPanel" class="text-xl sm:text-2xl font-mono font-extrabold tracking-widest mt-1 text-amber-200">---</h4>
+                    <p class="text-[11px] text-stone-200 mt-0.5">Identificador único de referencia.</p>
                 </div>
             </div>
 
-            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 mb-4 border-b pb-3">
+            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 mb-4 border-b border-stone-200 pb-3">
                 <div>
-                    <h3 id="panelTituloColectivo" class="text-base sm:text-lg font-bold text-sky-900">Panel de Negocio</h3>
-                    <p id="panelSubDireccion" class="text-xs text-gray-500">Dirección o Domicilio</p>
+                    <h3 id="panelTituloColectivo" class="text-base sm:text-lg font-bold text-red-900">Panel de Negocio</h3>
+                    <p id="panelSubDireccion" class="text-xs text-stone-500">Dirección o Domicilio</p>
                 </div>
                 <div class="flex gap-2 w-full sm:w-auto">
-                    <button onclick="abrirModalFormPromo()" class="flex-1 sm:flex-initial bg-rose-600 hover:bg-rose-700 text-white px-3 py-2 rounded-lg text-xs font-semibold flex items-center justify-center gap-1 shadow">
+                    <button onclick="abrirModalFormPromo()" class="flex-1 sm:flex-initial bg-red-700 hover:bg-red-800 text-white px-3 py-2 rounded-lg text-xs font-semibold flex items-center justify-center gap-1 shadow">
                         <i class="fa-solid fa-bullhorn"></i> Promo
                     </button>
-                    <button onclick="abrirModalFormProducto()" class="flex-1 sm:flex-initial bg-sky-600 hover:bg-sky-700 text-white px-3 py-2 rounded-lg text-xs font-semibold flex items-center justify-center gap-1 shadow">
+                    <button onclick="abrirModalFormProducto()" class="flex-1 sm:flex-initial bg-emerald-800 hover:bg-emerald-900 text-white px-3 py-2 rounded-lg text-xs font-semibold flex items-center justify-center gap-1 shadow">
                         <i class="fa-solid fa-plus"></i> Artículo
                     </button>
                 </div>
             </div>
 
-            <div class="mb-4 bg-sky-50 border border-sky-200 p-3 rounded-xl space-y-3 text-xs">
+            <div class="mb-4 bg-stone-50 border border-stone-200 p-3 rounded-xl space-y-3 text-xs">
                 <div class="flex items-center gap-2">
-                    <input type="checkbox" id="switchMostrarDireccion" onchange="toggleMostrarDireccion()" class="w-4 h-4 text-sky-600 rounded">
-                    <label for="switchMostrarDireccion" class="font-bold text-sky-900 cursor-pointer">Mostrar Dirección Física (Si se desactiva, mostrará Envío Gratis)</label>
+                    <input type="checkbox" id="switchMostrarDireccion" onchange="toggleMostrarDireccion()" class="w-4 h-4 text-emerald-700 rounded">
+                    <label for="switchMostrarDireccion" class="font-bold text-stone-800 cursor-pointer">Mostrar Dirección Física (Si se desactiva, mostrará Envío Gratis)</label>
                 </div>
                 <div id="contenedorInputDireccion" class="hidden flex flex-col sm:flex-row gap-2 items-center">
                     <input type="text" id="inputDireccionColectivo" placeholder="Ej. Av. Hidalgo #412, Col. Centro" class="p-2 border rounded text-xs w-full sm:flex-1 bg-white">
-                    <button onclick="guardarDireccionColectivo()" class="w-full sm:w-auto bg-sky-600 text-white px-3 py-2 rounded hover:bg-sky-700 font-semibold">Guardar</button>
+                    <button onclick="guardarDireccionColectivo()" class="w-full sm:w-auto bg-emerald-800 text-white px-3 py-2 rounded hover:bg-emerald-900 font-semibold">Guardar</button>
                 </div>
 
                 <div class="border-t pt-2 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
                     <div class="flex flex-wrap items-center gap-2 sm:gap-3">
-                        <span><strong>WhatsApp:</strong> <span id="lblWpColectivo" class="text-sky-700 font-bold"></span></span>
+                        <span><strong>WhatsApp:</strong> <span id="lblWpColectivo" class="text-emerald-800 font-bold"></span></span>
                         <div class="flex items-center gap-1 bg-white px-2 py-0.5 rounded border">
-                            <input type="checkbox" id="switchWpActivo" onchange="toggleWhatsAppActivo()" class="w-4 h-4 text-sky-600 rounded">
-                            <label for="switchWpActivo" class="font-semibold text-gray-700 cursor-pointer">Permitir</label>
+                            <input type="checkbox" id="switchWpActivo" onchange="toggleWhatsAppActivo()" class="w-4 h-4 text-emerald-700 rounded">
+                            <label for="switchWpActivo" class="font-semibold text-stone-700 cursor-pointer">Permitir</label>
                         </div>
                     </div>
                     <div class="flex items-center gap-2 w-full sm:w-auto">
                         <input type="text" id="nuevoWpInput" placeholder="Ej. 526531234567" class="p-1.5 border rounded text-xs flex-1 sm:w-32 bg-white">
-                        <button onclick="actualizarWhatsAppColectivo()" class="bg-sky-600 text-white px-2.5 py-1.5 rounded hover:bg-sky-700 font-semibold">Guardar</button>
+                        <button onclick="actualizarWhatsAppColectivo()" class="bg-emerald-800 text-white px-2.5 py-1.5 rounded hover:bg-emerald-900 font-semibold">Guardar</button>
+                    </div>
+                </div>
+
+                <!-- CAMBIAR CONTRASEÑA (DESDE EL PANEL DEL NEGOCIO) -->
+                <div class="border-t pt-3 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
+                    <span class="font-bold text-stone-700"><i class="fa-solid fa-key text-amber-600 mr-1"></i> Cambiar Contraseña:</span>
+                    <div class="flex items-center gap-2 w-full sm:w-auto">
+                        <input type="text" id="nuevoPassColectivoInput" placeholder="Nueva contraseña..." class="p-1.5 border rounded text-xs flex-1 sm:w-40 bg-white">
+                        <button onclick="actualizarPasswordColectivoPropio()" class="bg-amber-600 text-white px-3 py-1.5 rounded hover:bg-amber-700 font-semibold">Actualizar</button>
                     </div>
                 </div>
             </div>
 
-            <h4 class="text-xs sm:text-sm font-bold text-rose-700 mb-2 flex items-center gap-1"><i class="fa-solid fa-fire"></i> Tus Promociones Activas</h4>
+            <h4 class="text-xs sm:text-sm font-bold text-red-800 mb-2 flex items-center gap-1"><i class="fa-solid fa-candy-cane"></i> Tus Promociones Activas</h4>
             <div id="listaMisPromos" class="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-6"></div>
 
-            <h4 class="text-xs sm:text-sm font-bold text-gray-700 mb-2">Tus Artículos Registrados (<span id="contadorMisProductos">0</span>/20)</h4>
+            <h4 class="text-xs sm:text-sm font-bold text-stone-700 mb-2">Tus Artículos Registrados (<span id="contadorMisProductos">0</span>/20)</h4>
             <div id="listaMisProductos" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3"></div>
         </div>
     </div>
 
     <!-- MODAL CREAR/EDITAR PRODUCTO -->
-    <div id="modalFormProducto" class="fixed inset-0 bg-black/60 hidden z-50 flex items-center justify-center p-3 sm:p-4">
-        <div class="bg-white rounded-2xl max-w-lg w-full p-4 sm:p-6 shadow-2xl relative max-h-[90vh] overflow-y-auto">
-            <button onclick="cerrarModalFormProducto()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600"><i class="fa-solid fa-xmark text-lg"></i></button>
-            <h3 id="tituloFormProd" class="text-base sm:text-lg font-bold text-sky-900 mb-4">Registrar Artículo</h3>
+    <div id="modalFormProducto" class="fixed inset-0 bg-black/60 backdrop-blur-xs hidden z-50 flex items-center justify-center p-3 sm:p-4">
+        <div class="bg-white rounded-2xl max-w-lg w-full p-4 sm:p-6 shadow-2xl border-t-4 border-emerald-800 relative max-h-[90vh] overflow-y-auto">
+            <button onclick="cerrarModalFormProducto()" class="absolute top-4 right-4 text-stone-400 hover:text-stone-600"><i class="fa-solid fa-xmark text-lg"></i></button>
+            <h3 id="tituloFormProd" class="text-base sm:text-lg font-bold text-emerald-900 mb-4">Registrar Artículo</h3>
             
             <form id="formProducto" onsubmit="guardarProducto(event)" class="space-y-3 text-xs">
                 <input type="hidden" id="prodId">
                 <div>
-                    <label class="block font-semibold text-gray-700 mb-1">Título del Artículo</label>
-                    <input type="text" id="prodTitulo" required class="w-full p-2 border rounded-lg focus:ring-2 focus:ring-sky-500 outline-none text-xs">
+                    <label class="block font-semibold text-stone-700 mb-1">Título del Artículo</label>
+                    <input type="text" id="prodTitulo" required class="w-full p-2 border rounded-lg focus:ring-2 focus:ring-emerald-600 outline-none text-xs">
                 </div>
                 <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
                     <div>
-                        <label class="block font-semibold text-gray-700 mb-1">Categoría</label>
-                        <select id="prodCategoria" required class="w-full p-2 border rounded-lg focus:ring-2 focus:ring-sky-500 outline-none text-xs"></select>
+                        <label class="block font-semibold text-stone-700 mb-1">Categoría</label>
+                        <select id="prodCategoria" required class="w-full p-2 border rounded-lg focus:ring-2 focus:ring-emerald-600 outline-none text-xs"></select>
                     </div>
                     <div>
-                        <label class="block font-semibold text-gray-700 mb-1">Precio ($ MXN)</label>
-                        <input type="text" id="prodPrecio" required placeholder="Ej. 250" class="w-full p-2 border rounded-lg focus:ring-2 focus:ring-sky-500 outline-none text-xs">
+                        <label class="block font-semibold text-stone-700 mb-1">Precio ($ MXN)</label>
+                        <input type="text" id="prodPrecio" required placeholder="Ej. 250" class="w-full p-2 border rounded-lg focus:ring-2 focus:ring-emerald-600 outline-none text-xs">
                     </div>
                     <div>
-                        <label class="block font-semibold text-gray-700 mb-1">Costo Envío</label>
-                        <input type="text" id="prodEnvio" required placeholder="Ej. 50 o Gratis" class="w-full p-2 border rounded-lg focus:ring-2 focus:ring-sky-500 outline-none text-xs">
+                        <label class="block font-semibold text-stone-700 mb-1">Costo Envío</label>
+                        <input type="text" id="prodEnvio" required placeholder="Ej. 50 o Gratis" class="w-full p-2 border rounded-lg focus:ring-2 focus:ring-emerald-600 outline-none text-xs">
                     </div>
                 </div>
                 <div>
-                    <label class="block font-semibold text-gray-700 mb-1">Descripción Breve</label>
-                    <textarea id="prodDesc" rows="2" class="w-full p-2 border rounded-lg focus:ring-2 focus:ring-sky-500 outline-none text-xs"></textarea>
+                    <label class="block font-semibold text-stone-700 mb-1">Descripción Breve</label>
+                    <textarea id="prodDesc" rows="2" class="w-full p-2 border rounded-lg focus:ring-2 focus:ring-emerald-600 outline-none text-xs"></textarea>
                 </div>
                 <div>
-                    <label class="block font-semibold text-gray-700 mb-1">Fotos (1 a 3 máximo)</label>
+                    <label class="block font-semibold text-stone-700 mb-1">Fotos (1 a 3 máximo)</label>
                     <input type="file" id="prodArchivos" accept="image/*" multiple onchange="procesarImagenesInput(event)" class="w-full p-1 border rounded-lg text-xs">
                     <div id="previewMiniaturas" class="flex gap-2 mt-2 flex-wrap"></div>
                 </div>
                 <div class="flex items-center gap-2 pt-2">
-                    <input type="checkbox" id="prodActivo" checked class="w-4 h-4 text-sky-600 rounded">
-                    <label for="prodActivo" class="font-semibold text-gray-700">Artículo Visible / Activo</label>
+                    <input type="checkbox" id="prodActivo" checked class="w-4 h-4 text-emerald-700 rounded">
+                    <label for="prodActivo" class="font-semibold text-stone-700">Artículo Visible / Activo</label>
                 </div>
-                <button type="submit" class="w-full bg-sky-600 hover:bg-sky-700 text-white py-2.5 rounded-lg font-semibold shadow transition text-xs">Guardar Artículo</button>
+                <button type="submit" class="w-full bg-emerald-800 hover:bg-emerald-900 text-white py-2.5 rounded-lg font-semibold shadow transition text-xs">Guardar Artículo</button>
             </form>
         </div>
     </div>
 
     <!-- MODAL CREAR/EDITAR PROMOCIÓN -->
-    <div id="modalFormPromo" class="fixed inset-0 bg-black/60 hidden z-50 flex items-center justify-center p-3 sm:p-4">
-        <div class="bg-white rounded-2xl max-w-md w-full p-4 sm:p-6 shadow-2xl relative max-h-[90vh] overflow-y-auto">
-            <button onclick="cerrarModalFormPromo()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600"><i class="fa-solid fa-xmark text-lg"></i></button>
-            <h3 id="tituloFormPromo" class="text-base sm:text-lg font-bold text-rose-700 mb-4">Crear Promoción con Vigencia</h3>
+    <div id="modalFormPromo" class="fixed inset-0 bg-black/60 backdrop-blur-xs hidden z-50 flex items-center justify-center p-3 sm:p-4">
+        <div class="bg-white rounded-2xl max-w-md w-full p-4 sm:p-6 shadow-2xl border-t-4 border-red-700 relative max-h-[90vh] overflow-y-auto">
+            <button onclick="cerrarModalFormPromo()" class="absolute top-4 right-4 text-stone-400 hover:text-stone-600"><i class="fa-solid fa-xmark text-lg"></i></button>
+            <h3 id="tituloFormPromo" class="text-base sm:text-lg font-bold text-red-800 mb-4">Crear Promoción con Vigencia</h3>
             <form id="formPromo" onsubmit="guardarPromocion(event)" class="space-y-3 text-xs">
                 <input type="hidden" id="promoId">
                 <div>
-                    <label class="block font-semibold text-gray-700 mb-1">Título de la Promoción</label>
-                    <input type="text" id="promoTitulo" required placeholder="Ej. 20% Descuento" class="w-full p-2 border rounded-lg outline-none">
+                    <label class="block font-semibold text-stone-700 mb-1">Título de la Promoción</label>
+                    <input type="text" id="promoTitulo" required placeholder="Ej. 20% Descuento Navideño" class="w-full p-2 border rounded-lg outline-none">
                 </div>
                 <div>
-                    <label class="block font-semibold text-gray-700 mb-1">Descripción</label>
+                    <label class="block font-semibold text-stone-700 mb-1">Descripción</label>
                     <textarea id="promoDesc" rows="2" required placeholder="Detalles de la oferta..." class="w-full p-2 border rounded-lg outline-none"></textarea>
                 </div>
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
                     <div>
-                        <label class="block font-semibold text-gray-700 mb-1">Fecha Inicial</label>
+                        <label class="block font-semibold text-stone-700 mb-1">Fecha Inicial</label>
                         <input type="date" id="promoFechaInicio" required class="w-full p-2 border rounded-lg outline-none">
                     </div>
                     <div>
-                        <label class="block font-semibold text-gray-700 mb-1">Fecha Final</label>
+                        <label class="block font-semibold text-stone-700 mb-1">Fecha Final</label>
                         <input type="date" id="promoFechaFin" required class="w-full p-2 border rounded-lg outline-none">
                     </div>
                 </div>
                 <div>
-                    <label class="block font-semibold text-gray-700 mb-1">Precio en Oferta ($ MXN)</label>
+                    <label class="block font-semibold text-stone-700 mb-1">Precio en Oferta ($ MXN)</label>
                     <input type="text" id="promoPrecio" required placeholder="Ej. 199" class="w-full p-2 border rounded-lg outline-none">
                 </div>
                 
-                <div class="bg-rose-50 border border-rose-200 p-2.5 rounded-xl space-y-2">
+                <div class="bg-red-50 border border-red-200 p-2.5 rounded-xl space-y-2">
                     <div class="flex items-center gap-2">
-                        <input type="checkbox" id="promoEnvioGratis" checked class="w-4 h-4 text-rose-600 rounded">
-                        <label for="promoEnvioGratis" class="font-semibold text-gray-700 cursor-pointer">Aplicar Envío Gratis en esta promoción</label>
+                        <input type="checkbox" id="promoEnvioGratis" checked class="w-4 h-4 text-red-700 rounded">
+                        <label for="promoEnvioGratis" class="font-semibold text-stone-700 cursor-pointer">Aplicar Envío Gratis en esta promoción</label>
                     </div>
                     <div class="flex items-center gap-2">
-                        <input type="checkbox" id="promoWpActivo" checked class="w-4 h-4 text-rose-600 rounded">
-                        <label for="promoWpActivo" class="font-semibold text-gray-700 cursor-pointer">Permitir WhatsApp en esta promoción</label>
+                        <input type="checkbox" id="promoWpActivo" checked class="w-4 h-4 text-red-700 rounded">
+                        <label for="promoWpActivo" class="font-semibold text-stone-700 cursor-pointer">Permitir WhatsApp en esta promoción</label>
                     </div>
                 </div>
 
                 <div>
-                    <label class="block font-semibold text-gray-700 mb-1">Imagen (Opcional)</label>
+                    <label class="block font-semibold text-stone-700 mb-1">Imagen (Opcional)</label>
                     <input type="file" id="promoArchivo" accept="image/*" onchange="procesarImagenPromoInput(event)" class="w-full p-1 border rounded-lg text-xs">
                     <div id="previewPromoImg" class="mt-2"></div>
                 </div>
-                <button type="submit" class="w-full bg-rose-600 hover:bg-rose-700 text-white py-2.5 rounded-lg font-semibold shadow transition">Guardar Promoción</button>
+                <button type="submit" class="w-full bg-red-700 hover:bg-red-800 text-white py-2.5 rounded-lg font-semibold shadow transition">Guardar Promoción</button>
             </form>
         </div>
     </div>
 
     <!-- MODAL ADMIN MASTER -->
-    <div id="modalAdmin" class="fixed inset-0 bg-black/60 hidden z-50 flex items-center justify-center p-3 sm:p-4">
-        <div class="bg-white rounded-2xl max-w-3xl w-full p-4 sm:p-6 shadow-2xl relative max-h-[90vh] overflow-y-auto">
-            <button onclick="cerrarModalAdmin()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600"><i class="fa-solid fa-xmark text-lg"></i></button>
+    <div id="modalAdmin" class="fixed inset-0 bg-black/60 backdrop-blur-xs hidden z-50 flex items-center justify-center p-3 sm:p-4">
+        <div class="bg-white rounded-2xl max-w-3xl w-full p-4 sm:p-6 shadow-2xl border-t-4 border-amber-500 relative max-h-[90vh] overflow-y-auto">
+            <button onclick="cerrarModalAdmin()" class="absolute top-4 right-4 text-stone-400 hover:text-stone-600"><i class="fa-solid fa-xmark text-lg"></i></button>
             <div id="adminLoginView">
-                <h3 class="text-base sm:text-lg font-bold text-sky-900 mb-1">Panel Administrador Master</h3>
-                <p class="text-xs text-gray-500 mb-4">Ingresa la contraseña maestra para controlar los negocios y categorías.</p>
+                <h3 class="text-base sm:text-lg font-bold text-red-900 mb-1">Panel Administrador Master</h3>
+                <p class="text-xs text-stone-500 mb-4">Ingresa la contraseña maestra para controlar los negocios y categorías.</p>
                 <form onsubmit="loginAdmin(event)" class="space-y-3">
                     <div>
-                        <label class="block text-xs font-semibold text-gray-700 mb-1">Contraseña Administrador</label>
-                        <input type="password" id="adminPassInput" required class="w-full p-2.5 text-sm border rounded-lg focus:ring-2 focus:ring-sky-500 outline-none">
+                        <label class="block text-xs font-semibold text-stone-700 mb-1">Contraseña Administrador</label>
+                        <input type="password" id="adminPassInput" required class="w-full p-2.5 text-sm border rounded-lg focus:ring-2 focus:ring-amber-500 outline-none">
                     </div>
-                    <button type="submit" class="w-full bg-sky-600 hover:bg-sky-700 text-white py-2.5 rounded-lg text-sm font-semibold shadow transition">Ingresar como Admin</button>
+                    <button type="submit" class="w-full bg-red-800 hover:bg-red-900 text-white py-2.5 rounded-lg text-sm font-semibold shadow transition">Ingresar como Admin</button>
                 </form>
             </div>
 
             <div id="adminDashboardView" class="hidden space-y-6">
-                <div class="bg-sky-50 border border-sky-200 p-3 sm:p-4 rounded-xl">
-                    <h3 class="text-xs sm:text-sm font-bold text-sky-900 mb-2"><i class="fa-solid fa-tags mr-1"></i> Gestión de Categorías</h3>
+                <div class="bg-amber-50/70 border border-amber-200 p-3 sm:p-4 rounded-xl">
+                    <h3 class="text-xs sm:text-sm font-bold text-red-900 mb-2"><i class="fa-solid fa-tags mr-1 text-amber-600"></i> Gestión de Categorías</h3>
                     <div class="flex flex-col sm:flex-row gap-2 mb-3">
                         <input type="text" id="nuevaCategoriaInput" placeholder="Nueva categoría..." class="p-2 border rounded text-xs flex-1 bg-white">
-                        <button onclick="agregarCategoriaAdmin()" class="bg-sky-600 text-white px-3 py-2 rounded hover:bg-sky-700 text-xs font-semibold">Agregar</button>
+                        <button onclick="agregarCategoriaAdmin()" class="bg-emerald-800 text-white px-3 py-2 rounded hover:bg-emerald-900 text-xs font-semibold">Agregar</button>
                     </div>
                     <div id="listaCategoriasAdmin" class="flex flex-wrap gap-2"></div>
                 </div>
 
                 <div>
                     <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 mb-3 border-b pb-2">
-                        <h3 class="text-sm sm:text-base font-bold text-sky-900">Control de Negocios y Colectivos</h3>
-                        <button onclick="abrirModalNuevoColectivo()" class="w-full sm:w-auto bg-sky-600 hover:bg-sky-700 text-white px-3 py-1.5 rounded-lg text-xs font-semibold shadow">
+                        <h3 class="text-sm sm:text-base font-bold text-red-900">Control de Negocios y Colectivos</h3>
+                        <button onclick="abrirModalNuevoColectivo()" class="w-full sm:w-auto bg-emerald-800 hover:bg-emerald-900 text-white px-3 py-1.5 rounded-lg text-xs font-semibold shadow">
                             <i class="fa-solid fa-plus"></i> Registrar Negocio
                         </button>
                     </div>
@@ -349,17 +391,17 @@
     </div>
 
     <!-- MODAL CREAR NUEVO COLECTIVO (ADMIN) -->
-    <div id="modalNuevoColectivo" class="fixed inset-0 bg-black/60 hidden z-50 flex items-center justify-center p-3 sm:p-4">
+    <div id="modalNuevoColectivo" class="fixed inset-0 bg-black/60 backdrop-blur-xs hidden z-50 flex items-center justify-center p-3 sm:p-4">
         <div class="bg-white rounded-2xl max-w-md w-full p-4 sm:p-6 shadow-2xl relative max-h-[90vh] overflow-y-auto">
-            <button onclick="cerrarModalNuevoColectivo()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600"><i class="fa-solid fa-xmark text-lg"></i></button>
-            <h3 class="text-base sm:text-lg font-bold text-sky-900 mb-4">Registrar Nuevo Negocio</h3>
+            <button onclick="cerrarModalNuevoColectivo()" class="absolute top-4 right-4 text-stone-400 hover:text-stone-600"><i class="fa-solid fa-xmark text-lg"></i></button>
+            <h3 class="text-base sm:text-lg font-bold text-emerald-900 mb-4">Registrar Nuevo Negocio</h3>
             <form onsubmit="registrarColectivo(event)" class="space-y-3 text-xs">
                 <div>
-                    <label class="block font-semibold text-gray-700 mb-1">Título / Nombre del Negocio</label>
+                    <label class="block font-semibold text-stone-700 mb-1">Título / Nombre del Negocio</label>
                     <input type="text" id="nuevoColNombre" required placeholder="Ej. Colectivo Centro" class="w-full p-2 border rounded-lg outline-none">
                 </div>
                 <div>
-                    <label class="block font-semibold text-gray-700 mb-1">Tipo de Negocio</label>
+                    <label class="block font-semibold text-stone-700 mb-1">Tipo de Negocio</label>
                     <select id="nuevoColTipo" class="w-full p-2 border rounded-lg outline-none">
                         <option value="Colectivo">Colectivo</option>
                         <option value="Segunda">Segunda</option>
@@ -369,40 +411,40 @@
                     </select>
                 </div>
                 <div>
-                    <label class="block font-semibold text-gray-700 mb-1">Dirección Física (Opcional)</label>
+                    <label class="block font-semibold text-stone-700 mb-1">Dirección Física (Opcional)</label>
                     <input type="text" id="nuevoColDireccion" placeholder="Ej. Av. Hidalgo #412" class="w-full p-2 border rounded-lg outline-none">
                 </div>
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
                     <div>
-                        <label class="block font-semibold text-gray-700 mb-1">Usuario de Acceso</label>
+                        <label class="block font-semibold text-stone-700 mb-1">Usuario de Acceso</label>
                         <input type="text" id="nuevoColUser" required placeholder="Ej. centro_slrc" class="w-full p-2 border rounded-lg outline-none">
                     </div>
                     <div>
-                        <label class="block font-semibold text-gray-700 mb-1">Contraseña</label>
+                        <label class="block font-semibold text-stone-700 mb-1">Contraseña</label>
                         <input type="text" id="nuevoColPass" required placeholder="Contraseña" class="w-full p-2 border rounded-lg outline-none">
                     </div>
                 </div>
                 <div>
-                    <label class="block font-semibold text-gray-700 mb-1">WhatsApp (10 dígitos)</label>
+                    <label class="block font-semibold text-stone-700 mb-1">WhatsApp (10 dígitos)</label>
                     <input type="text" id="nuevoColWp" required placeholder="Ej. 526530000000" class="w-full p-2 border rounded-lg outline-none">
                 </div>
                 <div>
-                    <label class="block font-semibold text-gray-700 mb-1">Día de Pago (Control Admin: 1 al 30)</label>
+                    <label class="block font-semibold text-stone-700 mb-1">Día de Pago (Control Admin: 1 al 30)</label>
                     <input type="number" id="nuevoDiaPago" min="1" max="30" value="15" required class="w-full p-2 border rounded-lg outline-none">
                 </div>
                 <div class="flex items-center gap-2 pt-2">
-                    <input type="checkbox" id="nuevoMostrarDir" checked class="w-4 h-4 text-sky-600 rounded">
-                    <label for="nuevoMostrarDir" class="font-semibold text-gray-700">Mostrar dirección física públicamente</label>
+                    <input type="checkbox" id="nuevoMostrarDir" checked class="w-4 h-4 text-emerald-700 rounded">
+                    <label for="nuevoMostrarDir" class="font-semibold text-stone-700">Mostrar dirección física públicamente</label>
                 </div>
-                <button type="submit" class="w-full bg-sky-600 hover:bg-sky-700 text-white py-2.5 rounded-lg font-semibold shadow transition">Crear Cuenta</button>
+                <button type="submit" class="w-full bg-emerald-800 hover:bg-emerald-900 text-white py-2.5 rounded-lg font-semibold shadow transition">Crear Cuenta</button>
             </form>
         </div>
     </div>
 
     <!-- MODAL DETALLE PRODUCTO -->
-    <div id="modalDetalle" class="fixed inset-0 bg-black/70 hidden z-50 flex items-center justify-center p-3 sm:p-4">
-        <div class="bg-white rounded-2xl max-w-lg w-full p-4 sm:p-6 shadow-2xl relative max-h-[90vh] overflow-y-auto">
-            <button onclick="cerrarModalDetalle()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600"><i class="fa-solid fa-xmark text-lg"></i></button>
+    <div id="modalDetalle" class="fixed inset-0 bg-black/70 backdrop-blur-xs hidden z-50 flex items-center justify-center p-3 sm:p-4">
+        <div class="bg-white rounded-2xl max-w-lg w-full p-4 sm:p-6 shadow-2xl border-t-4 border-red-800 relative max-h-[90vh] overflow-y-auto">
+            <button onclick="cerrarModalDetalle()" class="absolute top-4 right-4 text-stone-400 hover:text-stone-600"><i class="fa-solid fa-xmark text-lg"></i></button>
             <div id="contenidoDetalleProducto"></div>
         </div>
     </div>
@@ -466,7 +508,7 @@
             
             const listaCompleta = ["Todos", ...categoriasDinamicas];
             contenedor.innerHTML = listaCompleta.map(cat => `
-                <button onclick="seleccionarCategoria('${cat}')" class="px-3.5 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap transition shrink-0 ${categoriaActiva === cat ? 'bg-sky-600 text-white shadow' : 'bg-white text-gray-600 border hover:bg-gray-100'}">
+                <button onclick="seleccionarCategoria('${cat}')" class="px-4 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap transition shrink-0 ${categoriaActiva === cat ? 'bg-red-800 text-amber-100 shadow-sm border border-red-900' : 'bg-white text-stone-600 border border-stone-200 hover:border-red-300 hover:bg-red-50/40'}">
                     ${cat}
                 </button>
             `).join('');
@@ -535,43 +577,43 @@
                 
                 let infoEnvioHtml = '';
                 if (promo.envioGratis !== false) {
-                    infoEnvioHtml = `<span class="text-emerald-700 font-extrabold bg-emerald-100 px-1.5 py-0.5 rounded">¡Envío Gratis!</span>`;
+                    infoEnvioHtml = `<span class="text-emerald-800 font-extrabold bg-emerald-100/80 border border-emerald-200 px-1.5 py-0.5 rounded">¡Envío Gratis!</span>`;
                 } else {
-                    infoEnvioHtml = mostrarDir && col.direccion ? `<i class="fa-solid fa-location-dot mr-1"></i> ${col.direccion}` : `<span class="text-amber-700 font-semibold">Envío aplicable</span>`;
+                    infoEnvioHtml = mostrarDir && col.direccion ? `<i class="fa-solid fa-location-dot text-red-700 mr-1"></i> ${col.direccion}` : `<span class="text-amber-800 font-semibold">Envío aplicable</span>`;
                 }
 
                 const wpCol = col.whatsapp;
                 const permiteWpPromo = promo.whatsappActivo !== false && col.whatsappActivo !== false;
-                const mensajeWp = encodeURIComponent(`Hola, me interesa la promoción "${promo.titulo}" ($${promo.precio} MXN) ofrecida por ${nombreCol}. ¿Está disponible?`);
+                const mensajeWp = encodeURIComponent(`Hola, me interesa la promoción navideña "${promo.titulo}" ($${promo.precio} MXN) ofrecida por ${nombreCol}. ¿Está disponible?`);
 
                 count++;
-                const imgHtml = promo.imagen ? `<div class="h-28 overflow-hidden rounded-lg mb-2"><img src="${promo.imagen}" class="w-full h-full object-cover"></div>` : '';
+                const imgHtml = promo.imagen ? `<div class="h-28 overflow-hidden rounded-xl mb-2 border border-amber-200/60"><img src="${promo.imagen}" class="w-full h-full object-cover hover:scale-105 transition duration-300"></div>` : '';
                 
                 let botonWpHtml = '';
                 if (permiteWpPromo) {
                     botonWpHtml = `
-                        <a href="https://wa.me/${wpCol}?text=${mensajeWp}" target="_blank" class="bg-emerald-600 hover:bg-emerald-700 text-white px-2.5 py-1 rounded-lg text-[10px] font-semibold flex items-center gap-1 shadow">
-                            <i class="fa-brands fa-whatsapp"></i> Pedir
+                        <a href="https://wa.me/${wpCol}?text=${mensajeWp}" target="_blank" class="bg-emerald-700 hover:bg-emerald-800 text-white px-2.5 py-1 rounded-lg text-[10px] font-bold flex items-center gap-1 shadow-sm transition">
+                            <i class="fa-brands fa-whatsapp text-xs"></i> Pedir
                         </a>`;
                 } else {
-                    botonWpHtml = `<span class="text-[10px] text-gray-400 italic">WhatsApp desactivado</span>`;
+                    botonWpHtml = `<span class="text-[10px] text-stone-400 italic">WhatsApp desactivado</span>`;
                 }
 
                 html += `
-                    <div class="bg-gradient-to-br from-rose-50 to-orange-50 border border-rose-200 rounded-2xl p-3.5 shadow-sm flex flex-col justify-between">
+                    <div class="bg-gradient-to-br from-white via-red-50/40 to-amber-50/50 border border-amber-300/70 rounded-xl p-3 shadow-xs hover:shadow-sm transition flex flex-col justify-between relative overflow-hidden">
                         <div>
                             ${imgHtml}
                             <div class="flex justify-between items-start gap-1">
-                                <span class="bg-rose-600 text-white text-[9px] px-2 py-0.5 rounded-full font-bold uppercase">${tipoNegocio}</span>
-                                <span class="text-[10px] text-gray-600 font-bold truncate max-w-[130px]" title="${nombreCol}">${nombreCol}</span>
+                                <span class="bg-red-800 text-amber-100 text-[9px] px-2 py-0.5 rounded-full font-bold uppercase tracking-wide">${tipoNegocio}</span>
+                                <span class="text-[10px] text-stone-600 font-bold truncate max-w-[120px]" title="${nombreCol}">${nombreCol}</span>
                             </div>
-                            <h4 class="font-bold text-sm text-gray-900 mt-1">${promo.titulo}</h4>
-                            <p class="text-[11px] text-gray-600 mt-0.5 line-clamp-2">${promo.descripcion}</p>
-                            <p class="text-[10px] text-sky-800 font-medium mt-1">${infoEnvioHtml}</p>
-                            <p class="text-[9px] text-gray-500 mt-1"><i class="fa-regular fa-calendar-days"></i> Vigencia: ${promo.fechaInicio || 'Hoy'} al ${promo.fechaFin || 'Indefinida'}</p>
+                            <h4 class="font-bold text-xs text-stone-900 mt-1">${promo.titulo}</h4>
+                            <p class="text-[10px] text-stone-600 mt-0.5 line-clamp-2">${promo.descripcion}</p>
+                            <p class="text-[9px] text-stone-700 font-medium mt-1">${infoEnvioHtml}</p>
+                            <p class="text-[9px] text-stone-500 mt-1"><i class="fa-regular fa-calendar-days text-red-700"></i> ${promo.fechaInicio || 'Hoy'} al ${promo.fechaFin || 'Indefinida'}</p>
                         </div>
-                        <div class="mt-3 pt-2 border-t border-rose-100 flex items-center justify-between">
-                            <span class="text-rose-700 font-extrabold text-xs">$${promo.precio} MXN</span>
+                        <div class="mt-2.5 pt-2 border-t border-amber-200/60 flex items-center justify-between">
+                            <span class="text-red-800 font-extrabold text-xs">$${promo.precio} <small class="text-[9px]">MXN</small></span>
                             ${botonWpHtml}
                         </div>
                     </div>
@@ -579,7 +621,7 @@
             });
 
             if (count === 0) {
-                grid.innerHTML = `<div class="col-span-full text-center py-4 text-gray-400 text-xs">No hay promociones vigentes en este momento.</div>`;
+                grid.innerHTML = `<div class="text-center py-4 text-stone-400 text-xs">No hay promociones vigentes.</div>`;
             } else {
                 grid.innerHTML = html;
             }
@@ -603,13 +645,11 @@
                 const tipoNegocio = col.tipoNegocio || 'Colectivo';
                 const nombreCol = `${tipoNegocio}: ${col.nombre}`;
                 const mostrarDir = col.mostrarDireccion !== false;
-                const direccionCol = mostrarDir && col.direccion ? col.direccion : '<span class="text-emerald-700 font-extrabold bg-emerald-100 px-1 py-0.5 rounded">¡Envío Gratis!</span>';
+                const direccionCol = mostrarDir && col.direccion ? col.direccion : '<span class="text-emerald-800 font-extrabold bg-emerald-50 border border-emerald-200 px-1 py-0.5 rounded">¡Envío Gratis!</span>';
                 const costoEnvio = p.envio ? `$${p.envio} MXN` : 'A consultar';
 
-                // Validación de categoría activa
                 if (categoriaActiva !== "Todos" && p.categoria !== categoriaActiva) return;
 
-                // Validación de búsqueda por coincidencias (Título, Descripción, Categoría y Nombre del Negocio)
                 if (txtBuscar) {
                     const matchTitulo = (p.titulo || "").toLowerCase().includes(txtBuscar);
                     const matchDesc = (p.descripcion || "").toLowerCase().includes(txtBuscar);
@@ -617,7 +657,7 @@
                     const matchNegocio = nombreCol.toLowerCase().includes(txtBuscar);
 
                     if (!matchTitulo && !matchDesc && !matchCat && !matchNegocio) {
-                        return; // Omitir si no coincide con ninguno
+                        return;
                     }
                 }
 
@@ -625,25 +665,25 @@
                 const primeraFoto = (p.fotos && p.fotos.length > 0) ? p.fotos[0] : "https://via.placeholder.com/200x200?text=Sin+Foto";
 
                 html += `
-                    <div onclick="verDetalleProducto('${prodId}')" class="bg-white border-gray-200 rounded-xl border overflow-hidden shadow-sm hover:shadow-md transition cursor-pointer flex flex-col justify-between">
+                    <div onclick="verDetalleProducto('${prodId}')" class="bg-white border-stone-200 hover:border-red-300 rounded-2xl border overflow-hidden shadow-xs hover:shadow-md transition cursor-pointer flex flex-col justify-between group">
                         <div>
-                            <div class="relative h-28 sm:h-32 bg-gray-100 overflow-hidden">
-                                <img src="${primeraFoto}" class="w-full h-full object-cover hover:scale-105 transition duration-300" alt="${p.titulo}">
-                                <span class="absolute top-1 left-1 bg-sky-900/80 text-white text-[9px] px-1.5 py-0.5 rounded font-medium">${p.categoria}</span>
+                            <div class="relative h-28 sm:h-32 bg-stone-100 overflow-hidden">
+                                <img src="${primeraFoto}" class="w-full h-full object-cover group-hover:scale-105 transition duration-300" alt="${p.titulo}">
+                                <span class="absolute top-1.5 left-1.5 bg-red-900/85 backdrop-blur-xs text-amber-100 text-[9px] px-2 py-0.5 rounded-full font-semibold">${p.categoria}</span>
                             </div>
-                            <div class="p-2 sm:p-2.5">
-                                <h4 class="font-bold text-xs text-gray-800 line-clamp-1">${p.titulo}</h4>
-                                <p class="text-[10px] text-gray-500 line-clamp-1 mt-0.5">${p.descripcion || ''}</p>
-                                <span class="inline-block mt-1 text-[9px] bg-sky-50 text-sky-700 px-1.5 py-0.5 rounded font-semibold"><i class="fa-solid fa-truck"></i> Envío: ${costoEnvio}</span>
+                            <div class="p-2.5">
+                                <h4 class="font-bold text-xs text-stone-800 line-clamp-1 group-hover:text-red-800 transition">${p.titulo}</h4>
+                                <p class="text-[10px] text-stone-500 line-clamp-1 mt-0.5">${p.descripcion || ''}</p>
+                                <span class="inline-block mt-1.5 text-[9px] bg-stone-100 text-stone-700 px-1.5 py-0.5 rounded font-semibold"><i class="fa-solid fa-sleigh text-red-700 mr-0.5"></i> Envío: ${costoEnvio}</span>
                             </div>
                         </div>
-                        <div class="p-2 sm:p-2.5 pt-0 mt-auto border-t text-[10px]">
+                        <div class="p-2.5 pt-2 mt-auto border-t border-stone-100 text-[10px] bg-stone-50/50">
                             <div class="flex justify-between items-center mb-1">
-                                <span class="text-sky-700 font-extrabold text-xs">$${p.precio} MXN</span>
-                                <span class="text-gray-400 text-[9px]"><i class="fa-regular fa-clock"></i> ${p.fechaActiva || 'Reciente'}</span>
+                                <span class="text-emerald-800 font-extrabold text-xs">$${p.precio} MXN</span>
+                                <span class="text-stone-400 text-[9px]"><i class="fa-regular fa-clock"></i> ${p.fechaActiva || 'Reciente'}</span>
                             </div>
-                            <div class="text-gray-500 truncate">
-                                <strong class="text-gray-900">${nombreCol}</strong><br>
+                            <div class="text-stone-500 truncate">
+                                <strong class="text-stone-800">${nombreCol}</strong><br>
                                 <span class="text-[9px]">${direccionCol}</span>
                             </div>
                         </div>
@@ -729,14 +769,14 @@
             const tipoNegocio = col ? (col.tipoNegocio || 'Colectivo') : 'Colectivo';
             const nombreCol = `${tipoNegocio}: ${col ? col.nombre : "Negocio"}`;
             const mostrarDir = col && col.mostrarDireccion !== false;
-            const direccionCol = mostrarDir && col.direccion ? col.direccion : '<span class="text-emerald-700 font-extrabold bg-emerald-100 px-1.5 py-0.5 rounded">¡Envío Gratis a Domicilio!</span>';
+            const direccionCol = mostrarDir && col.direccion ? col.direccion : '<span class="text-emerald-800 font-extrabold bg-emerald-50 border border-emerald-200 px-1.5 py-0.5 rounded">¡Envío Gratis a Domicilio!</span>';
             const wpCol = col ? col.whatsapp : "526530000000";
             const permiteWp = col ? col.whatsappActivo !== false : true;
             const costoEnvio = p.envio ? `$${p.envio} MXN` : 'A consultar';
 
             let fotosHtml = '';
             if (p.fotos && p.fotos.length > 0) {
-                fotosHtml = `<div class="grid grid-cols-3 gap-2 mb-3">` + p.fotos.map(f => `<img src="${f}" onclick="ampliarFoto('${f}')" class="w-full h-24 object-cover rounded-lg border cursor-pointer hover:opacity-90" title="Clic para ampliar">`).join('') + `</div>`;
+                fotosHtml = `<div class="grid grid-cols-3 gap-2 mb-3">` + p.fotos.map(f => `<img src="${f}" onclick="ampliarFoto('${f}')" class="w-full h-24 object-cover rounded-xl border border-stone-200 cursor-pointer hover:opacity-90" title="Clic para ampliar">`).join('') + `</div>`;
             }
 
             const mensajeWp = encodeURIComponent(`Hola, me interesa el artículo "${p.titulo}" ($${p.precio} MXN) publicado en ColectivoWebSanLuis por ${nombreCol}. ¿Aún está disponible?`);
@@ -744,29 +784,29 @@
             let botonWpHtml = '';
             if (permiteWp) {
                 botonWpHtml = `
-                    <a href="https://wa.me/${wpCol}?text=${mensajeWp}" target="_blank" class="w-full bg-[#0077b6] hover:bg-[#023e8a] text-white py-2.5 rounded-xl font-semibold flex items-center justify-center gap-2 shadow transition text-xs">
-                        <i class="fa-brands fa-whatsapp text-sm"></i> Preguntar por WhatsApp al Vendedor
+                    <a href="https://wa.me/${wpCol}?text=${mensajeWp}" target="_blank" class="w-full bg-emerald-700 hover:bg-emerald-800 text-white py-3 rounded-xl font-bold flex items-center justify-center gap-2 shadow transition text-xs">
+                        <i class="fa-brands fa-whatsapp text-base"></i> Preguntar por WhatsApp al Vendedor
                     </a>`;
             } else {
                 botonWpHtml = `
-                    <div class="w-full bg-gray-100 text-gray-500 py-2 rounded-xl text-center text-xs font-semibold border">
-                        <i class="fa-solid fa-ban text-gray-400 mr-1"></i> Este vendedor tiene desactivado el contacto por WhatsApp en este momento.
+                    <div class="w-full bg-stone-100 text-stone-500 py-2.5 rounded-xl text-center text-xs font-semibold border">
+                        <i class="fa-solid fa-ban text-stone-400 mr-1"></i> Este vendedor tiene desactivado el contacto por WhatsApp en este momento.
                     </div>`;
             }
 
             document.getElementById("contenidoDetalleProducto").innerHTML = `
                 <div class="text-center mb-3">
-                    <span class="bg-sky-100 text-sky-800 text-[10px] px-2 py-0.5 rounded-full font-medium">${p.categoria}</span>
-                    <h3 class="text-base font-bold text-gray-800 mt-1">${p.titulo}</h3>
-                    <p class="text-xs text-sky-700 font-extrabold mt-0.5">$${p.precio} MXN</p>
+                    <span class="bg-red-100 text-red-800 text-[10px] px-2.5 py-0.5 rounded-full font-bold">${p.categoria}</span>
+                    <h3 class="text-base sm:text-lg font-bold text-stone-900 mt-1.5">${p.titulo}</h3>
+                    <p class="text-sm text-emerald-800 font-extrabold mt-0.5">$${p.precio} MXN</p>
                 </div>
                 ${fotosHtml}
-                <div class="bg-gray-50 p-3 rounded-xl mb-4 text-xs space-y-1.5">
+                <div class="bg-stone-50 border border-stone-200 p-3.5 rounded-xl mb-4 text-xs space-y-1.5">
                     <p><strong>Descripción:</strong> ${p.descripcion || 'Sin descripción'}</p>
-                    <p><strong>Costo de Envío:</strong> <span class="text-emerald-700 font-bold">${costoEnvio}</span></p>
-                    <p><strong>Vendedor:</strong> <span class="text-sky-800 font-bold">${nombreCol}</span></p>
-                    <p><strong>Ubicación / Envío:</strong> <span class="text-gray-700 font-medium">${direccionCol}</span></p>
-                    <p><strong>Fecha de publicación:</strong> <span class="text-gray-500">${p.fechaActiva || 'N/A'}</span></p>
+                    <p><strong>Costo de Envío:</strong> <span class="text-emerald-800 font-bold">${costoEnvio}</span></p>
+                    <p><strong>Vendedor:</strong> <span class="text-red-900 font-bold">${nombreCol}</span></p>
+                    <p><strong>Ubicación / Envío:</strong> <span class="text-stone-700 font-medium">${direccionCol}</span></p>
+                    <p><strong>Fecha de publicación:</strong> <span class="text-stone-500">${p.fechaActiva || 'N/A'}</span></p>
                 </div>
                 ${botonWpHtml}
             `;
@@ -830,6 +870,7 @@
             document.getElementById("switchMostrarDireccion").checked = mostrarDir;
             document.getElementById("inputDireccionColectivo").value = colectivo.direccion || '';
             document.getElementById("contenedorInputDireccion").classList.toggle("hidden", !mostrarDir);
+            document.getElementById("nuevoPassColectivoInput").value = "";
 
             document.getElementById("lblCodigoUnicoPanel").innerText = colectivo.codigoCorto || 'CL-00';
 
@@ -863,6 +904,18 @@
             });
         }
 
+        function actualizarPasswordColectivoPropio() {
+            const nuevoPass = document.getElementById("nuevoPassColectivoInput").value.trim();
+            if (!nuevoPass) {
+                alert("Por favor ingresa una nueva contraseña.");
+                return;
+            }
+            db.ref(`colectivos/${colectivoActualId}/password`).set(nuevoPass).then(() => {
+                alert("Contraseña actualizada correctamente.");
+                document.getElementById("nuevoPassColectivoInput").value = "";
+            });
+        }
+
         function toggleWhatsAppActivo() {
             const estado = document.getElementById("switchWpActivo").checked;
             db.ref(`colectivos/${colectivoActualId}/whatsappActivo`).set(estado);
@@ -879,16 +932,16 @@
                     count++;
                     const foto = (p.fotos && p.fotos.length > 0) ? p.fotos[0] : "https://via.placeholder.com/150";
                     html += `
-                        <div class="bg-gray-50 border rounded-xl p-2.5 flex gap-2 items-center">
+                        <div class="bg-stone-50 border border-stone-200 rounded-xl p-2.5 flex gap-2 items-center">
                             <img src="${foto}" class="w-14 h-14 object-cover rounded-lg shrink-0">
                             <div class="flex-1 min-w-0">
                                 <h5 class="font-bold text-xs truncate">${p.titulo}</h5>
-                                <p class="text-[10px] text-sky-700 font-semibold">$${p.precio} MXN</p>
+                                <p class="text-[10px] text-emerald-800 font-semibold">$${p.precio} MXN</p>
                                 <span class="text-[9px] px-1.5 py-0.2 rounded ${p.activo ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}">${p.activo ? 'Activo' : 'Inactivo'}</span>
                             </div>
                             <div class="flex flex-col gap-1 shrink-0">
-                                <button onclick="editarProducto('${prodId}')" class="p-1.5 bg-sky-100 hover:bg-sky-200 text-sky-700 rounded text-xs" title="Editar"><i class="fa-solid fa-pen"></i></button>
-                                <button onclick="toggleActivoProducto('${prodId}', ${!p.activo})" class="p-1.5 bg-gray-200 hover:bg-gray-300 rounded text-xs" title="Activar/Desactivar"><i class="fa-solid fa-power-off"></i></button>
+                                <button onclick="editarProducto('${prodId}')" class="p-1.5 bg-amber-100 hover:bg-amber-200 text-amber-800 rounded text-xs" title="Editar"><i class="fa-solid fa-pen"></i></button>
+                                <button onclick="toggleActivoProducto('${prodId}', ${!p.activo})" class="p-1.5 bg-stone-200 hover:bg-stone-300 rounded text-xs" title="Activar/Desactivar"><i class="fa-solid fa-power-off"></i></button>
                                 <button onclick="eliminarProducto('${prodId}')" class="p-1.5 bg-red-100 hover:bg-red-200 text-red-700 rounded text-xs" title="Eliminar"><i class="fa-solid fa-trash"></i></button>
                             </div>
                         </div>
@@ -908,24 +961,24 @@
                 if (promo.colectivoId === colectivoActualId) {
                     const imgThumb = promo.imagen ? `<img src="${promo.imagen}" class="w-12 h-12 object-cover rounded mr-2 shrink-0">` : '';
                     html += `
-                        <div class="bg-rose-50 border border-rose-200 p-2.5 rounded-xl flex justify-between items-center gap-2">
+                        <div class="bg-red-50 border border-red-200 p-2.5 rounded-xl flex justify-between items-center gap-2">
                             <div class="flex items-center min-w-0">
                                 ${imgThumb}
                                 <div class="min-w-0">
-                                    <h5 class="font-bold text-xs text-gray-900 truncate">${promo.titulo}</h5>
-                                    <p class="text-[10px] text-gray-600">Vigencia: ${promo.fechaInicio} al ${promo.fechaFin}</p>
-                                    <span class="text-rose-700 font-extrabold text-[10px]">$${promo.precio} MXN</span>
+                                    <h5 class="font-bold text-xs text-stone-900 truncate">${promo.titulo}</h5>
+                                    <p class="text-[10px] text-stone-600">Vigencia: ${promo.fechaInicio} al ${promo.fechaFin}</p>
+                                    <span class="text-red-800 font-extrabold text-[10px]">$${promo.precio} MXN</span>
                                 </div>
                             </div>
                             <div class="flex items-center gap-1 shrink-0">
-                                <button onclick="editarPromocion('${promoId}')" class="p-1.5 bg-rose-100 hover:bg-rose-200 text-rose-700 rounded text-xs" title="Editar"><i class="fa-solid fa-pen"></i></button>
+                                <button onclick="editarPromocion('${promoId}')" class="p-1.5 bg-amber-100 hover:bg-amber-200 text-amber-800 rounded text-xs" title="Editar"><i class="fa-solid fa-pen"></i></button>
                                 <button onclick="eliminarPromocion('${promoId}')" class="p-1.5 bg-red-100 hover:bg-red-200 text-red-700 rounded text-xs" title="Eliminar"><i class="fa-solid fa-trash"></i></button>
                             </div>
                         </div>
                     `;
                 }
             });
-            lista.innerHTML = html || '<p class="text-gray-400 text-xs italic col-span-full">No has publicado promociones.</p>';
+            lista.innerHTML = html || '<p class="text-stone-400 text-xs italic col-span-full">No has publicado promociones.</p>';
         }
 
         function abrirModalFormProducto() {
@@ -1124,9 +1177,9 @@
         function renderizarCategoriasAdmin() {
             const contenedor = document.getElementById("listaCategoriasAdmin");
             contenedor.innerHTML = categoriasDinamicas.map((cat, index) => `
-                <span class="bg-white border px-3 py-1 rounded-full text-xs font-semibold flex items-center gap-2 shadow-sm">
+                <span class="bg-white border border-amber-200 px-3 py-1 rounded-full text-xs font-semibold flex items-center gap-2 shadow-xs">
                     ${cat}
-                    <button onclick="eliminarCategoriaAdmin(${index})" class="text-red-600 hover:text-red-800"><i class="fa-solid fa-xmark"></i></button>
+                    <button onclick="eliminarCategoriaAdmin(${index})" class="text-red-700 hover:text-red-900"><i class="fa-solid fa-xmark"></i></button>
                 </span>
             `).join('');
         }
@@ -1168,26 +1221,37 @@
                 const activoStatus = c.activo !== false;
                 const tipo = c.tipoNegocio || 'Colectivo';
                 html += `
-                    <div class="bg-gray-50 border p-3 rounded-xl flex flex-col md:flex-row justify-between items-start md:items-center gap-3 text-xs">
+                    <div class="bg-stone-50 border border-stone-200 p-3 rounded-xl flex flex-col md:flex-row justify-between items-start md:items-center gap-3 text-xs">
                         <div class="min-w-0">
                             <div class="flex items-center gap-2 flex-wrap">
-                                <span class="bg-sky-600 text-white px-2 py-0.5 rounded text-[10px] font-bold uppercase">${tipo}</span>
-                                <h5 class="font-bold text-sm text-sky-900 truncate">${c.nombre}</h5>
-                                <span class="bg-sky-100 text-sky-800 text-[9px] px-1.5 py-0.5 rounded font-mono font-bold">Código: ${c.codigoCorto || 'CL-00'}</span>
+                                <span class="bg-red-800 text-amber-100 px-2 py-0.5 rounded text-[10px] font-bold uppercase">${tipo}</span>
+                                <h5 class="font-bold text-sm text-stone-900 truncate">${c.nombre}</h5>
+                                <span class="bg-amber-100 text-amber-900 text-[9px] px-1.5 py-0.5 rounded font-mono font-bold">Código: ${c.codigoCorto || 'CL-00'}</span>
                                 <span class="px-1.5 py-0.5 rounded text-[9px] ${activoStatus ? 'bg-green-100 text-green-800 font-bold' : 'bg-red-100 text-red-800 font-bold'}">${activoStatus ? 'Activo' : 'Suspendido'}</span>
                             </div>
-                            <p class="text-gray-500 mt-0.5 truncate">Dir: <strong>${c.direccion || 'Sin dirección'}</strong></p>
-                            <p class="text-gray-500 truncate">Usuario: <strong class="text-gray-800">${c.usuario}</strong> | Pass: <strong class="text-sky-700">${c.password}</strong> | Día Pago: <span class="font-bold text-amber-700">${c.diaPago || 15}</span></p>
+                            <p class="text-stone-500 mt-0.5 truncate">Dir: <strong>${c.direccion || 'Sin dirección'}</strong></p>
+                            <p class="text-stone-500 truncate">Usuario: <strong class="text-stone-800">${c.usuario}</strong> | Pass: <strong class="text-emerald-800">${c.password}</strong> | Día Pago: <span class="font-bold text-amber-700">${c.diaPago || 15}</span></p>
                         </div>
                         <div class="flex items-center gap-1.5 flex-wrap w-full md:w-auto justify-end">
-                            <button onclick="cambiarDiaPago('${c.id}')" class="bg-blue-600 text-white px-2.5 py-1.5 rounded hover:bg-blue-700 font-medium">Día Pago</button>
-                            <button onclick="toggleActivoColectivo('${c.id}', ${!activoStatus})" class="px-2.5 py-1.5 rounded text-white font-medium ${activoStatus ? 'bg-amber-600 hover:bg-amber-700' : 'bg-emerald-600 hover:bg-emerald-700'}">${activoStatus ? 'Suspender' : 'Activar'}</button>
-                            <button onclick="eliminarColectivo('${c.id}')" class="bg-red-600 text-white px-2.5 py-1.5 rounded hover:bg-red-700 font-medium">Eliminar</button>
+                            <button onclick="cambiarPasswordAdmin('${c.id}')" class="bg-amber-600 text-white px-2.5 py-1.5 rounded hover:bg-amber-700 font-medium">Cambiar Pass</button>
+                            <button onclick="cambiarDiaPago('${c.id}')" class="bg-stone-700 text-white px-2.5 py-1.5 rounded hover:bg-stone-800 font-medium">Día Pago</button>
+                            <button onclick="toggleActivoColectivo('${c.id}', ${!activoStatus})" class="px-2.5 py-1.5 rounded text-white font-medium ${activoStatus ? 'bg-amber-600 hover:bg-amber-700' : 'bg-emerald-700 hover:bg-emerald-800'}">${activoStatus ? 'Suspender' : 'Activar'}</button>
+                            <button onclick="eliminarColectivo('${c.id}')" class="bg-red-700 text-white px-2.5 py-1.5 rounded hover:bg-red-800 font-medium">Eliminar</button>
                         </div>
                     </div>
                 `;
             });
             lista.innerHTML = html;
+        }
+
+        function cambiarPasswordAdmin(colId) {
+            const nuevoPass = prompt("Ingresa la nueva contraseña para este negocio:");
+            if (nuevoPass && nuevoPass.trim() !== "") {
+                db.ref(`colectivos/${colId}/password`).set(nuevoPass.trim()).then(() => {
+                    alert("Contraseña actualizada exitosamente por el Administrador.");
+                    renderizarAdminColectivos();
+                });
+            }
         }
 
         function cambiarDiaPago(colId) {
