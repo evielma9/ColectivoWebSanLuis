@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ColectivoWebSanLuis - Especial de Navidad | San Luis Río Colorado</title>
+    <title>ColectivoWebSanLuis - Edición Navideña | San Luis Río Colorado</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- FontAwesome Icons -->
@@ -58,16 +58,26 @@
                             ColectivoWeb<span class="text-emerald-800">SanLuis</span>
                             <i class="fa-solid fa-snowflake text-xs text-amber-500 animate-pulse"></i>
                         </h1>
-                        <p class="text-[11px] sm:text-xs text-stone-500">San Luis Río Colorado, Sonora • Edición Navideña</p>
+                        <!-- CONTADOR REUBICADO: Justo abajo del título principal -->
+                        <p class="text-[11px] text-stone-500 flex items-center gap-1 mt-0.5">
+                            <span>San Luis Río Colorado, Sonora • Edición Navideña</span>
+                            <span class="text-stone-300">|</span>
+                            <span class="text-amber-700 font-bold flex items-center gap-1">
+                                <i class="fa-solid fa-eye text-amber-600 text-[10px]"></i> Visitas: <span id="contadorVisitas" class="font-extrabold">...</span>
+                            </span>
+                        </p>
                     </div>
                 </div>
             </div>
 
             <div class="flex items-center gap-2 w-full sm:w-auto justify-end">
-                <button onclick="abrirModalAdmin()" class="flex-1 sm:flex-initial bg-stone-100 hover:bg-stone-200 text-stone-700 px-3 py-2 rounded-lg text-xs font-semibold flex items-center justify-center gap-1.5 transition border border-stone-200">
+                <button onclick="abrirModalContactoAdmin()" class="bg-amber-100 hover:bg-amber-200 text-amber-900 px-3 py-2 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition border border-amber-300">
+                    <i class="fa-solid fa-headset text-amber-700"></i> Contactar Admin
+                </button>
+                <button onclick="abrirModalAdmin()" class="bg-stone-100 hover:bg-stone-200 text-stone-700 px-3 py-2 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition border border-stone-200">
                     <i class="fa-solid fa-shield-halved text-amber-600"></i> Admin
                 </button>
-                <button onclick="abrirModalColectivo()" class="flex-1 sm:flex-initial bg-emerald-800 hover:bg-emerald-900 text-white px-3 sm:px-4 py-2 rounded-lg text-xs font-semibold flex items-center justify-center gap-1.5 shadow-sm transition border border-emerald-700">
+                <button onclick="abrirModalColectivo()" class="bg-emerald-800 hover:bg-emerald-900 text-white px-3 sm:px-4 py-2 rounded-lg text-xs font-semibold flex items-center gap-1.5 shadow-sm transition border border-emerald-700">
                     <i class="fa-solid fa-user-lock text-amber-300"></i> Acceso Negocios
                 </button>
             </div>
@@ -97,7 +107,7 @@
             <div class="bg-white/95 backdrop-blur p-2 rounded-2xl shadow-xl border border-amber-300/50 flex gap-2 max-w-2xl mx-auto">
                 <div class="flex-1 flex items-center bg-stone-50 px-3.5 rounded-xl border border-stone-200 focus-within:border-red-700 focus-within:ring-2 focus-within:ring-red-700/20 transition">
                     <i class="fa-solid fa-magnifying-glass text-red-700 mr-2.5"></i>
-                    <input type="text" id="inputBuscar" oninput="filtrarProductos()" placeholder="¿Qué regalo o artículo buscas hoy? Escribe aquí..." class="w-full py-2 bg-transparent text-sm focus:outline-none text-stone-800 placeholder-stone-400">
+                    <input type="text" id="inputBuscar" oninput="filtrarProductos(); registrarBusquedaUsuario();" placeholder="¿Qué regalo o artículo buscas hoy? Escribe aquí..." class="w-full py-2 bg-transparent text-sm focus:outline-none text-stone-800 placeholder-stone-400">
                 </div>
             </div>
         </div>
@@ -150,14 +160,31 @@
         </div>
     </main>
 
-    <!-- FOOTER CON CONTADOR DE VISITAS -->
+    <!-- FOOTER -->
     <footer class="bg-emerald-950 text-stone-300 border-t-4 border-red-800 mt-12 py-6 text-center text-xs px-4 space-y-1.5">
         <p class="font-navidad text-base text-amber-300 font-bold">ColectivoWebSanLuis 🎄</p>
         <p>ColectivoWebSanLuis &copy; 2026 - San Luis Río Colorado, Sonora. Todos los derechos reservados.</p>
-        <p class="text-[11px] text-stone-400">
-            <i class="fa-solid fa-eye mr-1 text-amber-400"></i> Visitas totales a la plataforma: <span id="contadorVisitas" class="font-bold text-amber-300">...</span>
-        </p>
     </footer>
+
+    <!-- MODAL CONTACTO ADMINISTRADOR -->
+    <div id="modalContactoAdmin" class="fixed inset-0 bg-black/60 backdrop-blur-xs hidden z-50 flex items-center justify-center p-3 sm:p-4">
+        <div class="bg-white rounded-2xl max-w-md w-full p-5 sm:p-6 shadow-2xl border-t-4 border-amber-500 relative">
+            <button onclick="cerrarModalContactoAdmin()" class="absolute top-4 right-4 text-stone-400 hover:text-stone-600"><i class="fa-solid fa-xmark text-lg"></i></button>
+            <h3 class="text-base sm:text-lg font-bold text-red-900 mb-1 flex items-center gap-2">
+                <i class="fa-solid fa-headset text-amber-600"></i> Contactar al Administrador
+            </h3>
+            <p class="text-xs text-stone-500 mb-4">Comunícate directamente con la administración general del sitio para dudas, soporte o altas de negocios.</p>
+            
+            <div class="space-y-3">
+                <a id="linkAdminWp" href="#" target="_blank" class="w-full bg-emerald-700 hover:bg-emerald-800 text-white p-3 rounded-xl font-bold flex items-center justify-center gap-2 shadow transition text-xs">
+                    <i class="fa-brands fa-whatsapp text-base"></i> Enviar Mensaje por WhatsApp
+                </a>
+                <a id="linkAdminEmail" href="#" class="w-full bg-amber-50 hover:bg-amber-100 text-amber-950 border border-amber-300 p-3 rounded-xl font-bold flex items-center justify-center gap-2 transition text-xs">
+                    <i class="fa-solid fa-envelope text-amber-700"></i> Enviar Correo Electrónico
+                </a>
+            </div>
+        </div>
+    </div>
 
     <!-- MODAL ACCESO COLECTIVO -->
     <div id="modalColectivo" class="fixed inset-0 bg-black/60 backdrop-blur-xs hidden z-50 flex items-center justify-center p-3 sm:p-4">
@@ -199,6 +226,108 @@
                 </div>
             </div>
 
+            <!-- BLOQUE DE RESTRICCIÓN DE BÚSQUEDAS POR TARIFA ESPECIAL -->
+            <div id="panelBloqueBusquedasColectivo" class="space-y-4 mb-4">
+                <div id="avisoTarifaBusquedasPanel" class="hidden bg-amber-50 border border-amber-300 p-3 rounded-xl text-xs text-amber-900 flex items-center gap-2">
+                    <i class="fa-solid fa-lock text-amber-600 text-base"></i>
+                    <span>El acceso al <strong>Análisis de Tendencias de Búsqueda</strong> requiere la activación de su tarifa especial correspondiente con el Administrador.</span>
+                </div>
+
+                <div id="contenidoBusquedasPanel" class="space-y-4">
+                    <div class="bg-indigo-50/70 border border-indigo-200 p-3.5 rounded-xl space-y-3 text-xs">
+                        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 border-b border-indigo-200 pb-2">
+                            <h4 class="font-bold text-indigo-950 flex items-center gap-1.5">
+                                <i class="fa-solid fa-magnifying-glass-chart text-indigo-700"></i> Tendencias de Búsqueda de Usuarios
+                            </h4>
+                            <div class="flex flex-wrap items-center gap-1.5">
+                                <button type="button" onclick="establecerRangoBusquedaColectivo('hoy')" class="px-2 py-0.5 bg-white border border-indigo-300 hover:bg-indigo-100 rounded text-[10px] font-semibold text-indigo-900">Hoy</button>
+                                <button type="button" onclick="establecerRangoBusquedaColectivo('7dias')" class="px-2 py-0.5 bg-white border border-indigo-300 hover:bg-indigo-100 rounded text-[10px] font-semibold text-indigo-900">7 días</button>
+                                <button type="button" onclick="establecerRangoBusquedaColectivo('mes')" class="px-2 py-0.5 bg-white border border-indigo-300 hover:bg-indigo-100 rounded text-[10px] font-semibold text-indigo-900">Este mes</button>
+                                <button type="button" onclick="establecerRangoBusquedaColectivo('todo')" class="px-2 py-0.5 bg-white border border-indigo-300 hover:bg-indigo-100 rounded text-[10px] font-semibold text-indigo-900">Todo</button>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                            <div class="flex items-center gap-2 bg-white px-2.5 py-1.5 rounded-lg border border-indigo-200">
+                                <label class="text-[11px] font-semibold text-stone-600 shrink-0">Desde:</label>
+                                <input type="date" id="colBusquedaFechaInicio" onchange="renderizarAnalisisBusquedasColectivo()" class="w-full text-xs outline-none text-stone-800 bg-transparent">
+                            </div>
+                            <div class="flex items-center gap-2 bg-white px-2.5 py-1.5 rounded-lg border border-indigo-200">
+                                <label class="text-[11px] font-semibold text-stone-600 shrink-0">Hasta:</label>
+                                <input type="date" id="colBusquedaFechaFin" onchange="renderizarAnalisisBusquedasColectivo()" class="w-full text-xs outline-none text-stone-800 bg-transparent">
+                            </div>
+                        </div>
+
+                        <div id="listaBusquedasColectivo" class="space-y-1.5 max-h-48 overflow-y-auto pr-1"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- BLOQUE DE RESTRICCIÓN DE ESTADÍSTICAS POR TARIFA ESPECIAL -->
+            <div id="panelBloqueEstadisticas" class="space-y-4 mb-4">
+                <div id="avisoTarifaEspecialPanel" class="hidden bg-amber-50 border border-amber-300 p-3 rounded-xl text-xs text-amber-900 flex items-center gap-2">
+                    <i class="fa-solid fa-lock text-amber-600 text-base"></i>
+                    <span>Las estadísticas avanzadas de consultas de productos requieren la activación de la <strong>Tarifa Especial Extra</strong> con el Administrador.</span>
+                </div>
+
+                <div id="contenidoEstadisticasPanel" class="space-y-4">
+                    <div class="bg-emerald-50/70 border border-emerald-200 p-3.5 rounded-xl space-y-3 text-xs">
+                        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 border-b border-emerald-200/70 pb-2">
+                            <h4 class="font-bold text-emerald-950 flex items-center gap-1.5">
+                                <i class="fa-solid fa-chart-line text-emerald-700"></i> Estadísticas de tus Productos
+                            </h4>
+                            <div class="flex flex-wrap items-center gap-1.5">
+                                <button type="button" onclick="establecerRangoEstadisticas('hoy')" class="px-2 py-0.5 bg-white border border-emerald-300 hover:bg-emerald-100 rounded text-[10px] font-semibold text-emerald-900">Hoy</button>
+                                <button type="button" onclick="establecerRangoEstadisticas('7dias')" class="px-2 py-0.5 bg-white border border-emerald-300 hover:bg-emerald-100 rounded text-[10px] font-semibold text-emerald-900">7 días</button>
+                                <button type="button" onclick="establecerRangoEstadisticas('mes')" class="px-2 py-0.5 bg-white border border-emerald-300 hover:bg-emerald-100 rounded text-[10px] font-semibold text-emerald-900">Este mes</button>
+                                <button type="button" onclick="establecerRangoEstadisticas('todo')" class="px-2 py-0.5 bg-white border border-emerald-300 hover:bg-emerald-100 rounded text-[10px] font-semibold text-emerald-900">Todo</button>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                            <div class="flex items-center gap-2 bg-white px-2.5 py-1.5 rounded-lg border border-emerald-200">
+                                <label class="text-[11px] font-semibold text-stone-600 shrink-0">Desde:</label>
+                                <input type="date" id="statsFechaInicio" onchange="renderizarEstadisticasColectivo()" class="w-full text-xs outline-none text-stone-800 bg-transparent">
+                            </div>
+                            <div class="flex items-center gap-2 bg-white px-2.5 py-1.5 rounded-lg border border-emerald-200">
+                                <label class="text-[11px] font-semibold text-stone-600 shrink-0">Hasta:</label>
+                                <input type="date" id="statsFechaFin" onchange="renderizarEstadisticasColectivo()" class="w-full text-xs outline-none text-stone-800 bg-transparent">
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-3 gap-2 sm:gap-3 pt-1">
+                            <div class="bg-white p-2.5 rounded-xl border border-stone-200 text-center shadow-2xs">
+                                <span class="text-[10px] font-semibold text-stone-500 uppercase block">Visitas a Productos</span>
+                                <span id="statTotalVisitas" class="text-lg sm:text-xl font-extrabold text-stone-900 mt-0.5 block">0</span>
+                            </div>
+                            <div class="bg-white p-2.5 rounded-xl border border-emerald-200 text-center shadow-2xs">
+                                <span class="text-[10px] font-semibold text-emerald-700 uppercase block"><i class="fa-brands fa-whatsapp"></i> Clics WhatsApp</span>
+                                <span id="statTotalWhatsapp" class="text-lg sm:text-xl font-extrabold text-emerald-800 mt-0.5 block">0</span>
+                            </div>
+                            <div class="bg-white p-2.5 rounded-xl border border-amber-200 text-center shadow-2xs">
+                                <span class="text-[10px] font-semibold text-amber-800 uppercase block">Conversión</span>
+                                <span id="statTasaConversion" class="text-lg sm:text-xl font-extrabold text-amber-700 mt-0.5 block">0%</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs">
+                        <div class="bg-emerald-50/50 border border-emerald-200 p-3 rounded-xl space-y-2">
+                            <h5 class="font-bold text-emerald-950 flex items-center gap-1.5 border-b border-emerald-200 pb-1.5">
+                                <i class="fa-solid fa-fire text-amber-600"></i> Top 10 Productos Más Consultados
+                            </h5>
+                            <div id="listaTopMasConsultados" class="space-y-1.5 max-h-48 overflow-y-auto pr-1"></div>
+                        </div>
+                        <div class="bg-stone-50 border border-stone-200 p-3 rounded-xl space-y-2">
+                            <h5 class="font-bold text-stone-800 flex items-center gap-1.5 border-b border-stone-200 pb-1.5">
+                                <i class="fa-solid fa-snowflake text-stone-500"></i> Top 10 Productos Menos Consultados
+                            </h5>
+                            <div id="listaTopMenosConsultados" class="space-y-1.5 max-h-48 overflow-y-auto pr-1"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 mb-4 border-b border-stone-200 pb-3">
                 <div>
                     <h3 id="panelTituloColectivo" class="text-base sm:text-lg font-bold text-red-900">Panel de Negocio</h3>
@@ -224,6 +353,19 @@
                     <button onclick="guardarDireccionColectivo()" class="w-full sm:w-auto bg-emerald-800 text-white px-3 py-2 rounded hover:bg-emerald-900 font-semibold">Guardar</button>
                 </div>
 
+                <div class="border-t pt-2.5 space-y-2">
+                    <div class="flex items-center gap-2">
+                        <input type="checkbox" id="switchPaginaActiva" onchange="togglePaginaActiva()" class="w-4 h-4 text-emerald-700 rounded">
+                        <label for="switchPaginaActiva" class="font-bold text-stone-800 cursor-pointer">
+                            <i class="fa-solid fa-globe text-emerald-700 mr-1"></i> Mostrar link de mi propia página / tienda en línea
+                        </label>
+                    </div>
+                    <div id="contenedorInputPagina" class="hidden flex flex-col sm:flex-row gap-2 items-center">
+                        <input type="url" id="inputUrlPaginaColectivo" placeholder="Ej. https://mipagina.com o https://instagram.com/minegocio" class="p-2 border rounded text-xs w-full sm:flex-1 bg-white">
+                        <button onclick="guardarUrlPaginaColectivo()" class="w-full sm:w-auto bg-emerald-800 text-white px-3 py-2 rounded hover:bg-emerald-900 font-semibold">Guardar Link</button>
+                    </div>
+                </div>
+
                 <div class="border-t pt-2 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
                     <div class="flex flex-wrap items-center gap-2 sm:gap-3">
                         <span><strong>WhatsApp:</strong> <span id="lblWpColectivo" class="text-emerald-800 font-bold"></span></span>
@@ -238,7 +380,6 @@
                     </div>
                 </div>
 
-                <!-- CAMBIAR CONTRASEÑA (DESDE EL PANEL DEL NEGOCIO) -->
                 <div class="border-t pt-3 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
                     <span class="font-bold text-stone-700"><i class="fa-solid fa-key text-amber-600 mr-1"></i> Cambiar Contraseña:</span>
                     <div class="flex items-center gap-2 w-full sm:w-auto">
@@ -286,6 +427,19 @@
                     <label class="block font-semibold text-stone-700 mb-1">Descripción Breve</label>
                     <textarea id="prodDesc" rows="2" class="w-full p-2 border rounded-lg focus:ring-2 focus:ring-emerald-600 outline-none text-xs"></textarea>
                 </div>
+
+                <div class="bg-red-50/70 border border-red-200 p-3 rounded-xl space-y-2">
+                    <div class="flex items-center gap-2">
+                        <input type="checkbox" id="prodEnvolturaActiva" onchange="toggleProdEnvolturaInput()" class="w-4 h-4 text-red-700 rounded">
+                        <label for="prodEnvolturaActiva" class="font-semibold text-stone-800 cursor-pointer">Ofrecer opción de envolver regalo en este artículo</label>
+                    </div>
+                    <div id="contenedorProdCostoEnvoltura" class="hidden flex items-center gap-2">
+                        <label class="font-semibold text-stone-700">Costo Envoltura ($):</label>
+                        <input type="number" id="prodCostoEnvoltura" min="0" step="1" placeholder="Ej. 35" class="p-1.5 border rounded-lg w-28 bg-white outline-none">
+                        <span class="text-[10px] text-stone-500 font-semibold">MXN</span>
+                    </div>
+                </div>
+
                 <div>
                     <label class="block font-semibold text-stone-700 mb-1">Fotos (1 a 3 máximo)</label>
                     <input type="file" id="prodArchivos" accept="image/*" multiple onchange="procesarImagenesInput(event)" class="w-full p-1 border rounded-lg text-xs">
@@ -353,11 +507,11 @@
 
     <!-- MODAL ADMIN MASTER -->
     <div id="modalAdmin" class="fixed inset-0 bg-black/60 backdrop-blur-xs hidden z-50 flex items-center justify-center p-3 sm:p-4">
-        <div class="bg-white rounded-2xl max-w-3xl w-full p-4 sm:p-6 shadow-2xl border-t-4 border-amber-500 relative max-h-[90vh] overflow-y-auto">
+        <div class="bg-white rounded-2xl max-w-4xl w-full p-4 sm:p-6 shadow-2xl border-t-4 border-amber-500 relative max-h-[90vh] overflow-y-auto">
             <button onclick="cerrarModalAdmin()" class="absolute top-4 right-4 text-stone-400 hover:text-stone-600"><i class="fa-solid fa-xmark text-lg"></i></button>
             <div id="adminLoginView">
                 <h3 class="text-base sm:text-lg font-bold text-red-900 mb-1">Panel Administrador Master</h3>
-                <p class="text-xs text-stone-500 mb-4">Ingresa la contraseña maestra para controlar los negocios y categorías.</p>
+                <p class="text-xs text-stone-500 mb-4">Ingresa la contraseña maestra para controlar los negocios, búsquedas y estadísticas.</p>
                 <form onsubmit="loginAdmin(event)" class="space-y-3">
                     <div>
                         <label class="block text-xs font-semibold text-stone-700 mb-1">Contraseña Administrador</label>
@@ -368,8 +522,62 @@
             </div>
 
             <div id="adminDashboardView" class="hidden space-y-6">
+                <!-- GESTIÓN DE INFORMACIÓN DE CONTACTO DEL ADMINISTRADOR -->
+                <div class="bg-amber-50/70 border border-amber-200 p-3 sm:p-4 rounded-xl space-y-3 text-xs">
+                    <h3 class="font-bold text-red-900 flex items-center gap-1.5 border-b border-amber-200 pb-2">
+                        <i class="fa-solid fa-address-book text-amber-700"></i> Configuración de Contacto del Administrador
+                    </h3>
+                    <p class="text-[11px] text-stone-600">Define el correo y celular/WhatsApp donde los usuarios o negocios se comunicarán contigo.</p>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <div>
+                            <label class="block font-semibold text-stone-700 mb-1">Correo Electrónico de Contacto</label>
+                            <input type="email" id="adminConfigEmail" placeholder="admin@colectivoweb.com" class="w-full p-2 border rounded-lg bg-white outline-none">
+                        </div>
+                        <div>
+                            <label class="block font-semibold text-stone-700 mb-1">WhatsApp / Celular (10 dígitos con código país)</label>
+                            <input type="text" id="adminConfigWp" placeholder="Ej. 526530000000" class="w-full p-2 border rounded-lg bg-white outline-none">
+                        </div>
+                    </div>
+                    <button onclick="guardarConfigAdmin()" class="bg-amber-700 hover:bg-amber-800 text-white px-4 py-2 rounded-lg font-semibold shadow">Guardar Datos de Contacto</button>
+                </div>
+
+                <!-- ANÁLISIS DE BÚSQUEDAS DE USUARIOS CON RANGO DE FECHAS (ADMIN) -->
+                <div class="bg-indigo-50/70 border border-indigo-200 p-3 sm:p-4 rounded-xl space-y-3">
+                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 border-b border-indigo-200 pb-2">
+                        <div>
+                            <h3 class="text-xs sm:text-sm font-bold text-indigo-950 flex items-center gap-1.5">
+                                <i class="fa-solid fa-magnifying-glass-chart text-indigo-700"></i> Análisis de Búsquedas de Usuarios
+                            </h3>
+                            <p class="text-[11px] text-stone-600">Términos más consultados por la gente en el buscador del sitio por rango de fechas.</p>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <div class="flex flex-wrap items-center gap-1">
+                                <button type="button" onclick="establecerRangoBusquedaAdmin('hoy')" class="px-2 py-0.5 bg-white border hover:bg-indigo-100 rounded text-[10px] font-semibold">Hoy</button>
+                                <button type="button" onclick="establecerRangoBusquedaAdmin('7dias')" class="px-2 py-0.5 bg-white border hover:bg-indigo-100 rounded text-[10px] font-semibold">7 días</button>
+                                <button type="button" onclick="establecerRangoBusquedaAdmin('mes')" class="px-2 py-0.5 bg-white border hover:bg-indigo-100 rounded text-[10px] font-semibold">Este mes</button>
+                                <button type="button" onclick="establecerRangoBusquedaAdmin('todo')" class="px-2 py-0.5 bg-white border hover:bg-indigo-100 rounded text-[10px] font-semibold">Todo</button>
+                            </div>
+                            <button onclick="limpiarRegistroBusquedas()" class="bg-stone-200 hover:bg-stone-300 text-stone-800 px-2 py-1 rounded text-[10px] font-semibold">Limpiar</button>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                        <div class="flex items-center gap-2 bg-white px-2.5 py-1.5 rounded-lg border border-indigo-200 text-xs">
+                            <label class="font-semibold text-stone-600 shrink-0">Desde:</label>
+                            <input type="date" id="adminBusquedaFechaInicio" onchange="renderizarAnalisisBusquedasAdmin()" class="w-full outline-none bg-transparent">
+                        </div>
+                        <div class="flex items-center gap-2 bg-white px-2.5 py-1.5 rounded-lg border border-indigo-200 text-xs">
+                            <label class="font-semibold text-stone-600 shrink-0">Hasta:</label>
+                            <input type="date" id="adminBusquedaFechaFin" onchange="renderizarAnalisisBusquedasAdmin()" class="w-full outline-none bg-transparent">
+                        </div>
+                    </div>
+
+                    <div id="listaBusquedasAdmin" class="space-y-1.5 max-h-52 overflow-y-auto pr-1"></div>
+                </div>
+
+                <!-- GESTIÓN DE CATEGORÍAS DE PRODUCTOS -->
                 <div class="bg-amber-50/70 border border-amber-200 p-3 sm:p-4 rounded-xl">
-                    <h3 class="text-xs sm:text-sm font-bold text-red-900 mb-2"><i class="fa-solid fa-tags mr-1 text-amber-600"></i> Gestión de Categorías</h3>
+                    <h3 class="text-xs sm:text-sm font-bold text-red-900 mb-2"><i class="fa-solid fa-tags mr-1 text-amber-600"></i> Gestión de Categorías de Artículos</h3>
                     <div class="flex flex-col sm:flex-row gap-2 mb-3">
                         <input type="text" id="nuevaCategoriaInput" placeholder="Nueva categoría..." class="p-2 border rounded text-xs flex-1 bg-white">
                         <button onclick="agregarCategoriaAdmin()" class="bg-emerald-800 text-white px-3 py-2 rounded hover:bg-emerald-900 text-xs font-semibold">Agregar</button>
@@ -377,7 +585,75 @@
                     <div id="listaCategoriasAdmin" class="flex flex-wrap gap-2"></div>
                 </div>
 
-                <div>
+                <!-- GESTIÓN DE TIPOS DE NEGOCIO -->
+                <div class="bg-red-50/70 border border-red-200 p-3 sm:p-4 rounded-xl">
+                    <h3 class="text-xs sm:text-sm font-bold text-red-900 mb-2"><i class="fa-solid fa-store mr-1 text-red-700"></i> Gestión de Tipos de Negocio</h3>
+                    <div class="flex flex-col sm:flex-row gap-2 mb-3">
+                        <input type="text" id="nuevoTipoNegocioInput" placeholder="Nuevo tipo de negocio..." class="p-2 border rounded text-xs flex-1 bg-white">
+                        <button onclick="agregarTipoNegocioAdmin()" class="bg-red-800 text-white px-3 py-2 rounded hover:bg-red-900 text-xs font-semibold">Agregar Tipo</button>
+                    </div>
+                    <div id="listaTiposNegocioAdmin" class="flex flex-wrap gap-2"></div>
+                </div>
+
+                <!-- ÁREA DE CONTROL DE PAGOS MENSUALES (ADMIN) -->
+                <div class="bg-emerald-50/70 border border-emerald-200 p-3 sm:p-4 rounded-xl space-y-3">
+                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 border-b border-emerald-200 pb-2">
+                        <div>
+                            <h3 class="text-xs sm:text-sm font-bold text-emerald-950 flex items-center gap-1.5">
+                                <i class="fa-solid fa-money-check-dollar text-emerald-700"></i> Control de Pagos Mensuales
+                            </h3>
+                            <p class="text-[11px] text-stone-600">Selecciona el mes para consultar quién ha pagado y registrar nuevos pagos.</p>
+                        </div>
+                        <div class="flex items-center gap-2 w-full sm:w-auto">
+                            <label for="filtroMesPagoAdmin" class="text-xs font-bold text-stone-700 shrink-0">Mes:</label>
+                            <input type="month" id="filtroMesPagoAdmin" onchange="renderizarAdminPagos(); renderizarAdminColectivos();" class="p-1.5 border border-emerald-300 rounded-lg text-xs bg-white font-semibold text-stone-800 w-full sm:w-auto">
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-3 gap-2 text-center text-xs">
+                        <div class="bg-white p-2 rounded-lg border border-emerald-200">
+                            <span class="text-[10px] text-stone-500 font-semibold block">Pagados</span>
+                            <span id="resumenPagosPagados" class="text-sm sm:text-base font-extrabold text-emerald-700">0</span>
+                        </div>
+                        <div class="bg-white p-2 rounded-lg border border-red-200">
+                            <span class="text-[10px] text-stone-500 font-semibold block">Pendientes</span>
+                            <span id="resumenPagosPendientes" class="text-sm sm:text-base font-extrabold text-red-700">0</span>
+                        </div>
+                        <div class="bg-white p-2 rounded-lg border border-amber-200">
+                            <span class="text-[10px] text-stone-500 font-semibold block">Recaudado Mes</span>
+                            <span id="resumenPagosTotal" class="text-sm sm:text-base font-extrabold text-amber-800">$0</span>
+                        </div>
+                    </div>
+
+                    <div id="listaPagosMensualesAdmin" class="space-y-2 max-h-60 overflow-y-auto pr-1"></div>
+                </div>
+
+                <!-- CONTROL Y ESTADÍSTICAS GLOBALES DE NEGOCIOS -->
+                <div class="space-y-3">
+                    <div class="bg-stone-100 border border-stone-200 p-3 rounded-xl space-y-2 text-xs">
+                        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 border-b border-stone-200 pb-2">
+                            <h4 class="font-bold text-stone-900 flex items-center gap-1.5">
+                                <i class="fa-solid fa-filter text-amber-700"></i> Rango de Fechas para Estadísticas (Admin)
+                            </h4>
+                            <div class="flex flex-wrap items-center gap-1">
+                                <button type="button" onclick="establecerRangoAdmin('hoy')" class="px-2 py-0.5 bg-white border hover:bg-stone-200 rounded text-[10px] font-semibold">Hoy</button>
+                                <button type="button" onclick="establecerRangoAdmin('7dias')" class="px-2 py-0.5 bg-white border hover:bg-stone-200 rounded text-[10px] font-semibold">7 días</button>
+                                <button type="button" onclick="establecerRangoAdmin('mes')" class="px-2 py-0.5 bg-white border hover:bg-stone-200 rounded text-[10px] font-semibold">Este mes</button>
+                                <button type="button" onclick="establecerRangoAdmin('todo')" class="px-2 py-0.5 bg-white border hover:bg-stone-200 rounded text-[10px] font-semibold">Todo</button>
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                            <div class="flex items-center gap-2 bg-white px-2.5 py-1.5 rounded-lg border">
+                                <label class="font-semibold text-stone-600 shrink-0">Desde:</label>
+                                <input type="date" id="adminFechaInicio" onchange="renderizarAdminColectivos()" class="w-full text-xs outline-none bg-transparent">
+                            </div>
+                            <div class="flex items-center gap-2 bg-white px-2.5 py-1.5 rounded-lg border">
+                                <label class="font-semibold text-stone-600 shrink-0">Hasta:</label>
+                                <input type="date" id="adminFechaFin" onchange="renderizarAdminColectivos()" class="w-full text-xs outline-none bg-transparent">
+                            </div>
+                        </div>
+                    </div>
+
                     <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 mb-3 border-b pb-2">
                         <h3 class="text-sm sm:text-base font-bold text-red-900">Control de Negocios y Colectivos</h3>
                         <button onclick="abrirModalNuevoColectivo()" class="w-full sm:w-auto bg-emerald-800 hover:bg-emerald-900 text-white px-3 py-1.5 rounded-lg text-xs font-semibold shadow">
@@ -402,13 +678,7 @@
                 </div>
                 <div>
                     <label class="block font-semibold text-stone-700 mb-1">Tipo de Negocio</label>
-                    <select id="nuevoColTipo" class="w-full p-2 border rounded-lg outline-none">
-                        <option value="Colectivo">Colectivo</option>
-                        <option value="Segunda">Segunda</option>
-                        <option value="Emprendedor">Emprendedor</option>
-                        <option value="Boutique">Boutique</option>
-                        <option value="Local Comercial">Local Comercial</option>
-                    </select>
+                    <select id="nuevoColTipo" class="w-full p-2 border rounded-lg outline-none"></select>
                 </div>
                 <div>
                     <label class="block font-semibold text-stone-700 mb-1">Dirección Física (Opcional)</label>
@@ -449,11 +719,12 @@
         </div>
     </div>
 
-    <!-- MODAL AMPLIAR FOTO -->
+    <!-- MODAL AMPLIAR FOTO (PANTALLA COMPLETA MEJORADO) -->
     <div id="modalAmpliarFoto" class="fixed inset-0 bg-black/90 hidden z-50 flex items-center justify-center p-3" onclick="cerrarAmpliarFoto()">
-        <div class="relative max-w-4xl w-full text-center">
-            <button class="absolute -top-10 right-0 text-white text-2xl font-bold"><i class="fa-solid fa-xmark"></i></button>
-            <img id="imagenAmpliadaSrc" src="" class="max-h-[85vh] mx-auto rounded-lg shadow-2xl object-contain">
+        <div class="relative max-w-5xl w-full text-center flex flex-col items-center justify-center h-full">
+            <button onclick="cerrarAmpliarFoto()" class="absolute top-4 right-4 text-white text-3xl font-bold bg-black/50 w-10 h-10 rounded-full flex items-center justify-center hover:bg-black transition"><i class="fa-solid fa-xmark"></i></button>
+            <img id="imagenAmpliadaSrc" src="" class="max-h-[85vh] max-w-[90vw] rounded-lg shadow-2xl object-contain border border-stone-700">
+            <p class="text-stone-300 text-xs mt-3 bg-black/60 px-3 py-1 rounded-full"><i class="fa-solid fa-magnifying-glass-plus mr-1 text-amber-400"></i> Clic en cualquier parte para cerrar</p>
         </div>
     </div>
 
@@ -474,13 +745,42 @@
         let catGlobal = [];
         let productosGlobal = {};
         let promocionesGlobal = {};
+        let pagosGlobal = {};
+        let estadisticasGlobal = {};
+        let busquedasGlobal = {};
+        let configAdminGlobal = {};
         let categoriasDinamicas = ["Ropa y Calzado", "Accesorios", "Hogar", "Belleza", "Varios"];
+        let tiposNegocioDinamicos = ["Colectivo", "Segunda", "Emprendedor", "Boutique", "Local Comercial"];
         let colectivoActualId = null;
         let imagenesTempBase64 = [];
         let promoImgTempBase64 = "";
+        let timeoutBusqueda = null;
         const PASS_ADMIN = "1209aA0912";
 
         let categoriaActiva = "Todos";
+        let detalleActualWpInfo = null;
+
+        function obtenerFechaLocalISO(dateObj = new Date()) {
+            const year = dateObj.getFullYear();
+            const month = String(dateObj.getMonth() + 1).padStart(2, '0');
+            const day = String(dateObj.getDate()).padStart(2, '0');
+            return `${year}-${month}-${day}`;
+        }
+
+        function obtenerMesActualISO() {
+            const now = new Date();
+            const year = now.getFullYear();
+            const month = String(now.getMonth() + 1).padStart(2, '0');
+            return `${year}-${month}`;
+        }
+
+        function normalizarUrlExterna(url) {
+            if (!url) return "";
+            const limpia = url.trim();
+            if (!limpia) return "";
+            if (/^https?:\/\//i.test(limpia)) return limpia;
+            return `https://${limpia}`;
+        }
 
         document.addEventListener("DOMContentLoaded", () => {
             registrarYMostrarVisitas();
@@ -499,6 +799,32 @@
                         elem.innerText = totalVisitas.toLocaleString();
                     }
                 }
+            });
+        }
+
+        function registrarBusquedaUsuario() {
+            const query = document.getElementById("inputBuscar").value.trim().toLowerCase();
+            if (!query || query.length < 2) return;
+
+            clearTimeout(timeoutBusqueda);
+            timeoutBusqueda = setTimeout(() => {
+                const fecha = obtenerFechaLocalISO();
+                db.ref('busquedasUsuarios').push({
+                    termino: query,
+                    fecha: fecha,
+                    timestamp: Date.now()
+                });
+            }, 1000);
+        }
+
+        function registrarEventoColectivo(colectivoId, tipo, itemId) {
+            if (!colectivoId) return;
+            const fecha = obtenerFechaLocalISO();
+            const nodo = tipo === 'whatsapp' ? 'whatsapp' : 'visitas';
+            db.ref(`estadisticas/${colectivoId}/${nodo}`).push({
+                fecha: fecha,
+                itemId: itemId || '',
+                timestamp: Date.now()
             });
         }
 
@@ -524,6 +850,13 @@
             filtrarProductos();
         }
 
+        function actualizarSelectTiposNegocioAdmin() {
+            const selectColTipo = document.getElementById("nuevoColTipo");
+            if (selectColTipo) {
+                selectColTipo.innerHTML = tiposNegocioDinamicos.map(t => `<option value="${t}">${t}</option>`).join('');
+            }
+        }
+
         function cargarDatosFirebase() {
             db.ref().on("value", snapshot => {
                 const data = snapshot.val() || {};
@@ -535,21 +868,70 @@
                 }
                 productosGlobal = data.productos || {};
                 promocionesGlobal = data.promociones || {};
+                pagosGlobal = data.pagos || {};
+                estadisticasGlobal = data.estadisticas || {};
+                busquedasGlobal = data.busquedasUsuarios || {};
+                configAdminGlobal = data.configAdmin || { email: "contacto@colectivowebsanluis.com", whatsapp: "526530000000" };
+
                 if (data.categorias && Array.isArray(data.categorias)) {
                     categoriasDinamicas = data.categorias;
                 }
+                if (data.tiposNegocio && Array.isArray(data.tiposNegocio)) {
+                    tiposNegocioDinamicos = data.tiposNegocio;
+                }
                 
                 inicializarCategoriasUI();
+                actualizarSelectTiposNegocioAdmin();
                 renderizarPromociones();
                 renderizarProductos();
                 if (colectivoActualId) {
+                    renderizarEstadisticasColectivo();
+                    renderizarTopProductosConsultados();
+                    renderizarAnalisisBusquedasColectivo();
                     renderizarMisProductos();
                     renderizarMisPromos();
                 }
                 if(!document.getElementById("adminDashboardView").classList.contains("hidden")) {
+                    renderizarAdminPagos();
                     renderizarAdminColectivos();
                     renderizarCategoriasAdmin();
+                    renderizarTiposNegocioAdmin();
+                    renderizarAnalisisBusquedasAdmin();
+                    document.getElementById("adminConfigEmail").value = configAdminGlobal.email || "";
+                    document.getElementById("adminConfigWp").value = configAdminGlobal.whatsapp || "";
                 }
+            });
+        }
+
+        function abrirModalContactoAdmin() {
+            const email = configAdminGlobal.email || "contacto@colectivowebsanluis.com";
+            const wp = configAdminGlobal.whatsapp || "526530000000";
+
+            const linkEmail = document.getElementById("linkAdminEmail");
+            linkEmail.href = `mailto:${email}?subject=Consulta%20desde%20ColectivoWebSanLuis`;
+            linkEmail.innerText = email;
+
+            const linkWp = document.getElementById("linkAdminWp");
+            const mensajeWp = encodeURIComponent("Hola Administrador, me comunico desde ColectivoWebSanLuis para una consulta.");
+            linkWp.href = `https://wa.me/${wp}?text=${mensajeWp}`;
+            linkWp.innerText = `+${wp} (Enviar WhatsApp)`;
+
+            document.getElementById("modalContactoAdmin").classList.remove("hidden");
+        }
+
+        function cerrarModalContactoAdmin() {
+            document.getElementById("modalContactoAdmin").classList.add("hidden");
+        }
+
+        function guardarConfigAdmin() {
+            const email = document.getElementById("adminConfigEmail").value.trim();
+            const whatsapp = document.getElementById("adminConfigWp").value.trim();
+            if (!email || !whatsapp) {
+                alert("Por favor completa ambos campos.");
+                return;
+            }
+            db.ref("configAdmin").set({ email, whatsapp }).then(() => {
+                alert("Datos de contacto del administrador guardados correctamente.");
             });
         }
 
@@ -557,7 +939,7 @@
             const grid = document.getElementById("gridPromociones");
             let html = "";
             let count = 0;
-            const hoyStr = new Date().toISOString().split('T')[0];
+            const hoyStr = obtenerFechaLocalISO();
 
             Object.keys(promocionesGlobal).forEach(promoId => {
                 const promo = promocionesGlobal[promoId];
@@ -587,12 +969,12 @@
                 const mensajeWp = encodeURIComponent(`Hola, me interesa la promoción navideña "${promo.titulo}" ($${promo.precio} MXN) ofrecida por ${nombreCol}. ¿Está disponible?`);
 
                 count++;
-                const imgHtml = promo.imagen ? `<div class="h-28 overflow-hidden rounded-xl mb-2 border border-amber-200/60"><img src="${promo.imagen}" class="w-full h-full object-cover hover:scale-105 transition duration-300"></div>` : '';
+                const imgHtml = promo.imagen ? `<div class="h-28 overflow-hidden rounded-xl mb-2 border border-amber-200/60 cursor-pointer" onclick="ampliarFoto('${promo.imagen}')"><img src="${promo.imagen}" class="w-full h-full object-cover hover:scale-105 transition duration-300" title="Clic para ampliar imagen"></div>` : '';
                 
                 let botonWpHtml = '';
                 if (permiteWpPromo) {
                     botonWpHtml = `
-                        <a href="https://wa.me/${wpCol}?text=${mensajeWp}" target="_blank" class="bg-emerald-700 hover:bg-emerald-800 text-white px-2.5 py-1 rounded-lg text-[10px] font-bold flex items-center gap-1 shadow-sm transition">
+                        <a href="https://wa.me/${wpCol}?text=${mensajeWp}" onclick="registrarEventoColectivo('${col.id}', 'whatsapp', '${promoId}')" target="_blank" class="bg-emerald-700 hover:bg-emerald-800 text-white px-2.5 py-1 rounded-lg text-[10px] font-bold flex items-center gap-1 shadow-sm transition">
                             <i class="fa-brands fa-whatsapp text-xs"></i> Pedir
                         </a>`;
                 } else {
@@ -627,7 +1009,6 @@
             }
         }
 
-        // RENDERIZAR PRODUCTOS Y COINCIDENCIAS DE BÚSQUEDA
         function renderizarProductos() {
             const grid = document.getElementById("gridProductos");
             const txtBuscar = document.getElementById("inputBuscar").value.toLowerCase().trim();
@@ -665,13 +1046,13 @@
                 const primeraFoto = (p.fotos && p.fotos.length > 0) ? p.fotos[0] : "https://via.placeholder.com/200x200?text=Sin+Foto";
 
                 html += `
-                    <div onclick="verDetalleProducto('${prodId}')" class="bg-white border-stone-200 hover:border-red-300 rounded-2xl border overflow-hidden shadow-xs hover:shadow-md transition cursor-pointer flex flex-col justify-between group">
+                    <div class="bg-white border-stone-200 hover:border-red-300 rounded-2xl border overflow-hidden shadow-xs hover:shadow-md transition flex flex-col justify-between group">
                         <div>
-                            <div class="relative h-28 sm:h-32 bg-stone-100 overflow-hidden">
+                            <div class="relative h-28 sm:h-32 bg-stone-100 overflow-hidden cursor-pointer" onclick="verDetalleProducto('${prodId}')" title="Ver detalles y fotos">
                                 <img src="${primeraFoto}" class="w-full h-full object-cover group-hover:scale-105 transition duration-300" alt="${p.titulo}">
                                 <span class="absolute top-1.5 left-1.5 bg-red-900/85 backdrop-blur-xs text-amber-100 text-[9px] px-2 py-0.5 rounded-full font-semibold">${p.categoria}</span>
                             </div>
-                            <div class="p-2.5">
+                            <div class="p-2.5 cursor-pointer" onclick="verDetalleProducto('${prodId}')">
                                 <h4 class="font-bold text-xs text-stone-800 line-clamp-1 group-hover:text-red-800 transition">${p.titulo}</h4>
                                 <p class="text-[10px] text-stone-500 line-clamp-1 mt-0.5">${p.descripcion || ''}</p>
                                 <span class="inline-block mt-1.5 text-[9px] bg-stone-100 text-stone-700 px-1.5 py-0.5 rounded font-semibold"><i class="fa-solid fa-sleigh text-red-700 mr-0.5"></i> Envío: ${costoEnvio}</span>
@@ -679,8 +1060,8 @@
                         </div>
                         <div class="p-2.5 pt-2 mt-auto border-t border-stone-100 text-[10px] bg-stone-50/50">
                             <div class="flex justify-between items-center mb-1">
-                                <span class="text-emerald-800 font-extrabold text-xs">$${p.precio} MXN</span>
-                                <span class="text-stone-400 text-[9px]"><i class="fa-regular fa-clock"></i> ${p.fechaActiva || 'Reciente'}</span>
+                                <span class="text-emerald-800 font-extrabold text-xs cursor-pointer" onclick="verDetalleProducto('${prodId}')">$${p.precio} MXN</span>
+                                <button onclick="ampliarFoto('${primeraFoto}')" class="text-xs bg-stone-200 hover:bg-stone-300 text-stone-700 px-2 py-0.5 rounded font-semibold transition" title="Ampliar foto"><i class="fa-solid fa-magnifying-glass-plus"></i> Ver foto</button>
                             </div>
                             <div class="text-stone-500 truncate">
                                 <strong class="text-stone-800">${nombreCol}</strong><br>
@@ -731,7 +1112,7 @@
                         const dataUrl = canvas.toDataURL("image/jpeg", 0.5);
                         imagenesTempBase64.push(dataUrl);
 
-                        previewContainer.innerHTML += `<img src="${dataUrl}" class="w-12 h-12 object-cover rounded border">`;
+                        previewContainer.innerHTML += `<img src="${dataUrl}" class="w-12 h-12 object-cover rounded border cursor-pointer hover:opacity-80" onclick="ampliarFoto('${dataUrl}')" title="Clic para ampliar">`;
                     }
                 }
                 reader.readAsDataURL(file);
@@ -756,15 +1137,51 @@
                     ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
 
                     promoImgTempBase64 = canvas.toDataURL("image/jpeg", 0.6);
-                    document.getElementById("previewPromoImg").innerHTML = `<img src="${promoImgTempBase64}" class="w-20 h-16 object-cover rounded border">`;
+                    document.getElementById("previewPromoImg").innerHTML = `<img src="${promoImgTempBase64}" class="w-20 h-16 object-cover rounded border cursor-pointer" onclick="ampliarFoto('${promoImgTempBase64}')" title="Clic para ampliar">`;
                 }
             }
             reader.readAsDataURL(file);
         }
 
+        function actualizarEnlaceWhatsAppDetalle() {
+            if (!detalleActualWpInfo) return;
+            const { wpCol, prodTitulo, prodPrecio, nombreCol, envolturaActiva, costoEnvoltura } = detalleActualWpInfo;
+            const checkEnvoltura = document.getElementById("checkEnvolverRegaloCliente");
+            const quiereEnvoltura = Boolean(envolturaActiva && checkEnvoltura && checkEnvoltura.checked);
+
+            let textoEnvoltura = "";
+            if (envolturaActiva) {
+                if (quiereEnvoltura) {
+                    textoEnvoltura = ` | Envoltura de regalo: SÍ quiero envolverlo para regalo (+$${costoEnvoltura} MXN).`;
+                } else {
+                    textoEnvoltura = ` | Envoltura de regalo: NO requiere envoltura.`;
+                }
+            }
+
+            const totalLabel = document.getElementById("lblTotalConEnvoltura");
+            if (totalLabel && envolturaActiva) {
+                const precioBaseNum = parseFloat(String(prodPrecio).replace(/[^0-9.]/g, '')) || 0;
+                const totalEstimado = quiereEnvoltura ? (precioBaseNum + costoEnvoltura) : precioBaseNum;
+                totalLabel.innerText = quiereEnvoltura
+                    ? `Total estimado con envoltura: $${totalEstimado.toLocaleString()} MXN`
+                    : `Precio artículo: $${prodPrecio} MXN`;
+            }
+
+            const mensaje = `Hola, me interesa el artículo "${prodTitulo}" ($${prodPrecio} MXN) publicado en ColectivoWebSanLuis por ${nombreCol}.${textoEnvoltura} ¿Aún está disponible?`;
+            const btnWp = document.getElementById("btnWhatsappDetalleProd");
+            if (btnWp) {
+                btnWp.href = `https://wa.me/${wpCol}?text=${encodeURIComponent(mensaje)}`;
+            }
+        }
+
         function verDetalleProducto(prodId) {
             const p = productosGlobal[prodId];
             if (!p) return;
+
+            if (p.colectivoId) {
+                registrarEventoColectivo(p.colectivoId, 'visita', prodId);
+            }
+
             const col = catGlobal.find(c => c.id === p.colectivoId);
             const tipoNegocio = col ? (col.tipoNegocio || 'Colectivo') : 'Colectivo';
             const nombreCol = `${tipoNegocio}: ${col ? col.nombre : "Negocio"}`;
@@ -774,17 +1191,53 @@
             const permiteWp = col ? col.whatsappActivo !== false : true;
             const costoEnvio = p.envio ? `$${p.envio} MXN` : 'A consultar';
 
+            const paginaActiva = Boolean(col && col.paginaActiva && col.paginaUrl);
+            const paginaUrlNormalizada = paginaActiva ? normalizarUrlExterna(col.paginaUrl) : "";
+
+            const envolturaActiva = Boolean(p.envolturaActiva);
+            const costoEnvoltura = envolturaActiva ? (parseFloat(p.costoEnvoltura) || 0) : 0;
+
+            detalleActualWpInfo = {
+                wpCol,
+                prodTitulo: p.titulo,
+                prodPrecio: p.precio,
+                nombreCol,
+                envolturaActiva,
+                costoEnvoltura
+            };
+
             let fotosHtml = '';
             if (p.fotos && p.fotos.length > 0) {
-                fotosHtml = `<div class="grid grid-cols-3 gap-2 mb-3">` + p.fotos.map(f => `<img src="${f}" onclick="ampliarFoto('${f}')" class="w-full h-24 object-cover rounded-xl border border-stone-200 cursor-pointer hover:opacity-90" title="Clic para ampliar">`).join('') + `</div>`;
+                fotosHtml = `<div class="grid grid-cols-3 gap-2 mb-3">` + p.fotos.map(f => `<div class="relative group cursor-pointer" onclick="ampliarFoto('${f}')"><img src="${f}" class="w-full h-24 object-cover rounded-xl border border-stone-200 group-hover:opacity-90 transition"><div class="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 flex items-center justify-center rounded-xl transition text-white text-xs"><i class="fa-solid fa-magnifying-glass-plus"></i></div></div>`).join('') + `</div>`;
             }
 
-            const mensajeWp = encodeURIComponent(`Hola, me interesa el artículo "${p.titulo}" ($${p.precio} MXN) publicado en ColectivoWebSanLuis por ${nombreCol}. ¿Aún está disponible?`);
+            let botonPaginaHtml = '';
+            if (paginaActiva && paginaUrlNormalizada) {
+                botonPaginaHtml = `
+                    <a href="${paginaUrlNormalizada}" target="_blank" rel="noopener noreferrer" class="w-full mb-2.5 bg-amber-50 hover:bg-amber-100 text-amber-950 border border-amber-300 py-2.5 px-3 rounded-xl font-bold flex items-center justify-center gap-2 transition text-xs">
+                        <i class="fa-solid fa-globe text-amber-700"></i> Visitar página del negocio <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i>
+                    </a>`;
+            }
+
+            let opcionEnvolturaHtml = '';
+            if (envolturaActiva && permiteWp) {
+                opcionEnvolturaHtml = `
+                    <div class="bg-red-50/80 border border-red-200 p-3 rounded-xl mb-3 text-xs space-y-1.5">
+                        <label for="checkEnvolverRegaloCliente" class="flex items-start gap-2.5 cursor-pointer select-none">
+                            <input type="checkbox" id="checkEnvolverRegaloCliente" onchange="actualizarEnlaceWhatsAppDetalle()" class="w-4 h-4 mt-0.5 text-red-700 rounded shrink-0">
+                            <div>
+                                <span class="font-bold text-red-900 block"><i class="fa-solid fa-gift text-red-700 mr-1"></i> Quiero este artículo envuelto para regalo (+$${costoEnvoltura} MXN)</span>
+                                <span class="text-[11px] text-stone-600">Se especificará automáticamente en tu mensaje de WhatsApp.</span>
+                            </div>
+                        </label>
+                        <p id="lblTotalConEnvoltura" class="text-[11px] font-bold text-emerald-800 pl-6">Precio artículo: $${p.precio} MXN</p>
+                    </div>`;
+            }
 
             let botonWpHtml = '';
             if (permiteWp) {
                 botonWpHtml = `
-                    <a href="https://wa.me/${wpCol}?text=${mensajeWp}" target="_blank" class="w-full bg-emerald-700 hover:bg-emerald-800 text-white py-3 rounded-xl font-bold flex items-center justify-center gap-2 shadow transition text-xs">
+                    <a id="btnWhatsappDetalleProd" href="#" onclick="registrarEventoColectivo('${p.colectivoId}', 'whatsapp', '${prodId}')" target="_blank" class="w-full bg-emerald-700 hover:bg-emerald-800 text-white py-3 rounded-xl font-bold flex items-center justify-center gap-2 shadow transition text-xs">
                         <i class="fa-brands fa-whatsapp text-base"></i> Preguntar por WhatsApp al Vendedor
                     </a>`;
             } else {
@@ -801,20 +1254,28 @@
                     <p class="text-sm text-emerald-800 font-extrabold mt-0.5">$${p.precio} MXN</p>
                 </div>
                 ${fotosHtml}
-                <div class="bg-stone-50 border border-stone-200 p-3.5 rounded-xl mb-4 text-xs space-y-1.5">
+                <div class="bg-stone-50 border border-stone-200 p-3.5 rounded-xl mb-3 text-xs space-y-1.5">
                     <p><strong>Descripción:</strong> ${p.descripcion || 'Sin descripción'}</p>
                     <p><strong>Costo de Envío:</strong> <span class="text-emerald-800 font-bold">${costoEnvio}</span></p>
                     <p><strong>Vendedor:</strong> <span class="text-red-900 font-bold">${nombreCol}</span></p>
                     <p><strong>Ubicación / Envío:</strong> <span class="text-stone-700 font-medium">${direccionCol}</span></p>
                     <p><strong>Fecha de publicación:</strong> <span class="text-stone-500">${p.fechaActiva || 'N/A'}</span></p>
                 </div>
+                ${botonPaginaHtml}
+                ${opcionEnvolturaHtml}
                 ${botonWpHtml}
             `;
+
+            if (permiteWp) {
+                actualizarEnlaceWhatsAppDetalle();
+            }
+
             document.getElementById("modalDetalle").classList.remove("hidden");
         }
 
         function cerrarModalDetalle() {
             document.getElementById("modalDetalle").classList.add("hidden");
+            detalleActualWpInfo = null;
         }
 
         function ampliarFoto(url) {
@@ -870,9 +1331,31 @@
             document.getElementById("switchMostrarDireccion").checked = mostrarDir;
             document.getElementById("inputDireccionColectivo").value = colectivo.direccion || '';
             document.getElementById("contenedorInputDireccion").classList.toggle("hidden", !mostrarDir);
-            document.getElementById("nuevoPassColectivoInput").value = "";
 
+            const paginaActiva = Boolean(colectivo.paginaActiva);
+            document.getElementById("switchPaginaActiva").checked = paginaActiva;
+            document.getElementById("inputUrlPaginaColectivo").value = colectivo.paginaUrl || '';
+            document.getElementById("contenedorInputPagina").classList.toggle("hidden", !paginaActiva);
+
+            document.getElementById("nuevoPassColectivoInput").value = "";
             document.getElementById("lblCodigoUnicoPanel").innerText = colectivo.codigoCorto || 'CL-00';
+
+            const busquedasPermitidas = Boolean(colectivo.tarifaBusquedasActiva);
+            document.getElementById("avisoTarifaBusquedasPanel").classList.toggle("hidden", busquedasPermitidas);
+            document.getElementById("contenidoBusquedasPanel").classList.toggle("hidden", !busquedasPermitidas);
+
+            if (busquedasPermitidas) {
+                establecerRangoBusquedaColectivo('mes');
+            }
+
+            const estadisticasPermitidas = Boolean(colectivo.tarifaEstadisticasActiva);
+            document.getElementById("avisoTarifaEspecialPanel").classList.toggle("hidden", estadisticasPermitidas);
+            document.getElementById("contenidoEstadisticasPanel").classList.toggle("hidden", !estadisticasPermitidas);
+
+            if (estadisticasPermitidas) {
+                establecerRangoEstadisticas('mes');
+                renderizarTopProductosConsultados();
+            }
 
             renderizarMisProductos();
             renderizarMisPromos();
@@ -881,6 +1364,175 @@
         function cerrarPanelColectivo() {
             document.getElementById("modalPanelColectivo").classList.add("hidden");
             colectivoActualId = null;
+        }
+
+        function establecerRangoEstadisticas(preset) {
+            const hoy = new Date();
+            const finStr = obtenerFechaLocalISO(hoy);
+            let inicioStr = "";
+
+            if (preset === 'hoy') {
+                inicioStr = finStr;
+            } else if (preset === '7dias') {
+                const hace7 = new Date(hoy);
+                hace7.setDate(hoy.getDate() - 6);
+                inicioStr = obtenerFechaLocalISO(hace7);
+            } else if (preset === 'mes') {
+                inicioStr = `${hoy.getFullYear()}-${String(hoy.getMonth() + 1).padStart(2, '0')}-01`;
+            } else if (preset === 'todo') {
+                inicioStr = "";
+            }
+
+            document.getElementById("statsFechaInicio").value = inicioStr;
+            document.getElementById("statsFechaFin").value = preset === 'todo' ? "" : finStr;
+            renderizarEstadisticasColectivo();
+        }
+
+        function establecerRangoBusquedaColectivo(preset) {
+            const hoy = new Date();
+            const finStr = obtenerFechaLocalISO(hoy);
+            let inicioStr = "";
+
+            if (preset === 'hoy') {
+                inicioStr = finStr;
+            } else if (preset === '7dias') {
+                const hace7 = new Date(hoy);
+                hace7.setDate(hoy.getDate() - 6);
+                inicioStr = obtenerFechaLocalISO(hace7);
+            } else if (preset === 'mes') {
+                inicioStr = `${hoy.getFullYear()}-${String(hoy.getMonth() + 1).padStart(2, '0')}-01`;
+            } else if (preset === 'todo') {
+                inicioStr = "";
+            }
+
+            document.getElementById("colBusquedaFechaInicio").value = inicioStr;
+            document.getElementById("colBusquedaFechaFin").value = preset === 'todo' ? "" : finStr;
+            renderizarAnalisisBusquedasColectivo();
+        }
+
+        function renderizarEstadisticasColectivo() {
+            if (!colectivoActualId) return;
+            const datosCol = estadisticasGlobal[colectivoActualId] || {};
+            const visitasObj = datosCol.visitas || {};
+            const whatsappObj = datosCol.whatsapp || {};
+
+            const fechaInicio = document.getElementById("statsFechaInicio").value;
+            const fechaFin = document.getElementById("statsFechaFin").value;
+
+            const filtrarPorPeriodo = (registrosObj) => {
+                let total = 0;
+                Object.keys(registrosObj).forEach(key => {
+                    const reg = registrosObj[key];
+                    if (!reg || !reg.fecha) return;
+                    if (fechaInicio && reg.fecha < fechaInicio) return;
+                    if (fechaFin && reg.fecha > fechaFin) return;
+                    total++;
+                });
+                return total;
+            };
+
+            const totalVisitas = filtrarPorPeriodo(visitasObj);
+            const totalWhatsapp = filtrarPorPeriodo(whatsappObj);
+            const conversion = totalVisitas > 0 ? Math.round((totalWhatsapp / totalVisitas) * 100) : 0;
+
+            document.getElementById("statTotalVisitas").innerText = totalVisitas.toLocaleString();
+            document.getElementById("statTotalWhatsapp").innerText = totalWhatsapp.toLocaleString();
+            document.getElementById("statTasaConversion").innerText = `${conversion}%`;
+        }
+
+        function renderizarAnalisisBusquedasColectivo() {
+            if (!colectivoActualId) return;
+            const contenedor = document.getElementById("listaBusquedasColectivo");
+            const fechaInicio = document.getElementById("colBusquedaFechaInicio").value;
+            const fechaFin = document.getElementById("colBusquedaFechaFin").value;
+
+            const conteoTerminos = {};
+            Object.keys(busquedasGlobal).forEach(k => {
+                const item = busquedasGlobal[k];
+                if (item && item.termino && item.fecha) {
+                    if (fechaInicio && item.fecha < fechaInicio) return;
+                    if (fechaFin && item.fecha > fechaFin) return;
+                    const term = item.termino.trim().toLowerCase();
+                    conteoTerminos[term] = (conteoTerminos[term] || 0) + 1;
+                }
+            });
+
+            const arrayBusquedas = Object.keys(conteoTerminos).map(term => ({
+                termino: term,
+                cantidad: conteoTerminos[term]
+            })).sort((a, b) => b.cantidad - a.cantidad);
+
+            let html = "";
+            arrayBusquedas.forEach((item, idx) => {
+                html += `
+                    <div class="flex justify-between items-center bg-white p-2 rounded-lg border border-indigo-100 shadow-2xs text-xs">
+                        <span class="font-medium text-stone-900"><strong class="text-indigo-700 mr-1">${idx + 1}.</strong> "${item.termino}"</span>
+                        <span class="bg-indigo-100 text-indigo-900 font-bold px-2 py-0.5 rounded text-[10px]">${item.cantidad} búsquedas</span>
+                    </div>
+                `;
+            });
+
+            contenedor.innerHTML = html || '<p class="text-xs text-stone-400 italic text-center py-2">No hay búsquedas registradas en este rango de fechas.</p>';
+        }
+
+        function renderizarTopProductosConsultados() {
+            if (!colectivoActualId) return;
+            const datosCol = estadisticasGlobal[colectivoActualId] || {};
+            const visitasObj = datosCol.visitas || {};
+
+            const fechaInicio = document.getElementById("statsFechaInicio").value;
+            const fechaFin = document.getElementById("statsFechaFin").value;
+
+            const conteoVisitas = {};
+            Object.keys(productosGlobal).forEach(prodId => {
+                const p = productosGlobal[prodId];
+                if (p.colectivoId === colectivoActualId) {
+                    conteoVisitas[prodId] = 0;
+                }
+            });
+
+            Object.keys(visitasObj).forEach(k => {
+                const reg = visitasObj[k];
+                if (reg && reg.itemId && conteoVisitas[reg.itemId] !== undefined) {
+                    if (fechaInicio && reg.fecha < fechaInicio) return;
+                    if (fechaFin && reg.fecha > fechaFin) return;
+                    conteoVisitas[reg.itemId]++;
+                }
+            });
+
+            const arrayProd = Object.keys(conteoVisitas).map(prodId => ({
+                id: prodId,
+                titulo: productosGlobal[prodId] ? productosGlobal[prodId].titulo : 'Artículo',
+                visitas: conteoVisitas[prodId]
+            }));
+
+            const masOrdenados = [...arrayProd].sort((a, b) => b.visitas - a.visitas);
+            const menosOrdenados = [...arrayProd].sort((a, b) => a.visitas - b.visitas);
+
+            const top10Mas = masOrdenados.slice(0, 10);
+            const top10Menos = menosOrdenados.slice(0, 10);
+
+            let htmlMas = "";
+            top10Mas.forEach((item, index) => {
+                htmlMas += `
+                    <div class="flex justify-between items-center bg-white p-2 rounded-lg border border-emerald-100 shadow-2xs">
+                        <span class="truncate pr-2 font-medium text-stone-800"><strong class="text-emerald-800 mr-1">${index + 1}.</strong> ${item.titulo}</span>
+                        <span class="bg-emerald-100 text-emerald-900 font-bold px-2 py-0.5 rounded text-[10px] shrink-0">${item.visitas} visitas</span>
+                    </div>
+                `;
+            });
+            document.getElementById("listaTopMasConsultados").innerHTML = htmlMas || '<p class="text-stone-400 italic text-center py-2">Sin registros aún.</p>';
+
+            let htmlMenos = "";
+            top10Menos.forEach((item, index) => {
+                htmlMenos += `
+                    <div class="flex justify-between items-center bg-white p-2 rounded-lg border border-stone-200 shadow-2xs">
+                        <span class="truncate pr-2 font-medium text-stone-800"><strong class="text-stone-500 mr-1">${index + 1}.</strong> ${item.titulo}</span>
+                        <span class="bg-stone-200 text-stone-700 font-bold px-2 py-0.5 rounded text-[10px] shrink-0">${item.visitas} visitas</span>
+                    </div>
+                `;
+            });
+            document.getElementById("listaTopMenosConsultados").innerHTML = htmlMenos || '<p class="text-stone-400 italic text-center py-2">Sin registros aún.</p>';
         }
 
         function toggleMostrarDireccion() {
@@ -894,6 +1546,33 @@
             db.ref(`colectivos/${colectivoActualId}/direccion`).set(dir).then(() => {
                 alert("Dirección guardada correctamente.");
             });
+        }
+
+        function togglePaginaActiva() {
+            const activa = document.getElementById("switchPaginaActiva").checked;
+            document.getElementById("contenedorInputPagina").classList.toggle("hidden", !activa);
+            db.ref(`colectivos/${colectivoActualId}/paginaActiva`).set(activa);
+        }
+
+        function guardarUrlPaginaColectivo() {
+            const urlRaw = document.getElementById("inputUrlPaginaColectivo").value.trim();
+            if (!urlRaw) {
+                alert("Por favor ingresa el enlace de tu página.");
+                return;
+            }
+            const urlFinal = normalizarUrlExterna(urlRaw);
+            db.ref(`colectivos/${colectivoActualId}`).update({
+                paginaActiva: true,
+                paginaUrl: urlFinal
+            }).then(() => {
+                document.getElementById("inputUrlPaginaColectivo").value = urlFinal;
+                alert("Enlace de tu página guardado correctamente.");
+            });
+        }
+
+        function toggleProdEnvolturaInput() {
+            const activa = document.getElementById("prodEnvolturaActiva").checked;
+            document.getElementById("contenedorProdCostoEnvoltura").classList.toggle("hidden", !activa);
         }
 
         function actualizarWhatsAppColectivo() {
@@ -931,12 +1610,13 @@
                 if (p.colectivoId === colectivoActualId) {
                     count++;
                     const foto = (p.fotos && p.fotos.length > 0) ? p.fotos[0] : "https://via.placeholder.com/150";
+                    const envolturaInfo = p.envolturaActiva ? `<span class="text-[9px] bg-red-100 text-red-800 px-1.5 py-0.2 rounded ml-1 font-bold">Regalo: +$${p.costoEnvoltura || 0}</span>` : '';
                     html += `
                         <div class="bg-stone-50 border border-stone-200 rounded-xl p-2.5 flex gap-2 items-center">
-                            <img src="${foto}" class="w-14 h-14 object-cover rounded-lg shrink-0">
+                            <img src="${foto}" class="w-14 h-14 object-cover rounded-lg shrink-0 cursor-pointer hover:opacity-80" onclick="ampliarFoto('${foto}')" title="Clic para ampliar">
                             <div class="flex-1 min-w-0">
                                 <h5 class="font-bold text-xs truncate">${p.titulo}</h5>
-                                <p class="text-[10px] text-emerald-800 font-semibold">$${p.precio} MXN</p>
+                                <p class="text-[10px] text-emerald-800 font-semibold">$${p.precio} MXN ${envolturaInfo}</p>
                                 <span class="text-[9px] px-1.5 py-0.2 rounded ${p.activo ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}">${p.activo ? 'Activo' : 'Inactivo'}</span>
                             </div>
                             <div class="flex flex-col gap-1 shrink-0">
@@ -959,7 +1639,7 @@
             Object.keys(promocionesGlobal).forEach(promoId => {
                 const promo = promocionesGlobal[promoId];
                 if (promo.colectivoId === colectivoActualId) {
-                    const imgThumb = promo.imagen ? `<img src="${promo.imagen}" class="w-12 h-12 object-cover rounded mr-2 shrink-0">` : '';
+                    const imgThumb = promo.imagen ? `<img src="${promo.imagen}" class="w-12 h-12 object-cover rounded mr-2 shrink-0 cursor-pointer hover:opacity-80" onclick="ampliarFoto('${promo.imagen}')" title="Clic para ampliar">` : '';
                     html += `
                         <div class="bg-red-50 border border-red-200 p-2.5 rounded-xl flex justify-between items-center gap-2">
                             <div class="flex items-center min-w-0">
@@ -994,6 +1674,9 @@
 
             document.getElementById("formProducto").reset();
             document.getElementById("prodId").value = "";
+            document.getElementById("prodEnvolturaActiva").checked = false;
+            document.getElementById("prodCostoEnvoltura").value = "";
+            document.getElementById("contenedorProdCostoEnvoltura").classList.add("hidden");
             document.getElementById("previewMiniaturas").innerHTML = "";
             imagenesTempBase64 = [];
             document.getElementById("tituloFormProd").innerText = "Registrar Nuevo Artículo";
@@ -1012,12 +1695,17 @@
             document.getElementById("prodDesc").value = p.descripcion || '';
             document.getElementById("prodActivo").checked = p.activo !== false;
             
+            const envolturaActiva = Boolean(p.envolturaActiva);
+            document.getElementById("prodEnvolturaActiva").checked = envolturaActiva;
+            document.getElementById("prodCostoEnvoltura").value = p.costoEnvoltura !== undefined ? p.costoEnvoltura : '';
+            document.getElementById("contenedorProdCostoEnvoltura").classList.toggle("hidden", !envolturaActiva);
+
             imagenesTempBase64 = p.fotos || [];
             const previewContainer = document.getElementById("previewMiniaturas");
             previewContainer.innerHTML = "";
             if (p.fotos && p.fotos.length > 0) {
                 p.fotos.forEach(f => {
-                    previewContainer.innerHTML += `<img src="${f}" class="w-12 h-12 object-cover rounded border">`;
+                    previewContainer.innerHTML += `<img src="${f}" class="w-12 h-12 object-cover rounded border cursor-pointer hover:opacity-80" onclick="ampliarFoto('${f}')" title="Clic para ampliar">`;
                 });
             }
 
@@ -1038,6 +1726,8 @@
             const envio = document.getElementById("prodEnvio").value.trim();
             const descripcion = document.getElementById("prodDesc").value.trim();
             const activo = document.getElementById("prodActivo").checked;
+            const envolturaActiva = document.getElementById("prodEnvolturaActiva").checked;
+            const costoEnvoltura = envolturaActiva ? (parseFloat(document.getElementById("prodCostoEnvoltura").value.trim()) || 0) : 0;
             const fechaActiva = new Date().toLocaleDateString();
 
             let fotosFinales = imagenesTempBase64;
@@ -1053,6 +1743,8 @@
                 envio,
                 descripcion,
                 activo,
+                envolturaActiva,
+                costoEnvoltura,
                 fotos: fotosFinales,
                 fechaActiva
             };
@@ -1099,7 +1791,7 @@
             promoImgTempBase64 = promo.imagen || '';
             const preview = document.getElementById("previewPromoImg");
             if (promo.imagen) {
-                preview.innerHTML = `<img src="${promo.imagen}" class="w-20 h-16 object-cover rounded border">`;
+                preview.innerHTML = `<img src="${promo.imagen}" class="w-20 h-16 object-cover rounded border cursor-pointer" onclick="ampliarFoto('${promo.imagen}')" title="Clic para ampliar">`;
             } else {
                 preview.innerHTML = "";
             }
@@ -1170,8 +1862,116 @@
             }
             document.getElementById("adminLoginView").classList.add("hidden");
             document.getElementById("adminDashboardView").classList.remove("hidden");
+            
+            const inputMes = document.getElementById("filtroMesPagoAdmin");
+            if (inputMes && !inputMes.value) {
+                inputMes.value = obtenerMesActualISO();
+            }
+
+            const inputAdminInicio = document.getElementById("adminFechaInicio");
+            if (inputAdminInicio && !inputAdminInicio.value) {
+                establecerRangoAdmin('mes');
+            }
+
+            const inputBusqInicio = document.getElementById("adminBusquedaFechaInicio");
+            if (inputBusqInicio && !inputBusqInicio.value) {
+                establecerRangoBusquedaAdmin('mes');
+            }
+
+            document.getElementById("adminConfigEmail").value = configAdminGlobal.email || "";
+            document.getElementById("adminConfigWp").value = configAdminGlobal.whatsapp || "";
+
+            renderizarAdminPagos();
             renderizarAdminColectivos();
             renderizarCategoriasAdmin();
+            renderizarTiposNegocioAdmin();
+            renderizarAnalisisBusquedasAdmin();
+        }
+
+        function establecerRangoBusquedaAdmin(preset) {
+            const hoy = new Date();
+            const finStr = obtenerFechaLocalISO(hoy);
+            let inicioStr = "";
+
+            if (preset === 'hoy') {
+                inicioStr = finStr;
+            } else if (preset === '7dias') {
+                const hace7 = new Date(hoy);
+                hace7.setDate(hoy.getDate() - 6);
+                inicioStr = obtenerFechaLocalISO(hace7);
+            } else if (preset === 'mes') {
+                inicioStr = `${hoy.getFullYear()}-${String(hoy.getMonth() + 1).padStart(2, '0')}-01`;
+            } else if (preset === 'todo') {
+                inicioStr = "";
+            }
+
+            document.getElementById("adminBusquedaFechaInicio").value = inicioStr;
+            document.getElementById("adminBusquedaFechaFin").value = preset === 'todo' ? "" : finStr;
+            renderizarAnalisisBusquedasAdmin();
+        }
+
+        function renderizarAnalisisBusquedasAdmin() {
+            const contenedor = document.getElementById("listaBusquedasAdmin");
+            const fechaInicio = document.getElementById("adminBusquedaFechaInicio").value;
+            const fechaFin = document.getElementById("adminBusquedaFechaFin").value;
+
+            const conteoTerminos = {};
+            Object.keys(busquedasGlobal).forEach(k => {
+                const item = busquedasGlobal[k];
+                if (item && item.termino && item.fecha) {
+                    if (fechaInicio && item.fecha < fechaInicio) return;
+                    if (fechaFin && item.fecha > fechaFin) return;
+                    const term = item.termino.trim().toLowerCase();
+                    conteoTerminos[term] = (conteoTerminos[term] || 0) + 1;
+                }
+            });
+
+            const arrayBusquedas = Object.keys(conteoTerminos).map(term => ({
+                termino: term,
+                cantidad: conteoTerminos[term]
+            })).sort((a, b) => b.cantidad - a.cantidad);
+
+            let html = "";
+            arrayBusquedas.forEach((item, idx) => {
+                html += `
+                    <div class="flex justify-between items-center bg-white p-2 rounded-lg border border-indigo-100 shadow-2xs text-xs">
+                        <span class="font-medium text-stone-900"><strong class="text-indigo-700 mr-1">${idx + 1}.</strong> "${item.termino}"</span>
+                        <span class="bg-indigo-100 text-indigo-900 font-bold px-2 py-0.5 rounded text-[10px]">${item.cantidad} búsquedas</span>
+                    </div>
+                `;
+            });
+
+            contenedor.innerHTML = html || '<p class="text-xs text-stone-400 italic text-center py-2">No hay búsquedas registradas en este rango de fechas.</p>';
+        }
+
+        function limpiarRegistroBusquedas() {
+            if (confirm("¿Estás seguro de borrar el historial de búsquedas de usuarios?")) {
+                db.ref("busquedasUsuarios").remove().then(() => {
+                    renderizarAnalisisBusquedasAdmin();
+                });
+            }
+        }
+
+        function establecerRangoAdmin(preset) {
+            const hoy = new Date();
+            const finStr = obtenerFechaLocalISO(hoy);
+            let inicioStr = "";
+
+            if (preset === 'hoy') {
+                inicioStr = finStr;
+            } else if (preset === '7dias') {
+                const hace7 = new Date(hoy);
+                hace7.setDate(hoy.getDate() - 6);
+                inicioStr = obtenerFechaLocalISO(hace7);
+            } else if (preset === 'mes') {
+                inicioStr = `${hoy.getFullYear()}-${String(hoy.getMonth() + 1).padStart(2, '0')}-01`;
+            } else if (preset === 'todo') {
+                inicioStr = "";
+            }
+
+            document.getElementById("adminFechaInicio").value = inicioStr;
+            document.getElementById("adminFechaFin").value = preset === 'todo' ? "" : finStr;
+            renderizarAdminColectivos();
         }
 
         function renderizarCategoriasAdmin() {
@@ -1213,35 +2013,256 @@
             }
         }
 
+        function renderizarTiposNegocioAdmin() {
+            const contenedor = document.getElementById("listaTiposNegocioAdmin");
+            contenedor.innerHTML = tiposNegocioDinamicos.map((tipo, index) => `
+                <span class="bg-white border border-red-200 px-3 py-1 rounded-full text-xs font-semibold flex items-center gap-2 shadow-xs text-red-900">
+                    ${tipo}
+                    <button onclick="eliminarTipoNegocioAdmin(${index})" class="text-red-700 hover:text-red-900"><i class="fa-solid fa-xmark"></i></button>
+                </span>
+            `).join('');
+        }
+
+        function agregarTipoNegocioAdmin() {
+            const nuevoTipo = document.getElementById("nuevoTipoNegocioInput").value.trim();
+            if (!nuevoTipo) return;
+            if (tiposNegocioDinamicos.includes(nuevoTipo)) {
+                alert("El tipo de negocio ya existe.");
+                return;
+            }
+            tiposNegocioDinamicos.push(nuevoTipo);
+            db.ref("tiposNegocio").set(tiposNegocioDinamicos).then(() => {
+                document.getElementById("nuevoTipoNegocioInput").value = "";
+                renderizarTiposNegocioAdmin();
+                actualizarSelectTiposNegocioAdmin();
+            });
+        }
+
+        function eliminarTipoNegocioAdmin(index) {
+            if (tiposNegocioDinamicos.length <= 1) {
+                alert("Debe existir al menos un tipo de negocio.");
+                return;
+            }
+            if (confirm(`¿Eliminar el tipo de negocio "${tiposNegocioDinamicos[index]}"?`)) {
+                tiposNegocioDinamicos.splice(index, 1);
+                db.ref("tiposNegocio").set(tiposNegocioDinamicos).then(() => {
+                    renderizarTiposNegocioAdmin();
+                    actualizarSelectTiposNegocioAdmin();
+                });
+            }
+        }
+
+        function renderizarAdminPagos() {
+            const mesSeleccionado = document.getElementById("filtroMesPagoAdmin").value || obtenerMesActualISO();
+            const pagosMes = pagosGlobal[mesSeleccionado] || {};
+            const lista = document.getElementById("listaPagosMensualesAdmin");
+
+            let html = "";
+            let pagadosCount = 0;
+            let pendientesCount = 0;
+            let totalRecaudado = 0;
+
+            catGlobal.forEach(c => {
+                const pagoInfo = pagosMes[c.id];
+                const estaPagado = Boolean(pagoInfo && pagoInfo.pagado);
+                const tipo = c.tipoNegocio || 'Colectivo';
+
+                if (estaPagado) {
+                    pagadosCount++;
+                    totalRecaudado += parseFloat(pagoInfo.monto) || 0;
+                } else {
+                    pendientesCount++;
+                }
+
+                html += `
+                    <div class="bg-white border ${estaPagado ? 'border-emerald-200' : 'border-red-200'} p-2.5 rounded-lg flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 text-xs">
+                        <div class="min-w-0">
+                            <div class="flex items-center gap-1.5 flex-wrap">
+                                <span class="font-bold text-stone-900">${c.nombre}</span>
+                                <span class="text-[10px] text-stone-500">(${tipo})</span>
+                                <span class="text-[10px] bg-amber-100 text-amber-900 px-1.5 py-0.2 rounded font-semibold">Día corte: ${c.diaPago || 15}</span>
+                            </div>
+                            <p class="text-[11px] text-stone-600 mt-0.5">
+                                <i class="fa-brands fa-whatsapp text-emerald-700"></i> <strong>${c.whatsapp || 'Sin teléfono'}</strong>
+                                ${estaPagado 
+                                    ? ` • <span class="text-emerald-700 font-bold">Pagado: $${pagoInfo.monto || 0} MXN</span> (${pagoInfo.fechaPago || ''})${pagoInfo.nota ? ` - <em>${pagoInfo.nota}</em>` : ''}` 
+                                    : ` • <span class="text-red-700 font-bold">Pendiente de pago</span>`}
+                            </p>
+                        </div>
+                        <div class="flex items-center gap-1.5 shrink-0 w-full sm:w-auto justify-end">
+                            ${estaPagado 
+                                ? `<button onclick="eliminarPagoMensual('${c.id}', '${mesSeleccionado}')" class="bg-stone-200 hover:bg-stone-300 text-stone-800 px-2.5 py-1 rounded font-semibold text-[11px]">Anular Pago</button>`
+                                : `<button onclick="registrarPagoMensual('${c.id}', '${mesSeleccionado}')" class="bg-emerald-700 hover:bg-emerald-800 text-white px-2.5 py-1 rounded font-semibold text-[11px] shadow-2xs"><i class="fa-solid fa-check mr-1"></i>Registrar Pago</button>`
+                            }
+                        </div>
+                    </div>
+                `;
+            });
+
+            document.getElementById("resumenPagosPagados").innerText = pagadosCount;
+            document.getElementById("resumenPagosPendientes").innerText = pendientesCount;
+            document.getElementById("resumenPagosTotal").innerText = `$${totalRecaudado.toLocaleString()} MXN`;
+            lista.innerHTML = html || '<p class="text-xs text-stone-400 italic text-center py-2">No hay negocios registrados.</p>';
+        }
+
+        function registrarPagoMensual(colId, mes) {
+            const col = catGlobal.find(c => c.id === colId);
+            const nombreCol = col ? col.nombre : 'Negocio';
+            const montoStr = prompt(`Registrar pago de "${nombreCol}" para el mes ${mes}.\nIngresa el monto recibido ($ MXN):`, "300");
+            if (montoStr === null) return;
+            const monto = parseFloat(montoStr);
+            if (isNaN(monto) || monto < 0) {
+                alert("Por favor ingresa un monto válido.");
+                return;
+            }
+            const nota = prompt("Nota o referencia opcional (ej. Transferencia, Efectivo):", "") || "";
+            const fechaPago = obtenerFechaLocalISO();
+
+            db.ref(`pagos/${mes}/${colId}`).set({
+                pagado: true,
+                monto: monto,
+                fechaPago: fechaPago,
+                nota: nota.trim()
+            }).then(() => {
+                alert("Pago mensual registrado correctamente.");
+            });
+        }
+
+        function eliminarPagoMensual(colId, mes) {
+            if (confirm("¿Deseas anular el registro de pago de este mes para este negocio?")) {
+                db.ref(`pagos/${mes}/${colId}`).remove();
+            }
+        }
+
         function renderizarAdminColectivos() {
             const lista = document.getElementById("listaColectivosAdmin");
+            const mesSeleccionado = document.getElementById("filtroMesPagoAdmin")?.value || obtenerMesActualISO();
+            const pagosMes = pagosGlobal[mesSeleccionado] || {};
+            
+            const adminInicio = document.getElementById("adminFechaInicio")?.value || "";
+            const adminFin = document.getElementById("adminFechaFin")?.value || "";
+
             let html = "";
 
             catGlobal.forEach(c => {
                 const activoStatus = c.activo !== false;
+                const tarifaEstadisticas = Boolean(c.tarifaEstadisticasActiva);
+                const tarifaBusquedas = Boolean(c.tarifaBusquedasActiva);
                 const tipo = c.tipoNegocio || 'Colectivo';
+                const estaPagado = Boolean(pagosMes[c.id] && pagosMes[c.id].pagado);
+                const telefonoMostrar = c.whatsapp || 'No registrado';
+                const fechaRegistro = c.fechaRegistro || 'No registrada';
+
+                const datosCol = estadisticasGlobal[c.id] || {};
+                const visitasObj = datosCol.visitas || {};
+                const whatsappObj = datosCol.whatsapp || {};
+
+                const filtrarPorRango = (obj) => {
+                    let total = 0;
+                    Object.keys(obj).forEach(k => {
+                        const reg = obj[k];
+                        if (!reg || !reg.fecha) return;
+                        if (adminInicio && reg.fecha < adminInicio) return;
+                        if (adminFin && reg.fecha > adminFin) return;
+                        total++;
+                    });
+                    return total;
+                };
+
+                const totalVisitasAdmin = filtrarPorRango(visitasObj);
+                const totalWpAdmin = filtrarPorRango(whatsappObj);
+                const conversionAdmin = totalVisitasAdmin > 0 ? Math.round((totalWpAdmin / totalVisitasAdmin) * 100) : 0;
+
+                const conteoProdAdmin = {};
+                Object.keys(productosGlobal).forEach(prodId => {
+                    if (productosGlobal[prodId].colectivoId === c.id) {
+                        conteoProdAdmin[prodId] = 0;
+                    }
+                });
+                Object.keys(visitasObj).forEach(k => {
+                    const reg = visitasObj[k];
+                    if (reg && reg.itemId && conteoProdAdmin[reg.itemId] !== undefined) {
+                        if (adminInicio && reg.fecha < adminInicio) return;
+                        if (adminFin && reg.fecha > adminFin) return;
+                        conteoProdAdmin[reg.itemId]++;
+                    }
+                });
+
+                const topProdsAdmin = Object.keys(conteoProdAdmin)
+                    .map(id => ({ titulo: productosGlobal[id] ? productosGlobal[id].titulo : 'Art', visitas: conteoProdAdmin[id] }))
+                    .sort((a, b) => b.visitas - a.visitas)
+                    .slice(0, 3);
+
+                let topProdsHtml = topProdsAdmin.map(tp => `<span class="bg-white border px-1.5 py-0.5 rounded text-[9px]">${tp.titulo}: <strong>${tp.visitas}</strong></span>`).join('');
+
                 html += `
-                    <div class="bg-stone-50 border border-stone-200 p-3 rounded-xl flex flex-col md:flex-row justify-between items-start md:items-center gap-3 text-xs">
-                        <div class="min-w-0">
-                            <div class="flex items-center gap-2 flex-wrap">
-                                <span class="bg-red-800 text-amber-100 px-2 py-0.5 rounded text-[10px] font-bold uppercase">${tipo}</span>
-                                <h5 class="font-bold text-sm text-stone-900 truncate">${c.nombre}</h5>
-                                <span class="bg-amber-100 text-amber-900 text-[9px] px-1.5 py-0.5 rounded font-mono font-bold">Código: ${c.codigoCorto || 'CL-00'}</span>
-                                <span class="px-1.5 py-0.5 rounded text-[9px] ${activoStatus ? 'bg-green-100 text-green-800 font-bold' : 'bg-red-100 text-red-800 font-bold'}">${activoStatus ? 'Activo' : 'Suspendido'}</span>
+                    <div class="bg-stone-50 border border-stone-200 p-3 rounded-xl space-y-2.5 text-xs">
+                        <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-3">
+                            <div class="min-w-0">
+                                <div class="flex items-center gap-2 flex-wrap">
+                                    <span class="bg-red-800 text-amber-100 px-2 py-0.5 rounded text-[10px] font-bold uppercase">${tipo}</span>
+                                    <h5 class="font-bold text-sm text-stone-900 truncate">${c.nombre}</h5>
+                                    <span class="bg-amber-100 text-amber-900 text-[9px] px-1.5 py-0.5 rounded font-mono font-bold">Código: ${c.codigoCorto || 'CL-00'}</span>
+                                    <span class="px-1.5 py-0.5 rounded text-[9px] ${activoStatus ? 'bg-green-100 text-green-800 font-bold' : 'bg-red-100 text-red-800 font-bold'}">${activoStatus ? 'Activo' : 'Suspendido'}</span>
+                                    <span class="px-1.5 py-0.5 rounded text-[9px] ${estaPagado ? 'bg-emerald-100 text-emerald-800 font-bold' : 'bg-amber-100 text-amber-900 font-bold'}">${estaPagado ? `Pagado (${mesSeleccionado})` : `Pendiente (${mesSeleccionado})`}</span>
+                                    <span class="text-[10px] bg-stone-200 text-stone-700 px-2 py-0.5 rounded font-semibold"><i class="fa-regular fa-calendar-check mr-1 text-amber-700"></i> Antigüedad: ${fechaRegistro}</span>
+                                </div>
+                                <p class="text-stone-600 mt-1 truncate">
+                                    <i class="fa-brands fa-whatsapp text-emerald-700 mr-1"></i>Tel/WhatsApp: 
+                                    ${c.whatsapp ? `<a href="https://wa.me/${c.whatsapp}" target="_blank" class="font-bold text-emerald-800 underline hover:text-emerald-950">${telefonoMostrar}</a>` : `<strong class="text-stone-500">${telefonoMostrar}</strong>`}
+                                    | Dir: <strong>${c.direccion || 'Sin dirección'}</strong>
+                                </p>
                             </div>
-                            <p class="text-stone-500 mt-0.5 truncate">Dir: <strong>${c.direccion || 'Sin dirección'}</strong></p>
-                            <p class="text-stone-500 truncate">Usuario: <strong class="text-stone-800">${c.usuario}</strong> | Pass: <strong class="text-emerald-800">${c.password}</strong> | Día Pago: <span class="font-bold text-amber-700">${c.diaPago || 15}</span></p>
+                            <div class="flex items-center gap-1.5 flex-wrap w-full md:w-auto justify-end">
+                                <button onclick="toggleTarifaBusquedas('${c.id}', ${!tarifaBusquedas})" class="px-2.5 py-1.5 rounded font-medium text-white ${tarifaBusquedas ? 'bg-indigo-700 hover:bg-indigo-800' : 'bg-stone-400 hover:bg-stone-500'}" title="Control de acceso para ver las tendencias de búsqueda de usuarios">
+                                    <i class="fa-solid fa-magnifying-glass-chart mr-1"></i> ${tarifaBusquedas ? 'Tarifa Búsq: ON' : 'Tarifa Búsq: OFF'}
+                                </button>
+                                <button onclick="toggleTarifaEstadisticas('${c.id}', ${!tarifaEstadisticas})" class="px-2.5 py-1.5 rounded font-medium text-white ${tarifaEstadisticas ? 'bg-emerald-700 hover:bg-emerald-800' : 'bg-stone-400 hover:bg-stone-500'}" title="Control de acceso para estadísticas de productos">
+                                    <i class="fa-solid fa-chart-pie mr-1"></i> ${tarifaEstadisticas ? 'Tarifa Stats: ON' : 'Tarifa Stats: OFF'}
+                                </button>
+                                <button onclick="cambiarPasswordAdmin('${c.id}')" class="bg-amber-600 text-white px-2.5 py-1.5 rounded hover:bg-amber-700 font-medium">Pass</button>
+                                <button onclick="cambiarDiaPago('${c.id}')" class="bg-stone-700 text-white px-2.5 py-1.5 rounded hover:bg-stone-800 font-medium">Día</button>
+                                <button onclick="toggleActivoColectivo('${c.id}', ${!activoStatus})" class="px-2.5 py-1.5 rounded text-white font-medium ${activoStatus ? 'bg-amber-600 hover:bg-amber-700' : 'bg-emerald-700 hover:bg-emerald-800'}">${activoStatus ? 'Suspender' : 'Activar'}</button>
+                                <button onclick="eliminarColectivo('${c.id}')" class="bg-red-700 text-white px-2.5 py-1.5 rounded hover:bg-red-800 font-medium">Eliminar</button>
+                            </div>
                         </div>
-                        <div class="flex items-center gap-1.5 flex-wrap w-full md:w-auto justify-end">
-                            <button onclick="cambiarPasswordAdmin('${c.id}')" class="bg-amber-600 text-white px-2.5 py-1.5 rounded hover:bg-amber-700 font-medium">Cambiar Pass</button>
-                            <button onclick="cambiarDiaPago('${c.id}')" class="bg-stone-700 text-white px-2.5 py-1.5 rounded hover:bg-stone-800 font-medium">Día Pago</button>
-                            <button onclick="toggleActivoColectivo('${c.id}', ${!activoStatus})" class="px-2.5 py-1.5 rounded text-white font-medium ${activoStatus ? 'bg-amber-600 hover:bg-amber-700' : 'bg-emerald-700 hover:bg-emerald-800'}">${activoStatus ? 'Suspender' : 'Activar'}</button>
-                            <button onclick="eliminarColectivo('${c.id}')" class="bg-red-700 text-white px-2.5 py-1.5 rounded hover:bg-red-800 font-medium">Eliminar</button>
+
+                        <div class="bg-emerald-50/60 border border-emerald-200 p-2.5 rounded-lg grid grid-cols-2 sm:grid-cols-4 gap-2 text-center">
+                            <div class="bg-white p-1.5 rounded border border-emerald-100">
+                                <span class="text-[9px] text-stone-500 uppercase block">Visitas Artículos</span>
+                                <span class="text-sm font-extrabold text-stone-900">${totalVisitasAdmin.toLocaleString()}</span>
+                            </div>
+                            <div class="bg-white p-1.5 rounded border border-emerald-100">
+                                <span class="text-[9px] text-emerald-700 uppercase block">Clics WhatsApp</span>
+                                <span class="text-sm font-extrabold text-emerald-800">${totalWpAdmin.toLocaleString()}</span>
+                            </div>
+                            <div class="bg-white p-1.5 rounded border border-emerald-100">
+                                <span class="text-[9px] text-amber-800 uppercase block">Conversión</span>
+                                <span class="text-sm font-extrabold text-amber-700">${conversionAdmin}%</span>
+                            </div>
+                            <div class="bg-white p-1.5 rounded border border-emerald-100 text-left overflow-hidden">
+                                <span class="text-[9px] text-stone-500 uppercase block text-center">Top Artículos (Rango)</span>
+                                <div class="flex gap-1 overflow-x-auto scrollbar-none mt-0.5">${topProdsHtml || '<span class="text-[9px] text-stone-400 italic">Sin datos</span>'}</div>
+                            </div>
                         </div>
                     </div>
                 `;
             });
             lista.innerHTML = html;
+        }
+
+        function toggleTarifaBusquedas(colId, nuevoEstado) {
+            db.ref(`colectivos/${colId}/tarifaBusquedasActiva`).set(nuevoEstado).then(() => {
+                alert(`Acceso al análisis de tendencias de búsqueda ${nuevoEstado ? 'ACTIVADO' : 'DESACTIVADO'} para el negocio.`);
+                renderizarAdminColectivos();
+            });
+        }
+
+        function toggleTarifaEstadisticas(colId, nuevoEstado) {
+            db.ref(`colectivos/${colId}/tarifaEstadisticasActiva`).set(nuevoEstado).then(() => {
+                alert(`Acceso a estadísticas de productos ${nuevoEstado ? 'ACTIVADO' : 'DESACTIVADO'} para el negocio.`);
+                renderizarAdminColectivos();
+            });
         }
 
         function cambiarPasswordAdmin(colId) {
@@ -1267,6 +2288,7 @@
         }
 
         function abrirModalNuevoColectivo() {
+            actualizarSelectTiposNegocioAdmin();
             document.getElementById("modalNuevoColectivo").classList.remove("hidden");
         }
         function cerrarModalNuevoColectivo() {
@@ -1283,15 +2305,29 @@
             const whatsapp = document.getElementById("nuevoColWp").value.trim();
             const diaPago = parseInt(document.getElementById("nuevoDiaPago").value.trim() || 15);
             const mostrarDireccion = document.getElementById("nuevoMostrarDir").checked;
+            const fechaRegistro = obtenerFechaLocalISO();
 
             const id = 'col_' + Date.now();
             const codigoCorto = 'CL-' + Math.floor(10 + Math.random() * 90);
 
             db.ref(`colectivos/${id}`).set({
-                nombre, tipoNegocio, direccion, usuario, password, whatsapp, diaPago, mostrarDireccion, activo: true, whatsappActivo: true, codigoCorto
+                nombre, 
+                tipoNegocio, 
+                direccion, 
+                usuario, 
+                password, 
+                whatsapp, 
+                diaPago, 
+                mostrarDireccion, 
+                activo: true, 
+                whatsappActivo: true, 
+                tarifaBusquedasActiva: false, 
+                tarifaEstadisticasActiva: false, 
+                codigoCorto,
+                fechaRegistro
             }).then(() => {
                 cerrarModalNuevoColectivo();
-                alert("Negocio registrado con éxito. Código corto asignado: " + codigoCorto);
+                alert("Negocio registrado con éxito. Fecha de registro guardada: " + fechaRegistro + " | Código corto: " + codigoCorto);
             });
         }
 
