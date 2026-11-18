@@ -251,7 +251,7 @@
             <h4 class="text-xs sm:text-sm font-bold text-red-800 mb-2 flex items-center gap-1"><i class="fa-solid fa-candy-cane"></i> Tus Promociones Activas</h4>
             <div id="listaMisPromos" class="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-6"></div>
 
-            <h4 class="text-xs sm:text-sm font-bold text-stone-700 mb-2">Tus Artículos Registrados (<span id="contadorMisProductos">0</span>/20)</h4>
+            <h4 class="text-xs sm:text-sm font-bold text-stone-700 mb-2">Tus Artículos Registrados (<span id="contadorMisProductos">0</span>/30)</h4>
             <div id="listaMisProductos" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3"></div>
         </div>
     </div>
@@ -987,8 +987,8 @@
                 if (productosGlobal[id].colectivoId === colectivoActualId) count++;
             });
 
-            if (count >= 20) {
-                alert("Has alcanzado el límite máximo de 20 artículos permitidos.");
+            if (count >= 30) {
+                alert("Has alcanzado el límite máximo de 30 artículos permitidos.");
                 return;
             }
 
