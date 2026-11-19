@@ -47,8 +47,9 @@
 
     <!-- HEADER RESPONSIVO NAVIDEÑO -->
     <header class="bg-white/95 backdrop-blur-md border-b border-red-100 shadow-sm sticky top-0 z-40">
-        <div class="max-w-7xl mx-auto px-3 sm:px-4 py-3 flex flex-col sm:flex-row justify-between items-center gap-3">
-            <div class="flex items-center space-x-3 w-full sm:w-auto justify-between sm:justify-start">
+        <div class="max-w-7xl mx-auto px-3 sm:px-4 py-3 flex flex-col md:flex-row justify-between items-center gap-3">
+            <!-- LADO IZQUIERDO: MARCA COLECTIVOWEBSANLUIS -->
+            <div class="flex items-center space-x-3 w-full md:w-auto justify-between md:justify-start">
                 <div class="flex items-center space-x-3">
                     <div class="bg-gradient-to-br from-red-700 to-red-900 text-amber-300 p-2.5 rounded-xl shadow-md border border-amber-400/30 relative">
                         <i class="fa-solid fa-sleigh text-xl"></i>
@@ -70,7 +71,8 @@
                 </div>
             </div>
 
-            <div class="flex items-center gap-2 w-full sm:w-auto justify-end">
+            <!-- LADO DERECHO: BOTONES DE ACCIÓN + LOGO SLRC WEB -->
+            <div class="flex items-center gap-2 sm:gap-3 w-full md:w-auto justify-end flex-wrap">
                 <button onclick="abrirModalContactoAdmin()" class="bg-amber-100 hover:bg-amber-200 text-amber-900 px-3 py-2 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition border border-amber-300">
                     <i class="fa-solid fa-headset text-amber-700"></i> Contactar Admin
                 </button>
@@ -80,6 +82,21 @@
                 <button onclick="abrirModalColectivo()" class="bg-emerald-800 hover:bg-emerald-900 text-white px-3 sm:px-4 py-2 rounded-lg text-xs font-semibold flex items-center gap-1.5 shadow-sm transition border border-emerald-700">
                     <i class="fa-solid fa-user-lock text-amber-300"></i> Acceso Negocios
                 </button>
+
+                <!-- LOGO SLRC WEB (Misma altura visual que ColectivoWeb) -->
+                <div class="pl-2 sm:pl-3 border-l border-stone-200 flex items-center select-none" title="SLRC Web">
+                    <svg class="h-8 sm:h-10 w-auto" viewBox="0 0 130 68" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="SLRC Web">
+                        <!-- Texto SLRC -->
+                        <text x="60" y="29" text-anchor="middle" fill="#103766" font-family="'Plus Jakarta Sans', sans-serif" font-weight="800" font-size="31" letter-spacing="0.5">SLRC</text>
+                        <!-- Texto web abajo -->
+                        <text x="53" y="59" text-anchor="middle" fill="#3399C6" font-family="'Plus Jakarta Sans', sans-serif" font-weight="800" font-size="31" letter-spacing="-0.5">web</text>
+                        <!-- Ondas Wi-Fi -->
+                        <path d="M90 36C94.5 32.5 101 32.5 105.5 36" stroke="#3399C6" stroke-width="2.6" stroke-linecap="round"/>
+                        <path d="M93 40.5C96 38.2 100 38.2 103 40.5" stroke="#3399C6" stroke-width="2.6" stroke-linecap="round"/>
+                        <!-- Puntero / Cursor -->
+                        <path d="M97 42.5L109.5 47.5L104.2 49.5L107.2 54.5L104.5 56L101.5 51L98.5 55L97 42.5Z" fill="#103766"/>
+                    </svg>
+                </div>
             </div>
         </div>
     </header>
@@ -113,51 +130,40 @@
         </div>
     </section>
 
-    <!-- CONTENIDO PRINCIPAL: DISEÑO DE DOS COLUMNAS -->
+    <!-- CONTENIDO PRINCIPAL: CATÁLOGO Y FILTROS (INCLUYENDO PROMOCIONES) -->
     <main class="max-w-7xl mx-auto px-3 sm:px-4 py-6 w-full flex-1">
-        <div class="grid grid-cols-1 lg:grid-cols-4 gap-6 items-start">
-            
-            <!-- COLUMNA IZQUIERDA: PROMOCIONES -->
-            <aside class="lg:col-span-1 space-y-4">
-                <div class="bg-white border border-stone-200 rounded-2xl p-3.5 shadow-xs">
-                    <div class="flex items-center justify-between mb-3 border-b border-stone-100 pb-2">
-                        <h3 class="text-xs font-extrabold text-red-800 uppercase tracking-wider flex items-center gap-1.5">
-                            <i class="fa-solid fa-candy-cane text-red-700"></i> Ofertas Navideñas
-                        </h3>
-                        <span class="text-[9px] bg-amber-100 text-amber-900 border border-amber-300 px-2 py-0.5 rounded-full font-bold">Promo</span>
-                    </div>
-                    <div id="gridPromociones" class="flex flex-col gap-3">
-                        <!-- Inyectado por JS -->
-                    </div>
+        <section class="space-y-4">
+            <!-- BARRA DE FILTROS / CATEGORÍAS -->
+            <div class="w-full">
+                <div id="contenedorCategorias" class="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-none">
+                    <!-- Generado dinámicamente (incluye el filtro "Promociones") -->
                 </div>
-            </aside>
+            </div>
 
-            <!-- COLUMNA DERECHA: CATEGORÍAS Y ARTÍCULOS -->
-            <section class="lg:col-span-3 space-y-4">
-                <div class="w-full">
-                    <div id="contenedorCategorias" class="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-none">
-                        <!-- Generado dinámicamente -->
-                    </div>
-                </div>
+            <!-- ENCABEZADO DE RESULTADOS -->
+            <div class="bg-white border border-stone-200 rounded-2xl p-3.5 shadow-xs flex justify-between items-center">
+                <h3 id="tituloResultados" class="text-xs font-extrabold text-emerald-900 uppercase tracking-wider flex items-center gap-1.5">
+                    <i class="fa-solid fa-tree text-emerald-700"></i> Catálogo General
+                </h3>
+                <span id="contadorResultados" class="text-xs bg-red-50 text-red-800 border border-red-200 px-3 py-0.5 rounded-full font-bold">0 artículos</span>
+            </div>
 
-                <div class="bg-white border border-stone-200 rounded-2xl p-3.5 shadow-xs flex justify-between items-center">
-                    <h3 id="tituloResultados" class="text-xs font-extrabold text-emerald-900 uppercase tracking-wider flex items-center gap-1.5">
-                        <i class="fa-solid fa-tree text-emerald-700"></i> Catálogo General
-                    </h3>
-                    <span id="contadorResultados" class="text-xs bg-red-50 text-red-800 border border-red-200 px-3 py-0.5 rounded-full font-bold">0 artículos</span>
-                </div>
+            <!-- GRID DE ARTÍCULOS NORMALES -->
+            <div id="gridProductos" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
+                <!-- Tarjetas inyectadas por JS -->
+            </div>
 
-                <div id="gridProductos" class="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-4 gap-3">
-                    <!-- Tarjetas inyectadas por JS -->
-                </div>
+            <!-- GRID DE PROMOCIONES (SOLO VISIBLE AL PRESIONAR EL FILTRO "PROMOCIONES") -->
+            <div id="gridPromociones" class="hidden grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3.5">
+                <!-- Promociones inyectadas por JS -->
+            </div>
 
-                <div id="sinResultados" class="hidden text-center py-16 bg-white rounded-2xl border border-stone-200 mt-2">
-                    <i class="fa-solid fa-gift text-4xl text-red-200 mb-2"></i>
-                    <p class="text-stone-500 text-sm">No se encontraron artículos con esos criterios.</p>
-                </div>
-            </section>
-
-        </div>
+            <!-- ESTADO SIN RESULTADOS -->
+            <div id="sinResultados" class="hidden text-center py-16 bg-white rounded-2xl border border-stone-200 mt-2">
+                <i class="fa-solid fa-gift text-4xl text-red-200 mb-2"></i>
+                <p id="textoSinResultados" class="text-stone-500 text-sm">No se encontraron artículos con esos criterios.</p>
+            </div>
+        </section>
     </main>
 
     <!-- FOOTER -->
@@ -168,20 +174,53 @@
 
     <!-- MODAL CONTACTO ADMINISTRADOR -->
     <div id="modalContactoAdmin" class="fixed inset-0 bg-black/60 backdrop-blur-xs hidden z-50 flex items-center justify-center p-3 sm:p-4">
-        <div class="bg-white rounded-2xl max-w-md w-full p-5 sm:p-6 shadow-2xl border-t-4 border-amber-500 relative">
+        <div class="bg-white rounded-2xl max-w-md w-full p-5 sm:p-6 shadow-2xl border-t-4 border-amber-500 relative max-h-[90vh] overflow-y-auto">
             <button onclick="cerrarModalContactoAdmin()" class="absolute top-4 right-4 text-stone-400 hover:text-stone-600"><i class="fa-solid fa-xmark text-lg"></i></button>
             <h3 class="text-base sm:text-lg font-bold text-red-900 mb-1 flex items-center gap-2">
                 <i class="fa-solid fa-headset text-amber-600"></i> Contactar al Administrador
             </h3>
             <p class="text-xs text-stone-500 mb-4">Comunícate directamente con la administración general del sitio para dudas, soporte o altas de negocios.</p>
             
-            <div class="space-y-3">
+            <!-- VISTA PRINCIPAL DE OPCIONES -->
+            <div id="vistaOpcionesContactoAdmin" class="space-y-3">
+                <button type="button" onclick="mostrarFormularioAltaNegocio()" class="w-full bg-red-800 hover:bg-red-900 text-white p-3 rounded-xl font-bold flex items-center justify-center gap-2 shadow transition text-xs">
+                    <i class="fa-solid fa-store text-amber-300 text-base"></i> Dame de alta
+                </button>
                 <a id="linkAdminWp" href="#" target="_blank" class="w-full bg-emerald-700 hover:bg-emerald-800 text-white p-3 rounded-xl font-bold flex items-center justify-center gap-2 shadow transition text-xs">
                     <i class="fa-brands fa-whatsapp text-base"></i> Enviar Mensaje por WhatsApp
                 </a>
                 <a id="linkAdminEmail" href="#" class="w-full bg-amber-50 hover:bg-amber-100 text-amber-950 border border-amber-300 p-3 rounded-xl font-bold flex items-center justify-center gap-2 transition text-xs">
                     <i class="fa-solid fa-envelope text-amber-700"></i> Enviar Correo Electrónico
                 </a>
+            </div>
+
+            <!-- FORMULARIO "DAME DE ALTA" -->
+            <div id="vistaFormularioAltaAdmin" class="hidden space-y-3">
+                <div class="flex items-center justify-between border-b border-stone-200 pb-2">
+                    <h4 class="text-xs sm:text-sm font-bold text-red-900 flex items-center gap-1.5">
+                        <i class="fa-solid fa-store text-emerald-700"></i> Solicitud de Alta en el Directorio
+                    </h4>
+                    <button type="button" onclick="volverOpcionesContactoAdmin()" class="text-[11px] font-semibold text-stone-500 hover:text-stone-800 flex items-center gap-1">
+                        <i class="fa-solid fa-arrow-left"></i> Volver
+                    </button>
+                </div>
+                <form id="formSolicitudAltaAdmin" onsubmit="enviarSolicitudAltaWhatsApp(event)" class="space-y-3 text-xs">
+                    <div>
+                        <label class="block font-semibold text-stone-700 mb-1">Número de celular (WhatsApp)</label>
+                        <input type="tel" id="altaCelular" required placeholder="Ej. 6531234567" class="w-full p-2.5 border border-stone-300 rounded-lg focus:ring-2 focus:ring-emerald-600 outline-none">
+                    </div>
+                    <div>
+                        <label class="block font-semibold text-stone-700 mb-1">Nombre de persona o negocio</label>
+                        <input type="text" id="altaNombreNegocio" required placeholder="Ej. Boutique San Luis / María López" class="w-full p-2.5 border border-stone-300 rounded-lg focus:ring-2 focus:ring-emerald-600 outline-none">
+                    </div>
+                    <div>
+                        <label class="block font-semibold text-stone-700 mb-1">Productos que vende</label>
+                        <textarea id="altaProductosVende" rows="3" required placeholder="Ej. Ropa de dama, bolsas, accesorios y regalos..." class="w-full p-2.5 border border-stone-300 rounded-lg focus:ring-2 focus:ring-emerald-600 outline-none"></textarea>
+                    </div>
+                    <button type="submit" class="w-full bg-emerald-700 hover:bg-emerald-800 text-white py-3 rounded-xl font-bold flex items-center justify-center gap-2 shadow transition text-xs">
+                        <i class="fa-brands fa-whatsapp text-base"></i> Enviar Solicitud al Administrador
+                    </button>
+                </form>
             </div>
         </div>
     </div>
@@ -757,6 +796,7 @@
         let timeoutBusqueda = null;
         const PASS_ADMIN = "1209aA0912";
 
+        const FILTRO_PROMOCIONES = "__PROMOCIONES__";
         let categoriaActiva = "Todos";
         let detalleActualWpInfo = null;
 
@@ -831,13 +871,22 @@
         function inicializarCategoriasUI() {
             const contenedor = document.getElementById("contenedorCategorias");
             const selectProd = document.getElementById("prodCategoria");
-            
-            const listaCompleta = ["Todos", ...categoriasDinamicas];
-            contenedor.innerHTML = listaCompleta.map(cat => `
+
+            const esPromoActiva = categoriaActiva === FILTRO_PROMOCIONES;
+            const botonPromosHtml = `
+                <button onclick="seleccionarCategoria('${FILTRO_PROMOCIONES}')" class="px-4 py-1.5 rounded-full text-xs font-bold whitespace-nowrap transition shrink-0 flex items-center gap-1.5 ${esPromoActiva ? 'bg-red-800 text-amber-100 shadow-sm border border-red-900' : 'bg-amber-50 text-red-800 border border-amber-300 hover:bg-amber-100'}">
+                    <i class="fa-solid fa-fire text-amber-500"></i> Promociones
+                </button>
+            `;
+
+            const listaCategorias = ["Todos", ...categoriasDinamicas];
+            const botonesCategoriasHtml = listaCategorias.map(cat => `
                 <button onclick="seleccionarCategoria('${cat}')" class="px-4 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap transition shrink-0 ${categoriaActiva === cat ? 'bg-red-800 text-amber-100 shadow-sm border border-red-900' : 'bg-white text-stone-600 border border-stone-200 hover:border-red-300 hover:bg-red-50/40'}">
                     ${cat}
                 </button>
             `).join('');
+
+            contenedor.innerHTML = botonPromosHtml + botonesCategoriasHtml;
 
             if(selectProd) {
                 selectProd.innerHTML = categoriasDinamicas.map(cat => `<option value="${cat}">${cat}</option>`).join('');
@@ -882,8 +931,8 @@
                 
                 inicializarCategoriasUI();
                 actualizarSelectTiposNegocioAdmin();
-                renderizarPromociones();
-                renderizarProductos();
+                filtrarProductos();
+
                 if (colectivoActualId) {
                     renderizarEstadisticasColectivo();
                     renderizarTopProductosConsultados();
@@ -916,11 +965,43 @@
             linkWp.href = `https://wa.me/${wp}?text=${mensajeWp}`;
             linkWp.innerText = `+${wp} (Enviar WhatsApp)`;
 
+            volverOpcionesContactoAdmin();
             document.getElementById("modalContactoAdmin").classList.remove("hidden");
         }
 
         function cerrarModalContactoAdmin() {
             document.getElementById("modalContactoAdmin").classList.add("hidden");
+            volverOpcionesContactoAdmin();
+        }
+
+        function mostrarFormularioAltaNegocio() {
+            document.getElementById("formSolicitudAltaAdmin").reset();
+            document.getElementById("vistaOpcionesContactoAdmin").classList.add("hidden");
+            document.getElementById("vistaFormularioAltaAdmin").classList.remove("hidden");
+        }
+
+        function volverOpcionesContactoAdmin() {
+            document.getElementById("vistaFormularioAltaAdmin").classList.add("hidden");
+            document.getElementById("vistaOpcionesContactoAdmin").classList.remove("hidden");
+        }
+
+        function enviarSolicitudAltaWhatsApp(e) {
+            e.preventDefault();
+            const celular = document.getElementById("altaCelular").value.trim();
+            const nombreNegocio = document.getElementById("altaNombreNegocio").value.trim();
+            const productosVende = document.getElementById("altaProductosVende").value.trim();
+
+            if (!celular || !nombreNegocio || !productosVende) {
+                alert("Por favor completa todos los campos para solicitar tu alta.");
+                return;
+            }
+
+            const wpAdminRaw = (configAdminGlobal.whatsapp || "526530000000").replace(/\D/g, "");
+            const mensaje = `Hola Administrador, solicito darme de alta en ColectivoWebSanLuis:\n\n• *Nombre / Negocio:* ${nombreNegocio}\n• *Celular:* ${celular}\n• *Productos que vende:* ${productosVende}`;
+            const urlWp = `https://wa.me/${wpAdminRaw}?text=${encodeURIComponent(mensaje)}`;
+
+            window.open(urlWp, "_blank", "noopener,noreferrer");
+            cerrarModalContactoAdmin();
         }
 
         function guardarConfigAdmin() {
@@ -937,6 +1018,7 @@
 
         function renderizarPromociones() {
             const grid = document.getElementById("gridPromociones");
+            const txtBuscar = document.getElementById("inputBuscar").value.toLowerCase().trim();
             let html = "";
             let count = 0;
             const hoyStr = obtenerFechaLocalISO();
@@ -955,6 +1037,14 @@
 
                 const tipoNegocio = col.tipoNegocio || 'Colectivo';
                 const nombreCol = `${tipoNegocio}: ${col.nombre}`;
+
+                if (txtBuscar) {
+                    const matchTitulo = (promo.titulo || "").toLowerCase().includes(txtBuscar);
+                    const matchDesc = (promo.descripcion || "").toLowerCase().includes(txtBuscar);
+                    const matchNegocio = nombreCol.toLowerCase().includes(txtBuscar);
+                    if (!matchTitulo && !matchDesc && !matchNegocio) return;
+                }
+
                 const mostrarDir = col.mostrarDireccion !== false;
                 
                 let infoEnvioHtml = '';
@@ -969,12 +1059,12 @@
                 const mensajeWp = encodeURIComponent(`Hola, me interesa la promoción navideña "${promo.titulo}" ($${promo.precio} MXN) ofrecida por ${nombreCol}. ¿Está disponible?`);
 
                 count++;
-                const imgHtml = promo.imagen ? `<div class="h-28 overflow-hidden rounded-xl mb-2 border border-amber-200/60 cursor-pointer" onclick="ampliarFoto('${promo.imagen}')"><img src="${promo.imagen}" class="w-full h-full object-cover hover:scale-105 transition duration-300" title="Clic para ampliar imagen"></div>` : '';
+                const imgHtml = promo.imagen ? `<div class="h-36 overflow-hidden rounded-xl mb-2.5 border border-amber-200/60 cursor-pointer" onclick="ampliarFoto('${promo.imagen}')"><img src="${promo.imagen}" class="w-full h-full object-cover hover:scale-105 transition duration-300" title="Clic para ampliar imagen"></div>` : '';
                 
                 let botonWpHtml = '';
                 if (permiteWpPromo) {
                     botonWpHtml = `
-                        <a href="https://wa.me/${wpCol}?text=${mensajeWp}" onclick="registrarEventoColectivo('${col.id}', 'whatsapp', '${promoId}')" target="_blank" class="bg-emerald-700 hover:bg-emerald-800 text-white px-2.5 py-1 rounded-lg text-[10px] font-bold flex items-center gap-1 shadow-sm transition">
+                        <a href="https://wa.me/${wpCol}?text=${mensajeWp}" onclick="registrarEventoColectivo('${col.id}', 'whatsapp', '${promoId}')" target="_blank" class="bg-emerald-700 hover:bg-emerald-800 text-white px-3 py-1.5 rounded-lg text-[11px] font-bold flex items-center gap-1 shadow-sm transition">
                             <i class="fa-brands fa-whatsapp text-xs"></i> Pedir
                         </a>`;
                 } else {
@@ -982,31 +1072,31 @@
                 }
 
                 html += `
-                    <div class="bg-gradient-to-br from-white via-red-50/40 to-amber-50/50 border border-amber-300/70 rounded-xl p-3 shadow-xs hover:shadow-sm transition flex flex-col justify-between relative overflow-hidden">
+                    <div class="bg-gradient-to-br from-white via-red-50/40 to-amber-50/50 border border-amber-300/70 rounded-2xl p-3.5 shadow-xs hover:shadow-md transition flex flex-col justify-between relative overflow-hidden">
                         <div>
                             ${imgHtml}
                             <div class="flex justify-between items-start gap-1">
                                 <span class="bg-red-800 text-amber-100 text-[9px] px-2 py-0.5 rounded-full font-bold uppercase tracking-wide">${tipoNegocio}</span>
-                                <span class="text-[10px] text-stone-600 font-bold truncate max-w-[120px]" title="${nombreCol}">${nombreCol}</span>
+                                <span class="text-[10px] text-stone-600 font-bold truncate max-w-[140px]" title="${nombreCol}">${nombreCol}</span>
                             </div>
-                            <h4 class="font-bold text-xs text-stone-900 mt-1">${promo.titulo}</h4>
-                            <p class="text-[10px] text-stone-600 mt-0.5 line-clamp-2">${promo.descripcion}</p>
-                            <p class="text-[9px] text-stone-700 font-medium mt-1">${infoEnvioHtml}</p>
-                            <p class="text-[9px] text-stone-500 mt-1"><i class="fa-regular fa-calendar-days text-red-700"></i> ${promo.fechaInicio || 'Hoy'} al ${promo.fechaFin || 'Indefinida'}</p>
+                            <h4 class="font-bold text-sm text-stone-900 mt-1.5">${promo.titulo}</h4>
+                            <p class="text-xs text-stone-600 mt-1 line-clamp-2">${promo.descripcion}</p>
+                            <p class="text-[10px] text-stone-700 font-medium mt-1.5">${infoEnvioHtml}</p>
+                            <p class="text-[10px] text-stone-500 mt-1"><i class="fa-regular fa-calendar-days text-red-700"></i> ${promo.fechaInicio || 'Hoy'} al ${promo.fechaFin || 'Indefinida'}</p>
                         </div>
-                        <div class="mt-2.5 pt-2 border-t border-amber-200/60 flex items-center justify-between">
-                            <span class="text-red-800 font-extrabold text-xs">$${promo.precio} <small class="text-[9px]">MXN</small></span>
+                        <div class="mt-3 pt-2.5 border-t border-amber-200/60 flex items-center justify-between">
+                            <span class="text-red-800 font-extrabold text-sm">$${promo.precio} <small class="text-[10px]">MXN</small></span>
                             ${botonWpHtml}
                         </div>
                     </div>
                 `;
             });
 
-            if (count === 0) {
-                grid.innerHTML = `<div class="text-center py-4 text-stone-400 text-xs">No hay promociones vigentes.</div>`;
-            } else {
-                grid.innerHTML = html;
-            }
+            grid.innerHTML = html;
+            document.getElementById("tituloResultados").innerHTML = `<i class="fa-solid fa-fire text-red-700"></i> Ofertas y Promociones Navideñas`;
+            document.getElementById("contadorResultados").innerText = `${count} promociones`;
+            document.getElementById("textoSinResultados").innerText = "No hay promociones vigentes con esos criterios.";
+            document.getElementById("sinResultados").classList.toggle("hidden", count > 0);
         }
 
         function renderizarProductos() {
@@ -1073,12 +1163,28 @@
             });
 
             grid.innerHTML = html;
+            const tituloCat = categoriaActiva === "Todos" ? "Catálogo General" : `Categoría: ${categoriaActiva}`;
+            document.getElementById("tituloResultados").innerHTML = `<i class="fa-solid fa-tree text-emerald-700"></i> ${tituloCat}`;
             document.getElementById("contadorResultados").innerText = `${contador} artículos`;
+            document.getElementById("textoSinResultados").innerText = "No se encontraron artículos con esos criterios.";
             document.getElementById("sinResultados").classList.toggle("hidden", contador > 0);
         }
 
         function filtrarProductos() {
-            renderizarProductos();
+            const gridProd = document.getElementById("gridProductos");
+            const gridPromo = document.getElementById("gridPromociones");
+
+            if (categoriaActiva === FILTRO_PROMOCIONES) {
+                gridProd.classList.add("hidden");
+                gridPromo.classList.remove("hidden");
+                gridPromo.classList.add("grid");
+                renderizarPromociones();
+            } else {
+                gridPromo.classList.add("hidden");
+                gridPromo.classList.remove("grid");
+                gridProd.classList.remove("hidden");
+                renderizarProductos();
+            }
         }
 
         function procesarImagenesInput(event) {
