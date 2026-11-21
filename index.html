@@ -72,7 +72,7 @@
             <!-- LADO DERECHO: BOTONES DE ACCIÓN (ADMIN INTEGRADO EN CONTACTAR ADMIN) -->
             <div class="flex items-center gap-2 sm:gap-3 w-full md:w-auto justify-center md:justify-end flex-wrap">
                 <button onclick="abrirModalContactoAdmin()" class="bg-amber-100 hover:bg-amber-200 text-amber-900 px-3.5 py-2 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition border border-amber-300">
-                    <i class="fa-solid fa-headset text-amber-700"></i> Contactar Admin
+                    <i class="fa-solid fa-headset text-amber-700"></i> Contactar
                 </button>
                 <button onclick="abrirModalColectivo()" class="bg-emerald-800 hover:bg-emerald-900 text-white px-4 py-2 rounded-lg text-xs font-semibold flex items-center gap-1.5 shadow-sm transition border border-emerald-700">
                     <i class="fa-solid fa-user-lock text-amber-300"></i> Acceso Negocios
@@ -87,18 +87,12 @@
         <span class="line-clamp-1 sm:line-clamp-none"><strong class="text-amber-300">Especial de Temporada SLRC:</strong> Regalos, colectivos, segundas, emprendedores y envíos a domicilio.</span>
     </div>
 
-    <!-- BANNER HERO ELEGANTE NAVIDEÑO -->
-    <section class="bg-gradient-to-br from-emerald-950 via-emerald-900 to-red-950 snow-pattern text-white py-6 sm:py-8 px-4 text-center border-b-4 border-amber-500/80 relative overflow-hidden">
-        <div class="max-w-3xl mx-auto relative z-10">
-            <span class="inline-flex items-center gap-1.5 bg-amber-400/15 text-amber-300 border border-amber-400/40 text-[11px] px-3.5 py-1 rounded-full font-semibold uppercase tracking-wider shadow-sm">
-                <i class="fa-solid fa-star text-[9px] text-amber-300"></i> Directorio Local Navideño 2026
-            </span>
-            <div class="mt-2.5 mb-2 flex flex-col sm:flex-row items-center justify-center gap-2.5 sm:gap-3.5">
-                <h2 class="font-navidad text-2xl sm:text-3xl font-extrabold text-white tracking-tight leading-tight">
-                    Regalos y Promociones <span class="text-amber-300">de Temporada</span>
-                </h2>
-                <!-- Arbolito de Navidad con regalos junto al título -->
-                <svg class="w-14 h-14 sm:w-16 sm:h-16 shrink-0 drop-shadow-md" viewBox="0 0 68 64" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Árbol de Navidad con regalos">
+    <!-- BANNER HERO COMPACTO NAVIDEÑO -->
+    <section class="bg-gradient-to-br from-emerald-950 via-emerald-900 to-red-950 snow-pattern text-white py-2.5 sm:py-3.5 px-3 sm:px-6 border-b-2 border-amber-500/80 relative overflow-hidden">
+        <div class="max-w-7xl mx-auto relative z-10 flex flex-col md:flex-row items-center justify-between gap-2.5 sm:gap-4">
+            <!-- TÍTULO Y ARBOLITO COMPACTOS -->
+            <div class="flex items-center justify-center md:justify-start gap-2 text-center md:text-left">
+                <svg class="w-8 h-8 sm:w-9 sm:h-9 shrink-0 drop-shadow-md" viewBox="0 0 68 64" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Árbol de Navidad con regalos">
                     <ellipse cx="34" cy="60.5" rx="26" ry="2.5" fill="rgba(0,0,0,0.35)"/>
                     <rect x="31" y="48" width="6" height="9" rx="1" fill="#92400E"/>
                     <polygon points="34,11 18,28 50,28" fill="#22C55E"/>
@@ -128,23 +122,26 @@
                     <rect x="31.7" y="52.5" width="1.6" height="7.5" fill="#FFFFFF"/>
                     <rect x="28" y="55.5" width="9" height="1.5" fill="#FFFFFF"/>
                 </svg>
+                <div>
+                    <h2 class="font-navidad text-base sm:text-lg font-extrabold text-white tracking-tight leading-tight">
+                        Regalos y Promociones <span class="text-amber-300">de Temporada</span>
+                    </h2>
+                    <p class="hidden sm:block text-[11px] text-stone-200 leading-tight">Directorio Local Navideño SLRC 2026</p>
+                </div>
             </div>
-            <p class="text-stone-200 text-xs sm:text-sm mb-4 px-2 max-w-xl mx-auto leading-relaxed">
-                Encuentra el detalle perfecto en ropa, accesorios, hogar y más directo con los negocios locales de San Luis Río Colorado.
-            </p>
             
-            <!-- BUSCADOR PRINCIPAL -->
-            <div class="bg-white/95 backdrop-blur p-2 rounded-2xl shadow-xl border border-amber-300/50 flex gap-2 max-w-2xl mx-auto">
-                <div class="flex-1 flex items-center bg-stone-50 px-3.5 rounded-xl border border-stone-200 focus-within:border-red-700 focus-within:ring-2 focus-within:ring-red-700/20 transition">
-                    <i class="fa-solid fa-magnifying-glass text-red-700 mr-2.5"></i>
-                    <input type="text" id="inputBuscar" oninput="filtrarProductos(); registrarBusquedaUsuario();" placeholder="¿Qué regalo o artículo buscas hoy? Escribe aquí..." class="w-full py-2 bg-transparent text-sm focus:outline-none text-stone-800 placeholder-stone-400">
+            <!-- BUSCADOR COMPACTO -->
+            <div class="bg-white/95 backdrop-blur p-1 rounded-xl shadow-md border border-amber-300/50 flex w-full md:max-w-md lg:max-w-lg">
+                <div class="flex-1 flex items-center bg-stone-50 px-3 rounded-lg border border-stone-200 focus-within:border-red-700 focus-within:ring-2 focus-within:ring-red-700/20 transition">
+                    <i class="fa-solid fa-magnifying-glass text-red-700 mr-2 text-xs"></i>
+                    <input type="text" id="inputBuscar" oninput="filtrarProductos(); registrarBusquedaUsuario();" placeholder="¿Qué regalo o artículo buscas hoy?..." class="w-full py-1.5 bg-transparent text-xs sm:text-sm focus:outline-none text-stone-800 placeholder-stone-400">
                 </div>
             </div>
         </div>
     </section>
 
     <!-- CONTENIDO PRINCIPAL: PROMOCIÓN ALEATORIA, CATÁLOGO Y FILTROS -->
-    <main class="max-w-7xl mx-auto px-3 sm:px-4 py-6 w-full flex-1">
+    <main class="max-w-7xl mx-auto px-3 sm:px-4 py-3.5 sm:py-4 w-full flex-1">
         <section class="space-y-4">
             <!-- PROMOCIÓN DESTACADA ALEATORIA AL ABRIR LA PÁGINA -->
             <div id="contenedorPromoAleatoria" class="hidden"></div>
