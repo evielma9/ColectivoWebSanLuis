@@ -69,10 +69,9 @@
                     <i class="fa-solid fa-bars text-base sm:text-lg"></i>
                 </button>
 
-                <!-- LOGO GOSHOPPING TU MERCADO LOCAL SAN LUIS R C (FIEL A LA IMAGEN) -->
+                <!-- LOGO GOSHOPPING TU MERCADO LOCAL SAN LUIS R C -->
                 <a href="#" onclick="seleccionarCategoria('Todos'); window.scrollTo({top:0, behavior:'smooth'}); return false;" class="flex items-center select-none group min-w-0" title="GoShopping San Luis R C - Tu Mercado Local">
-                    <!-- Si guardas tu imagen como logo.png junto a index.html la mostrará automáticamente; de lo contrario renderiza el SVG idéntico -->
-                    <img src="logo.jpeg" alt="GoShopping Tu Mercado Local San Luis R C" class="h-11 sm:h-14 w-auto object-contain" onerror="this.style.display='none'; document.getElementById('logoSvgPrincipal').classList.remove('hidden');">
+                    <img src="logo.jpg" alt="GoShopping Tu Mercado Local San Luis R C" class="h-11 sm:h-14 w-auto object-contain" onerror="this.style.display='none'; document.getElementById('logoSvgPrincipal').classList.remove('hidden');">
                     
                     <svg id="logoSvgPrincipal" class="hidden h-11 sm:h-14 w-auto shrink-0 transition-transform duration-200 group-hover:scale-[1.02]" viewBox="0 0 365 148" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="GoShopping Tu Mercado Local San Luis R C">
                         <defs>
@@ -97,28 +96,18 @@
                             </linearGradient>
                         </defs>
 
-                        <!-- Asa trasera de la bolsa -->
                         <path d="M56 38 C56 17, 86 17, 86 38" stroke="#36A169" stroke-width="6" stroke-linecap="round"/>
-                        <!-- Cuerpo de la bolsa -->
                         <path d="M40 39 C40 35.8, 42.5 33.5, 45.7 33.5 H96.3 C99.5 33.5, 102 35.8, 102 39 L111 114 C111.5 118.2, 108.2 122, 104 122 H38 C33.8 122, 30.5 118.2, 31 114 L40 39 Z" fill="url(#bagBodyGrad)"/>
-                        <!-- Asa delantera de la bolsa -->
                         <path d="M51 43 C51 20, 84 20, 84 43" stroke="#7AD66B" stroke-width="6.5" stroke-linecap="round"/>
-                        <!-- Flecha ascendente envolvente -->
                         <path d="M14 92 C20 129, 66 118, 118 47 L131 57 L145 19 L103 31 L114 40 C69 101, 28 112, 14 92 Z" fill="url(#sweepArrowGrad)"/>
 
-                        <!-- Letra G estilizada -->
                         <path d="M224 31 C217 23, 207 19, 194 19 C171 19, 154 35, 154 56 C154 77, 171 93, 194 93 C215 93, 229 80, 231 61 H196 V72 H216 C213 79, 205 82, 195 82 C178 82, 167 71, 167 56 C167 41, 178 30, 195 30 C203 30, 210 33, 215 38 L224 31 Z" fill="#0B2A4A"/>
-                        <!-- Flecha curva verde cruzando la G -->
                         <path d="M184 58 C191 56, 203 49, 215 37 L220 41 L225 27 L210 30 L213 33 C201 44, 190 50, 184 58 Z" fill="url(#miniArrowGrad)"/>
 
-                        <!-- Letra O -->
                         <circle cx="276" cy="56" r="31.5" stroke="#0B2A4A" stroke-width="12.5"/>
 
-                        <!-- SHOPPING -->
                         <text x="155" y="109" fill="#0B2A4A" font-family="'Montserrat', sans-serif" font-weight="800" font-size="23.5" letter-spacing="1.8">SHOPPING</text>
-                        <!-- TU MERCADO LOCAL -->
                         <text x="156" y="126" fill="#0F2D4A" font-family="'Montserrat', sans-serif" font-weight="600" font-size="13.2" letter-spacing="0.9">TU MERCADO LOCAL</text>
-                        <!-- San Luis R C -->
                         <text x="249" y="144" text-anchor="middle" fill="url(#slrcTextGrad)" font-family="'Montserrat', sans-serif" font-weight="800" font-size="19.5" letter-spacing="0.3">San Luis R C</text>
                     </svg>
                 </a>
@@ -1166,7 +1155,6 @@
                 return;
             }
 
-            // Conservar las promociones previamente elegidas si siguen vigentes, y completar aleatoriamente hasta 3
             let seleccionadas = promosAleatoriasSeleccionadasIds
                 .map(id => activas.find(item => item.id === id))
                 .filter(Boolean);
@@ -2618,6 +2606,7 @@
                 const pagoInfo = pagosMes[c.id];
                 const estaPagado = Boolean(pagoInfo && pagoInfo.pagado);
                 const tipo = c.tipoNegocio || 'Colectivo';
+                const usuarioMostrar = c.usuario || 'Sin usuario';
 
                 if (estaPagado) {
                     pagadosCount++;
@@ -2632,6 +2621,7 @@
                             <div class="flex items-center gap-1.5 flex-wrap">
                                 <span class="font-bold text-stone-900">${escaparHtml(c.nombre)}</span>
                                 <span class="text-[10px] text-stone-500">(${escaparHtml(tipo)})</span>
+                                <span class="bg-sky-100 text-sky-900 text-[10px] px-1.5 py-0.5 rounded font-mono font-bold"><i class="fa-solid fa-user text-sky-700 text-[9px] mr-0.5"></i>${escaparHtml(usuarioMostrar)}</span>
                                 <span class="text-[10px] bg-amber-100 text-amber-900 px-1.5 py-0.5 rounded font-semibold">Día corte: ${c.diaPago || 15}</span>
                             </div>
                             <p class="text-[11px] text-stone-600 mt-0.5">
@@ -2712,6 +2702,7 @@
                 const tipo = c.tipoNegocio || 'Colectivo';
                 const estaPagado = Boolean(pagosMes[c.id] && pagosMes[c.id].pagado);
                 const telefonoMostrar = c.whatsapp || 'No registrado';
+                const usuarioMostrar = c.usuario || 'Sin usuario';
                 const fechaRegistro = c.fechaRegistro || 'No registrada';
 
                 const datosCol = estadisticasGlobal[c.id] || {};
@@ -2763,13 +2754,17 @@
                                 <div class="flex items-center gap-2 flex-wrap">
                                     <span class="bg-red-800 text-amber-100 px-2 py-0.5 rounded text-[10px] font-bold uppercase">${escaparHtml(tipo)}</span>
                                     <h5 class="font-bold text-sm text-stone-900 truncate">${escaparHtml(c.nombre)}</h5>
+                                    <span class="bg-sky-100 text-sky-900 text-[10px] px-2 py-0.5 rounded font-mono font-bold inline-flex items-center gap-1" title="Usuario de inicio de sesión">
+                                        <i class="fa-solid fa-user text-sky-700 text-[9px]"></i> ${escaparHtml(usuarioMostrar)}
+                                    </span>
                                     <span class="bg-amber-100 text-amber-900 text-[9px] px-1.5 py-0.5 rounded font-mono font-bold">Código: ${escaparHtml(c.codigoCorto || 'CL-00')}</span>
                                     <span class="px-1.5 py-0.5 rounded text-[9px] ${activoStatus ? 'bg-green-100 text-green-800 font-bold' : 'bg-red-100 text-red-800 font-bold'}">${activoStatus ? 'Activo' : 'Suspendido'}</span>
                                     <span class="px-1.5 py-0.5 rounded text-[9px] ${estaPagado ? 'bg-emerald-100 text-emerald-800 font-bold' : 'bg-amber-100 text-amber-900 font-bold'}">${estaPagado ? `Pagado (${escaparHtml(mesSeleccionado)})` : `Pendiente (${escaparHtml(mesSeleccionado)})`}</span>
                                     <span class="text-[10px] bg-stone-200 text-stone-700 px-2 py-0.5 rounded font-semibold"><i class="fa-regular fa-calendar-check mr-1 text-amber-700"></i> Antigüedad: ${escaparHtml(fechaRegistro)}</span>
                                 </div>
                                 <p class="text-stone-600 mt-1 truncate">
-                                    <i class="fa-brands fa-whatsapp text-emerald-700 mr-1"></i>Tel/WhatsApp: 
+                                    <i class="fa-solid fa-id-badge text-sky-700 mr-1"></i>Usuario: <strong class="text-sky-900 font-mono">${escaparHtml(usuarioMostrar)}</strong>
+                                    | <i class="fa-brands fa-whatsapp text-emerald-700 mr-1"></i>Tel/WhatsApp: 
                                     ${c.whatsapp ? `<a href="https://wa.me/${escaparHtml(c.whatsapp)}" target="_blank" rel="noopener noreferrer" class="font-bold text-emerald-800 underline hover:text-emerald-950">${escaparHtml(telefonoMostrar)}</a>` : `<strong class="text-stone-500">${escaparHtml(telefonoMostrar)}</strong>`}
                                     | Dir: <strong>${escaparHtml(c.direccion || 'Sin dirección')}</strong>
                                 </p>
@@ -2781,6 +2776,7 @@
                                 <button onclick="toggleTarifaEstadisticas('${escaparAtributoJs(c.id)}', ${!tarifaEstadisticas})" class="px-2.5 py-1.5 rounded font-medium text-white inline-flex items-center gap-1 ${tarifaEstadisticas ? 'bg-emerald-700 hover:bg-emerald-800' : 'bg-stone-400 hover:bg-stone-500'}" title="Control de acceso para estadísticas de productos">
                                     <i class="fa-solid fa-chart-pie"></i> ${tarifaEstadisticas ? 'Tarifa Stats: ON' : 'Tarifa Stats: OFF'}
                                 </button>
+                                <button onclick="cambiarUsuarioAdmin('${escaparAtributoJs(c.id)}')" class="bg-sky-700 text-white px-2.5 py-1.5 rounded hover:bg-sky-800 font-medium" title="Cambiar nombre de usuario">User</button>
                                 <button onclick="cambiarPasswordAdmin('${escaparAtributoJs(c.id)}')" class="bg-amber-600 text-white px-2.5 py-1.5 rounded hover:bg-amber-700 font-medium">Pass</button>
                                 <button onclick="cambiarDiaPago('${escaparAtributoJs(c.id)}')" class="bg-stone-700 text-white px-2.5 py-1.5 rounded hover:bg-stone-800 font-medium">Día</button>
                                 <button onclick="toggleActivoColectivo('${escaparAtributoJs(c.id)}', ${!activoStatus})" class="px-2.5 py-1.5 rounded text-white font-medium ${activoStatus ? 'bg-amber-600 hover:bg-amber-700' : 'bg-emerald-700 hover:bg-emerald-800'}">${activoStatus ? 'Suspender' : 'Activar'}</button>
@@ -2828,6 +2824,26 @@
                 alert(`Acceso a estadísticas de productos ${nuevoEstado ? 'ACTIVADO' : 'DESACTIVADO'} para el negocio.`);
                 renderizarAdminColectivos();
             });
+        }
+
+        function cambiarUsuarioAdmin(colId) {
+            const col = catGlobal.find(c => c.id === colId);
+            const actual = col ? (col.usuario || "") : "";
+            const nuevoUsuario = prompt("Ingresa el nuevo usuario de acceso para este negocio:", actual);
+            if (nuevoUsuario && nuevoUsuario.trim() !== "") {
+                const limpio = nuevoUsuario.trim();
+                const duplicado = catGlobal.some(c => c.id !== colId && c.usuario === limpio);
+                if (duplicado) {
+                    alert("Ese nombre de usuario ya está asignado a otro negocio.");
+                    return;
+                }
+                db.ref(`colectivos/${colId}/usuario`).set(limpio).then(() => {
+                    if (col) col.usuario = limpio;
+                    alert("Usuario actualizado exitosamente por el Administrador.");
+                    renderizarAdminPagos();
+                    renderizarAdminColectivos();
+                });
+            }
         }
 
         function cambiarPasswordAdmin(colId) {
