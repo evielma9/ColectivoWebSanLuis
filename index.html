@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ColectivoWebSanLuis - Edición Navideña | San Luis Río Colorado</title>
+    <title>Shopping San Luis R C - Edición Navideña | San Luis Río Colorado</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- FontAwesome Icons -->
@@ -57,14 +57,14 @@
     <!-- HEADER RESPONSIVO NAVIDEÑO -->
     <header class="bg-white/95 backdrop-blur-md border-b border-red-100 shadow-sm sticky top-0 z-40">
         <div class="max-w-7xl mx-auto px-3 sm:px-6 py-2.5 sm:py-3 flex flex-col md:flex-row justify-between items-center gap-3">
-            <!-- LADO IZQUIERDO: LOGO CW SAN LUIS RC -->
+            <!-- LADO IZQUIERDO: LOGO SHOPPING SAN LUIS RC -->
             <div class="flex items-center w-full md:w-auto justify-center md:justify-start">
                 <a href="#" class="flex items-center focus:outline-none">
                     <img 
                         id="logoPrincipalSitio"
-                        src="ColectivoWebSLRC.jpeg" 
-                        alt="ColectivoWeb San Luis RC" 
-                        class="h-[82px] sm:h-[95px] md:h-[109px] w-auto object-contain mix-blend-multiply select-none shrink-0 transition-transform duration-200 hover:scale-105"
+                        src="ShoppingSanLuisRC.jpeg" 
+                        alt="Shopping San Luis R C" 
+                        class="h-[72px] sm:h-[85px] md:h-[96px] w-auto object-contain select-none shrink-0 transition-transform duration-200 hover:scale-105"
                     >
                 </a>
             </div>
@@ -188,8 +188,8 @@
 
     <!-- FOOTER -->
     <footer class="bg-emerald-950 text-stone-300 border-t-4 border-red-800 mt-12 py-6 text-center text-xs px-4 space-y-2">
-        <p class="font-navidad text-base text-amber-300 font-bold">ColectivoWebSanLuis 🎄</p>
-        <p>ColectivoWebSanLuis &copy; 2026 - San Luis Río Colorado, Sonora. Todos los derechos reservados.</p>
+        <p class="font-navidad text-base text-amber-300 font-bold">Shopping San Luis R C 🎄</p>
+        <p>Shopping San Luis R C &copy; 2026 - San Luis Río Colorado, Sonora. Todos los derechos reservados.</p>
         <div class="pt-2 flex flex-col items-center justify-center gap-1 select-none" title="Desarrollado por SLRC Web">
             <span class="text-[10px] text-stone-400 uppercase tracking-wider">Desarrollado por</span>
             <div class="bg-white/95 px-3 py-1 rounded-xl shadow-sm inline-flex items-center justify-center">
@@ -611,7 +611,7 @@
                     <h3 class="font-bold text-stone-800 flex items-center gap-1.5">
                         <i class="fa-solid fa-image text-red-700"></i> Herramienta: Convertir Logo a Base64 (Opcional)
                     </h3>
-                    <p class="text-[11px] text-stone-600">El sitio usa por defecto <code>ColectivoWebSLRC.jpeg</code> en la misma carpeta. Si deseas incrustarlo en Base64 dentro de tu HTML, selecciona la imagen aquí para copiar su código:</p>
+                    <p class="text-[11px] text-stone-600">El sitio usa por defecto <code>ShoppingSanLuisRC.png</code> en la misma carpeta. Si deseas incrustarlo en Base64 dentro de tu HTML, selecciona la imagen aquí para copiar su código:</p>
                     <div class="flex flex-col sm:flex-row items-center gap-2">
                         <input type="file" accept="image/*" onchange="generarBase64LogoAdmin(event)" class="text-xs bg-white p-1.5 border rounded-lg flex-1 w-full">
                         <button type="button" id="btnCopiarBase64Logo" onclick="copiarBase64LogoAdmin()" class="hidden bg-emerald-800 hover:bg-emerald-900 text-white px-3 py-2 rounded-lg font-semibold shrink-0">
@@ -629,7 +629,7 @@
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                         <div>
                             <label class="block font-semibold text-stone-700 mb-1">Correo Electrónico de Contacto</label>
-                            <input type="email" id="adminConfigEmail" placeholder="admin@colectivoweb.com" class="w-full p-2 border rounded-lg bg-white outline-none">
+                            <input type="email" id="adminConfigEmail" placeholder="contacto@shoppingsanluisrc.com" class="w-full p-2 border rounded-lg bg-white outline-none">
                         </div>
                         <div>
                             <label class="block font-semibold text-stone-700 mb-1">WhatsApp / Celular (10 dígitos con código país)</label>
@@ -1031,7 +1031,7 @@
                 catGlobal = Object.keys(colectivosObj).map(id => ({ id, ...colectivosObj[id] }));
                 productosGlobal = snapProd.val() || {};
                 promocionesGlobal = snapPromo.val() || {};
-                configAdminGlobal = snapConfig.val() || { email: "contacto@colectivowebsanluis.com", whatsapp: "526530000000" };
+                configAdminGlobal = snapConfig.val() || { email: "contacto@shoppingsanluisrc.com", whatsapp: "526530000000" };
 
                 if (snapCat.val() && Array.isArray(snapCat.val())) {
                     categoriasDinamicas = snapCat.val();
@@ -1166,15 +1166,15 @@
         }
 
         function abrirModalContactoAdmin() {
-            const email = configAdminGlobal.email || "contacto@colectivowebsanluis.com";
+            const email = configAdminGlobal.email || "contacto@shoppingsanluisrc.com";
             const wp = configAdminGlobal.whatsapp || "526530000000";
 
             const linkEmail = document.getElementById("linkAdminEmail");
-            linkEmail.href = `mailto:${email}?subject=Consulta%20desde%20ColectivoWebSanLuis`;
+            linkEmail.href = `mailto:${email}?subject=Consulta%20desde%20Shopping%20San%20Luis%20R%20C`;
             linkEmail.innerHTML = `<i class="fa-solid fa-envelope text-amber-700"></i> ${escaparHtml(email)}`;
 
             const linkWp = document.getElementById("linkAdminWp");
-            const mensajeWp = encodeURIComponent("Hola Administrador, me comunico desde ColectivoWebSanLuis para una consulta.");
+            const mensajeWp = encodeURIComponent("Hola Administrador, me comunico desde Shopping San Luis R C para una consulta.");
             linkWp.href = `https://wa.me/${wp}?text=${mensajeWp}`;
             linkWp.innerHTML = `<i class="fa-brands fa-whatsapp text-base"></i> +${escaparHtml(wp)} (Enviar WhatsApp)`;
 
@@ -1215,7 +1215,7 @@
             }
 
             const wpAdminRaw = (configAdminGlobal.whatsapp || "526530000000").replace(/\D/g, "");
-            const mensaje = `Hola Administrador, solicito darme de alta en ColectivoWebSanLuis:\n\n• *Nombre / Negocio:* ${nombreNegocio}\n• *Celular:* ${celular}\n• *Productos que vende:* ${productosVende}`;
+            const mensaje = `Hola Administrador, solicito darme de alta en Shopping San Luis R C:\n\n• *Nombre / Negocio:* ${nombreNegocio}\n• *Celular:* ${celular}\n• *Productos que vende:* ${productosVende}`;
             const urlWp = `https://wa.me/${wpAdminRaw}?text=${encodeURIComponent(mensaje)}`;
 
             window.open(urlWp, "_blank", "noopener,noreferrer");
@@ -1531,7 +1531,7 @@
                     : `Precio artículo: ${prodPrecio} MXN`;
             }
 
-            const mensaje = `Hola, me interesa el artículo "${prodTitulo}" (${prodPrecio} MXN) publicado en ColectivoWebSanLuis por ${nombreCol}.${textoEnvoltura} ¿Aún está disponible?`;
+            const mensaje = `Hola, me interesa el artículo "${prodTitulo}" (${prodPrecio} MXN) publicado en Shopping San Luis R C por ${nombreCol}.${textoEnvoltura} ¿Aún está disponible?`;
             const btnWp = document.getElementById("btnWhatsappDetalleProd");
             if (btnWp) {
                 btnWp.href = `https://wa.me/${wpCol}?text=${encodeURIComponent(mensaje)}`;
@@ -2219,618 +2219,4 @@
             promoImgTempBase64 = promo.imagen || '';
             const preview = document.getElementById("previewPromoImg");
             if (promo.imagen) {
-                preview.innerHTML = `<img src="${escaparHtml(promo.imagen)}" class="w-20 h-16 object-cover rounded border cursor-pointer" onclick="ampliarFoto('${escaparAtributoJs(promo.imagen)}')" title="Clic para ampliar">`;
-            } else {
-                preview.innerHTML = "";
-            }
-
-            document.getElementById("tituloFormPromo").innerText = "Editar Promoción";
-            document.getElementById("modalFormPromo").classList.remove("hidden");
-        }
-
-        function cerrarModalFormPromo() {
-            document.getElementById("modalFormPromo").classList.add("hidden");
-        }
-
-        function guardarPromocion(e) {
-            e.preventDefault();
-            const id = document.getElementById("promoId").value || 'promo_' + Date.now();
-            const titulo = document.getElementById("promoTitulo").value.trim();
-            const descripcion = document.getElementById("promoDesc").value.trim();
-            const precio = document.getElementById("promoPrecio").value.trim();
-            const fechaInicio = document.getElementById("promoFechaInicio").value;
-            const fechaFin = document.getElementById("promoFechaFin").value;
-            const envioGratis = document.getElementById("promoEnvioGratis").checked;
-            const whatsappActivo = document.getElementById("promoWpActivo").checked;
-
-            let imagenFinal = promoImgTempBase64;
-            if (!imagenFinal && document.getElementById("promoId").value && promocionesGlobal[id]) {
-                imagenFinal = promocionesGlobal[id].imagen || '';
-            }
-
-            const promoData = {
-                colectivoId: colectivoActualId,
-                titulo,
-                descripcion,
-                precio,
-                fechaInicio,
-                fechaFin,
-                envioGratis,
-                whatsappActivo,
-                imagen: imagenFinal
-            };
-            db.ref(`promociones/${id}`).set(promoData).then(() => {
-                promocionesGlobal[id] = promoData;
-                cerrarModalFormPromo();
-                renderizarMisPromos();
-                renderizarPromocionAleatoria();
-                if (categoriaActiva === FILTRO_PROMOCIONES) renderizarPromociones();
-                alert("Promoción guardada con éxito.");
-            });
-        }
-
-        function eliminarPromocion(promoId) {
-            if (confirm("¿Eliminar esta promoción?")) {
-                db.ref(`promociones/${promoId}`).remove().then(() => {
-                    delete promocionesGlobal[promoId];
-                    renderizarMisPromos();
-                    renderizarPromocionAleatoria();
-                    if (categoriaActiva === FILTRO_PROMOCIONES) renderizarPromociones();
-                });
-            }
-        }
-
-        function abrirModalAdmin() {
-            document.getElementById("adminPassInput").value = "";
-            document.getElementById("adminLoginView").classList.remove("hidden");
-            document.getElementById("adminDashboardView").classList.add("hidden");
-            document.getElementById("modalAdmin").classList.remove("hidden");
-        }
-        function cerrarModalAdmin() {
-            document.getElementById("modalAdmin").classList.add("hidden");
-        }
-
-        async function loginAdmin(e) {
-            e.preventDefault();
-            const pass = document.getElementById("adminPassInput").value;
-            if (pass !== PASS_ADMIN) {
-                alert("Contraseña de Administrador incorrecta.");
-                return;
-            }
-
-            try {
-                const [snapPagos, snapStats, snapBusq, snapCol] = await Promise.all([
-                    db.ref("pagos").once("value"),
-                    db.ref("estadisticas").once("value"),
-                    db.ref("busquedasUsuarios").once("value"),
-                    db.ref("colectivos").once("value")
-                ]);
-
-                pagosGlobal = snapPagos.val() || {};
-                estadisticasGlobal = snapStats.val() || {};
-                busquedasGlobal = snapBusq.val() || {};
-                const colectivosObj = snapCol.val() || {};
-                catGlobal = Object.keys(colectivosObj).map(id => ({ id, ...colectivosObj[id] }));
-            } catch (err) {
-                console.error("Error cargando datos administrativos:", err);
-            }
-
-            document.getElementById("adminLoginView").classList.add("hidden");
-            document.getElementById("adminDashboardView").classList.remove("hidden");
-            
-            const inputMes = document.getElementById("filtroMesPagoAdmin");
-            if (inputMes && !inputMes.value) {
-                inputMes.value = obtenerMesActualISO();
-            }
-
-            const inputAdminInicio = document.getElementById("adminFechaInicio");
-            if (inputAdminInicio && !inputAdminInicio.value) {
-                establecerRangoAdmin('mes');
-            }
-
-            const inputBusqInicio = document.getElementById("adminBusquedaFechaInicio");
-            if (inputBusqInicio && !inputBusqInicio.value) {
-                establecerRangoBusquedaAdmin('mes');
-            }
-
-            document.getElementById("adminConfigEmail").value = configAdminGlobal.email || "";
-            document.getElementById("adminConfigWp").value = configAdminGlobal.whatsapp || "";
-
-            renderizarAdminPagos();
-            renderizarAdminColectivos();
-            renderizarCategoriasAdmin();
-            renderizarTiposNegocioAdmin();
-            renderizarAnalisisBusquedasAdmin();
-        }
-
-        function establecerRangoBusquedaAdmin(preset) {
-            const hoy = new Date();
-            const finStr = obtenerFechaLocalISO(hoy);
-            let inicioStr = "";
-
-            if (preset === 'hoy') {
-                inicioStr = finStr;
-            } else if (preset === '7dias') {
-                const hace7 = new Date(hoy);
-                hace7.setDate(hoy.getDate() - 6);
-                inicioStr = obtenerFechaLocalISO(hace7);
-            } else if (preset === 'mes') {
-                inicioStr = `${hoy.getFullYear()}-${String(hoy.getMonth() + 1).padStart(2, '0')}-01`;
-            } else if (preset === 'todo') {
-                inicioStr = "";
-            }
-
-            document.getElementById("adminBusquedaFechaInicio").value = inicioStr;
-            document.getElementById("adminBusquedaFechaFin").value = preset === 'todo' ? "" : finStr;
-            renderizarAnalisisBusquedasAdmin();
-        }
-
-        function renderizarAnalisisBusquedasAdmin() {
-            const contenedor = document.getElementById("listaBusquedasAdmin");
-            const fechaInicio = document.getElementById("adminBusquedaFechaInicio").value;
-            const fechaFin = document.getElementById("adminBusquedaFechaFin").value;
-
-            const conteoTerminos = {};
-            Object.keys(busquedasGlobal).forEach(k => {
-                const item = busquedasGlobal[k];
-                if (item && item.termino && item.fecha) {
-                    if (fechaInicio && item.fecha < fechaInicio) return;
-                    if (fechaFin && item.fecha > fechaFin) return;
-                    const term = item.termino.trim().toLowerCase();
-                    conteoTerminos[term] = (conteoTerminos[term] || 0) + 1;
-                }
-            });
-
-            const arrayBusquedas = Object.keys(conteoTerminos).map(term => ({
-                termino: term,
-                cantidad: conteoTerminos[term]
-            })).sort((a, b) => b.cantidad - a.cantidad);
-
-            let html = "";
-            arrayBusquedas.forEach((item, idx) => {
-                html += `
-                    <div class="flex justify-between items-center bg-white p-2 rounded-lg border border-indigo-100 shadow-2xs text-xs gap-2">
-                        <span class="font-medium text-stone-900 truncate"><strong class="text-indigo-700 mr-1">${idx + 1}.</strong> "${escaparHtml(item.termino)}"</span>
-                        <span class="bg-indigo-100 text-indigo-900 font-bold px-2 py-0.5 rounded text-[10px] shrink-0">${item.cantidad} búsquedas</span>
-                    </div>
-                `;
-            });
-
-            contenedor.innerHTML = html || '<p class="text-xs text-stone-400 italic text-center py-2">No hay búsquedas registradas en este rango de fechas.</p>';
-        }
-
-        function limpiarRegistroBusquedas() {
-            if (confirm("¿Estás seguro de borrar el historial de búsquedas de usuarios?")) {
-                db.ref("busquedasUsuarios").remove().then(() => {
-                    busquedasGlobal = {};
-                    renderizarAnalisisBusquedasAdmin();
-                });
-            }
-        }
-
-        function establecerRangoAdmin(preset) {
-            const hoy = new Date();
-            const finStr = obtenerFechaLocalISO(hoy);
-            let inicioStr = "";
-
-            if (preset === 'hoy') {
-                inicioStr = finStr;
-            } else if (preset === '7dias') {
-                const hace7 = new Date(hoy);
-                hace7.setDate(hoy.getDate() - 6);
-                inicioStr = obtenerFechaLocalISO(hace7);
-            } else if (preset === 'mes') {
-                inicioStr = `${hoy.getFullYear()}-${String(hoy.getMonth() + 1).padStart(2, '0')}-01`;
-            } else if (preset === 'todo') {
-                inicioStr = "";
-            }
-
-            document.getElementById("adminFechaInicio").value = inicioStr;
-            document.getElementById("adminFechaFin").value = preset === 'todo' ? "" : finStr;
-            renderizarAdminColectivos();
-        }
-
-        function renderizarCategoriasAdmin() {
-            const contenedor = document.getElementById("listaCategoriasAdmin");
-            contenedor.innerHTML = categoriasDinamicas.map((cat, index) => `
-                <span class="bg-white border border-amber-200 px-3 py-1 rounded-full text-xs font-semibold inline-flex items-center gap-2 shadow-xs">
-                    ${escaparHtml(cat)}
-                    <button onclick="eliminarCategoriaAdmin(${index})" class="text-red-700 hover:text-red-900"><i class="fa-solid fa-xmark"></i></button>
-                </span>
-            `).join('');
-        }
-
-        function agregarCategoriaAdmin() {
-            const nuevaCat = document.getElementById("nuevaCategoriaInput").value.trim();
-            if (!nuevaCat) return;
-            if (categoriasDinamicas.includes(nuevaCat)) {
-                alert("La categoría ya existe.");
-                return;
-            }
-            categoriasDinamicas.push(nuevaCat);
-            db.ref("categorias").set(categoriasDinamicas).then(() => {
-                document.getElementById("nuevaCategoriaInput").value = "";
-                renderizarCategoriasAdmin();
-                inicializarCategoriasUI();
-            });
-        }
-
-        function eliminarCategoriaAdmin(index) {
-            if (categoriasDinamicas.length <= 1) {
-                alert("Debe existir al menos una categoría.");
-                return;
-            }
-            if (confirm(`¿Eliminar la categoría "${categoriasDinamicas[index]}"?`)) {
-                categoriasDinamicas.splice(index, 1);
-                db.ref("categorias").set(categoriasDinamicas).then(() => {
-                    renderizarCategoriasAdmin();
-                    inicializarCategoriasUI();
-                });
-            }
-        }
-
-        function renderizarTiposNegocioAdmin() {
-            const contenedor = document.getElementById("listaTiposNegocioAdmin");
-            contenedor.innerHTML = tiposNegocioDinamicos.map((tipo, index) => `
-                <span class="bg-white border border-red-200 px-3 py-1 rounded-full text-xs font-semibold inline-flex items-center gap-2 shadow-xs text-red-900">
-                    ${escaparHtml(tipo)}
-                    <button onclick="eliminarTipoNegocioAdmin(${index})" class="text-red-700 hover:text-red-900"><i class="fa-solid fa-xmark"></i></button>
-                </span>
-            `).join('');
-        }
-
-        function agregarTipoNegocioAdmin() {
-            const nuevoTipo = document.getElementById("nuevoTipoNegocioInput").value.trim();
-            if (!nuevoTipo) return;
-            if (tiposNegocioDinamicos.includes(nuevoTipo)) {
-                alert("El tipo de negocio ya existe.");
-                return;
-            }
-            tiposNegocioDinamicos.push(nuevoTipo);
-            db.ref("tiposNegocio").set(tiposNegocioDinamicos).then(() => {
-                document.getElementById("nuevoTipoNegocioInput").value = "";
-                renderizarTiposNegocioAdmin();
-                actualizarSelectTiposNegocioAdmin();
-            });
-        }
-
-        function eliminarTipoNegocioAdmin(index) {
-            if (tiposNegocioDinamicos.length <= 1) {
-                alert("Debe existir al menos un tipo de negocio.");
-                return;
-            }
-            if (confirm(`¿Eliminar el tipo de negocio "${tiposNegocioDinamicos[index]}"?`)) {
-                tiposNegocioDinamicos.splice(index, 1);
-                db.ref("tiposNegocio").set(tiposNegocioDinamicos).then(() => {
-                    renderizarTiposNegocioAdmin();
-                    actualizarSelectTiposNegocioAdmin();
-                });
-            }
-        }
-
-        function renderizarAdminPagos() {
-            const mesSeleccionado = document.getElementById("filtroMesPagoAdmin").value || obtenerMesActualISO();
-            const pagosMes = pagosGlobal[mesSeleccionado] || {};
-            const lista = document.getElementById("listaPagosMensualesAdmin");
-
-            let html = "";
-            let pagadosCount = 0;
-            let pendientesCount = 0;
-            let totalRecaudado = 0;
-
-            catGlobal.forEach(c => {
-                const pagoInfo = pagosMes[c.id];
-                const estaPagado = Boolean(pagoInfo && pagoInfo.pagado);
-                const tipo = c.tipoNegocio || 'Colectivo';
-
-                if (estaPagado) {
-                    pagadosCount++;
-                    totalRecaudado += parseFloat(pagoInfo.monto) || 0;
-                } else {
-                    pendientesCount++;
-                }
-
-                html += `
-                    <div class="bg-white border ${estaPagado ? 'border-emerald-200' : 'border-red-200'} p-2.5 rounded-lg flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 text-xs">
-                        <div class="min-w-0">
-                            <div class="flex items-center gap-1.5 flex-wrap">
-                                <span class="font-bold text-stone-900">${escaparHtml(c.nombre)}</span>
-                                <span class="text-[10px] text-stone-500">(${escaparHtml(tipo)})</span>
-                                <span class="text-[10px] bg-amber-100 text-amber-900 px-1.5 py-0.5 rounded font-semibold">Día corte: ${c.diaPago || 15}</span>
-                            </div>
-                            <p class="text-[11px] text-stone-600 mt-0.5">
-                                <i class="fa-brands fa-whatsapp text-emerald-700"></i> <strong>${escaparHtml(c.whatsapp || 'Sin teléfono')}</strong>
-                                ${estaPagado 
-                                    ? ` • <span class="text-emerald-700 font-bold">Pagado: ${pagoInfo.monto || 0} MXN</span> (${escaparHtml(pagoInfo.fechaPago || '')})${pagoInfo.nota ? ` - <em>${escaparHtml(pagoInfo.nota)}</em>` : ''}` 
-                                    : ` • <span class="text-red-700 font-bold">Pendiente de pago</span>`}
-                            </p>
-                        </div>
-                        <div class="flex items-center gap-1.5 shrink-0 w-full sm:w-auto justify-end">
-                            ${estaPagado 
-                                ? `<button onclick="eliminarPagoMensual('${escaparAtributoJs(c.id)}', '${escaparAtributoJs(mesSeleccionado)}')" class="bg-stone-200 hover:bg-stone-300 text-stone-800 px-2.5 py-1 rounded font-semibold text-[11px]">Anular Pago</button>`
-                                : `<button onclick="registrarPagoMensual('${escaparAtributoJs(c.id)}', '${escaparAtributoJs(mesSeleccionado)}')" class="bg-emerald-700 hover:bg-emerald-800 text-white px-2.5 py-1 rounded font-semibold text-[11px] shadow-2xs inline-flex items-center gap-1"><i class="fa-solid fa-check"></i>Registrar Pago</button>`
-                            }
-                        </div>
-                    </div>
-                `;
-            });
-
-            document.getElementById("resumenPagosPagados").innerText = pagadosCount;
-            document.getElementById("resumenPagosPendientes").innerText = pendientesCount;
-            document.getElementById("resumenPagosTotal").innerText = `${totalRecaudado.toLocaleString()} MXN`;
-            lista.innerHTML = html || '<p class="text-xs text-stone-400 italic text-center py-2">No hay negocios registrados.</p>';
-        }
-
-        function registrarPagoMensual(colId, mes) {
-            const col = catGlobal.find(c => c.id === colId);
-            const nombreCol = col ? col.nombre : 'Negocio';
-            const montoStr = prompt(`Registrar pago de "${nombreCol}" para el mes ${mes}.\nIngresa el monto recibido ($ MXN):`, "300");
-            if (montoStr === null) return;
-            const monto = parseFloat(montoStr);
-            if (isNaN(monto) || monto < 0) {
-                alert("Por favor ingresa un monto válido.");
-                return;
-            }
-            const nota = prompt("Nota o referencia opcional (ej. Transferencia, Efectivo):", "") || "";
-            const fechaPago = obtenerFechaLocalISO();
-
-            const pagoObj = {
-                pagado: true,
-                monto: monto,
-                fechaPago: fechaPago,
-                nota: nota.trim()
-            };
-            db.ref(`pagos/${mes}/${colId}`).set(pagoObj).then(() => {
-                if (!pagosGlobal[mes]) pagosGlobal[mes] = {};
-                pagosGlobal[mes][colId] = pagoObj;
-                renderizarAdminPagos();
-                renderizarAdminColectivos();
-                alert("Pago mensual registrado correctamente.");
-            });
-        }
-
-        function eliminarPagoMensual(colId, mes) {
-            if (confirm("¿Deseas anular el registro de pago de este mes para este negocio?")) {
-                db.ref(`pagos/${mes}/${colId}`).remove().then(() => {
-                    if (pagosGlobal[mes]) delete pagosGlobal[mes][colId];
-                    renderizarAdminPagos();
-                    renderizarAdminColectivos();
-                });
-            }
-        }
-
-        function renderizarAdminColectivos() {
-            const lista = document.getElementById("listaColectivosAdmin");
-            const mesSeleccionado = document.getElementById("filtroMesPagoAdmin")?.value || obtenerMesActualISO();
-            const pagosMes = pagosGlobal[mesSeleccionado] || {};
-            
-            const adminInicio = document.getElementById("adminFechaInicio")?.value || "";
-            const adminFin = document.getElementById("adminFechaFin")?.value || "";
-
-            let html = "";
-
-            catGlobal.forEach(c => {
-                const activoStatus = c.activo !== false;
-                const tarifaEstadisticas = Boolean(c.tarifaEstadisticasActiva);
-                const tarifaBusquedas = Boolean(c.tarifaBusquedasActiva);
-                const tipo = c.tipoNegocio || 'Colectivo';
-                const estaPagado = Boolean(pagosMes[c.id] && pagosMes[c.id].pagado);
-                const telefonoMostrar = c.whatsapp || 'No registrado';
-                const fechaRegistro = c.fechaRegistro || 'No registrada';
-
-                const datosCol = estadisticasGlobal[c.id] || {};
-                const visitasObj = datosCol.visitas || {};
-                const whatsappObj = datosCol.whatsapp || {};
-
-                const filtrarPorRango = (obj) => {
-                    let total = 0;
-                    Object.keys(obj).forEach(k => {
-                        const reg = obj[k];
-                        if (!reg || !reg.fecha) return;
-                        if (adminInicio && reg.fecha < adminInicio) return;
-                        if (adminFin && reg.fecha > adminFin) return;
-                        total++;
-                    });
-                    return total;
-                };
-
-                const totalVisitasAdmin = filtrarPorRango(visitasObj);
-                const totalWpAdmin = filtrarPorRango(whatsappObj);
-                const conversionAdmin = totalVisitasAdmin > 0 ? Math.round((totalWpAdmin / totalVisitasAdmin) * 100) : 0;
-
-                const conteoProdAdmin = {};
-                Object.keys(productosGlobal).forEach(prodId => {
-                    if (productosGlobal[prodId] && productosGlobal[prodId].colectivoId === c.id) {
-                        conteoProdAdmin[prodId] = 0;
-                    }
-                });
-                Object.keys(visitasObj).forEach(k => {
-                    const reg = visitasObj[k];
-                    if (reg && reg.itemId && conteoProdAdmin[reg.itemId] !== undefined) {
-                        if (adminInicio && reg.fecha < adminInicio) return;
-                        if (adminFin && reg.fecha > adminFin) return;
-                        conteoProdAdmin[reg.itemId]++;
-                    }
-                });
-
-                const topProdsAdmin = Object.keys(conteoProdAdmin)
-                    .map(id => ({ titulo: productosGlobal[id] ? productosGlobal[id].titulo : 'Art', visitas: conteoProdAdmin[id] }))
-                    .sort((a, b) => b.visitas - a.visitas)
-                    .slice(0, 3);
-
-                let topProdsHtml = topProdsAdmin.map(tp => `<span class="bg-white border px-1.5 py-0.5 rounded text-[9px] shrink-0">${escaparHtml(tp.titulo)}: <strong>${tp.visitas}</strong></span>`).join('');
-
-                html += `
-                    <div class="bg-stone-50 border border-stone-200 p-3 rounded-xl space-y-2.5 text-xs">
-                        <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-3">
-                            <div class="min-w-0">
-                                <div class="flex items-center gap-2 flex-wrap">
-                                    <span class="bg-red-800 text-amber-100 px-2 py-0.5 rounded text-[10px] font-bold uppercase">${escaparHtml(tipo)}</span>
-                                    <h5 class="font-bold text-sm text-stone-900 truncate">${escaparHtml(c.nombre)}</h5>
-                                    <span class="bg-amber-100 text-amber-900 text-[9px] px-1.5 py-0.5 rounded font-mono font-bold">Código: ${escaparHtml(c.codigoCorto || 'CL-00')}</span>
-                                    <span class="bg-indigo-100 text-indigo-900 text-[9px] px-1.5 py-0.5 rounded font-mono font-bold"><i class="fa-solid fa-user mr-1"></i>Usuario: ${escaparHtml(c.usuario || 'N/A')}</span>
-                                    <span class="px-1.5 py-0.5 rounded text-[9px] ${activoStatus ? 'bg-green-100 text-green-800 font-bold' : 'bg-red-100 text-red-800 font-bold'}">${activoStatus ? 'Activo' : 'Suspendido'}</span>
-                                    <span class="px-1.5 py-0.5 rounded text-[9px] ${estaPagado ? 'bg-emerald-100 text-emerald-800 font-bold' : 'bg-amber-100 text-amber-900 font-bold'}">${estaPagado ? `Pagado (${escaparHtml(mesSeleccionado)})` : `Pendiente (${escaparHtml(mesSeleccionado)})`}</span>
-                                    <span class="text-[10px] bg-stone-200 text-stone-700 px-2 py-0.5 rounded font-semibold"><i class="fa-regular fa-calendar-check mr-1 text-amber-700"></i> Antigüedad: ${escaparHtml(fechaRegistro)}</span>
-                                </div>
-                                <p class="text-stone-600 mt-1 truncate">
-                                    <i class="fa-brands fa-whatsapp text-emerald-700 mr-1"></i>Tel/WhatsApp: 
-                                    ${c.whatsapp ? `<a href="https://wa.me/${escaparHtml(c.whatsapp)}" target="_blank" rel="noopener noreferrer" class="font-bold text-emerald-800 underline hover:text-emerald-950">${escaparHtml(telefonoMostrar)}</a>` : `<strong class="text-stone-500">${escaparHtml(telefonoMostrar)}</strong>`}
-                                    | Dir: <strong>${escaparHtml(c.direccion || 'Sin dirección')}</strong>
-                                </p>
-                            </div>
-                            <div class="flex items-center gap-1.5 flex-wrap w-full md:w-auto justify-end">
-                                <button onclick="toggleTarifaBusquedas('${escaparAtributoJs(c.id)}', ${!tarifaBusquedas})" class="px-2.5 py-1.5 rounded font-medium text-white inline-flex items-center gap-1 ${tarifaBusquedas ? 'bg-indigo-700 hover:bg-indigo-800' : 'bg-stone-400 hover:bg-stone-500'}" title="Control de acceso para ver las tendencias de búsqueda de usuarios">
-                                    <i class="fa-solid fa-magnifying-glass-chart"></i> ${tarifaBusquedas ? 'Tarifa Búsq: ON' : 'Tarifa Búsq: OFF'}
-                                </button>
-                                <button onclick="toggleTarifaEstadisticas('${escaparAtributoJs(c.id)}', ${!tarifaEstadisticas})" class="px-2.5 py-1.5 rounded font-medium text-white inline-flex items-center gap-1 ${tarifaEstadisticas ? 'bg-emerald-700 hover:bg-emerald-800' : 'bg-stone-400 hover:bg-stone-500'}" title="Control de acceso para estadísticas de productos">
-                                    <i class="fa-solid fa-chart-pie"></i> ${tarifaEstadisticas ? 'Tarifa Stats: ON' : 'Tarifa Stats: OFF'}
-                                </button>
-                                <button onclick="cambiarPasswordAdmin('${escaparAtributoJs(c.id)}')" class="bg-amber-600 text-white px-2.5 py-1.5 rounded hover:bg-amber-700 font-medium">Pass</button>
-                                <button onclick="cambiarDiaPago('${escaparAtributoJs(c.id)}')" class="bg-stone-700 text-white px-2.5 py-1.5 rounded hover:bg-stone-800 font-medium">Día</button>
-                                <button onclick="toggleActivoColectivo('${escaparAtributoJs(c.id)}', ${!activoStatus})" class="px-2.5 py-1.5 rounded text-white font-medium ${activoStatus ? 'bg-amber-600 hover:bg-amber-700' : 'bg-emerald-700 hover:bg-emerald-800'}">${activoStatus ? 'Suspender' : 'Activar'}</button>
-                                <button onclick="eliminarColectivo('${escaparAtributoJs(c.id)}')" class="bg-red-700 text-white px-2.5 py-1.5 rounded hover:bg-red-800 font-medium">Eliminar</button>
-                            </div>
-                        </div>
-
-                        <div class="bg-emerald-50/60 border border-emerald-200 p-2.5 rounded-lg grid grid-cols-2 sm:grid-cols-4 gap-2 text-center">
-                            <div class="bg-white p-1.5 rounded border border-emerald-100">
-                                <span class="text-[9px] text-stone-500 uppercase block">Visitas Artículos</span>
-                                <span class="text-sm font-extrabold text-stone-900">${totalVisitasAdmin.toLocaleString()}</span>
-                            </div>
-                            <div class="bg-white p-1.5 rounded border border-emerald-100">
-                                <span class="text-[9px] text-emerald-700 uppercase block">Clics WhatsApp</span>
-                                <span class="text-sm font-extrabold text-emerald-800">${totalWpAdmin.toLocaleString()}</span>
-                            </div>
-                            <div class="bg-white p-1.5 rounded border border-emerald-100">
-                                <span class="text-[9px] text-amber-800 uppercase block">Conversión</span>
-                                <span class="text-sm font-extrabold text-amber-700">${conversionAdmin}%</span>
-                            </div>
-                            <div class="bg-white p-1.5 rounded border border-emerald-100 text-left overflow-hidden">
-                                <span class="text-[9px] text-stone-500 uppercase block text-center">Top Artículos (Rango)</span>
-                                <div class="flex gap-1 overflow-x-auto scrollbar-none mt-0.5">${topProdsHtml || '<span class="text-[9px] text-stone-400 italic">Sin datos</span>'}</div>
-                            </div>
-                        </div>
-                    </div>
-                `;
-            });
-            lista.innerHTML = html;
-        }
-
-        function toggleTarifaBusquedas(colId, nuevoEstado) {
-            db.ref(`colectivos/${colId}/tarifaBusquedasActiva`).set(nuevoEstado).then(() => {
-                const col = catGlobal.find(c => c.id === colId);
-                if (col) col.tarifaBusquedasActiva = nuevoEstado;
-                alert(`Acceso al análisis de tendencias de búsqueda ${nuevoEstado ? 'ACTIVADO' : 'DESACTIVADO'} para el negocio.`);
-                renderizarAdminColectivos();
-            });
-        }
-
-        function toggleTarifaEstadisticas(colId, nuevoEstado) {
-            db.ref(`colectivos/${colId}/tarifaEstadisticasActiva`).set(nuevoEstado).then(() => {
-                const col = catGlobal.find(c => c.id === colId);
-                if (col) col.tarifaEstadisticasActiva = nuevoEstado;
-                alert(`Acceso a estadísticas de productos ${nuevoEstado ? 'ACTIVADO' : 'DESACTIVADO'} para el negocio.`);
-                renderizarAdminColectivos();
-            });
-        }
-
-        function cambiarPasswordAdmin(colId) {
-            const nuevoPass = prompt("Ingresa la nueva contraseña para este negocio:");
-            if (nuevoPass && nuevoPass.trim() !== "") {
-                db.ref(`colectivos/${colId}/password`).set(nuevoPass.trim()).then(() => {
-                    const col = catGlobal.find(c => c.id === colId);
-                    if (col) col.password = nuevoPass.trim();
-                    alert("Contraseña actualizada exitosamente por el Administrador.");
-                    renderizarAdminColectivos();
-                });
-            }
-        }
-
-        function cambiarDiaPago(colId) {
-            const nuevoDia = prompt("Ingresa el nuevo día de pago mensual (1 al 30):");
-            if (nuevoDia && !isNaN(nuevoDia) && nuevoDia >= 1 && nuevoDia <= 30) {
-                db.ref(`colectivos/${colId}/diaPago`).set(parseInt(nuevoDia)).then(() => {
-                    const col = catGlobal.find(c => c.id === colId);
-                    if (col) col.diaPago = parseInt(nuevoDia);
-                    alert("Día de pago actualizado correctamente.");
-                    renderizarAdminPagos();
-                    renderizarAdminColectivos();
-                });
-            } else if (nuevoDia) {
-                alert("Por favor ingresa un número válido entre 1 y 30.");
-            }
-        }
-
-        function abrirModalNuevoColectivo() {
-            actualizarSelectTiposNegocioAdmin();
-            document.getElementById("modalNuevoColectivo").classList.remove("hidden");
-        }
-        function cerrarModalNuevoColectivo() {
-            document.getElementById("modalNuevoColectivo").classList.add("hidden");
-        }
-
-        function registrarColectivo(e) {
-            e.preventDefault();
-            const nombre = document.getElementById("nuevoColNombre").value.trim();
-            const tipoNegocio = document.getElementById("nuevoColTipo").value;
-            const direccion = document.getElementById("nuevoColDireccion").value.trim();
-            const usuario = document.getElementById("nuevoColUser").value.trim();
-            const password = document.getElementById("nuevoColPass").value.trim();
-            const whatsapp = document.getElementById("nuevoColWp").value.trim();
-            const diaPago = parseInt(document.getElementById("nuevoDiaPago").value.trim() || 15);
-            const mostrarDireccion = document.getElementById("nuevoMostrarDir").checked;
-            const fechaRegistro = obtenerFechaLocalISO();
-
-            const id = 'col_' + Date.now();
-            const codigoCorto = 'CL-' + Math.floor(10 + Math.random() * 90);
-
-            const nuevoColObj = {
-                nombre, 
-                tipoNegocio, 
-                direccion, 
-                usuario, 
-                password, 
-                whatsapp, 
-                diaPago, 
-                mostrarDireccion, 
-                activo: true, 
-                whatsappActivo: true, 
-                tarifaBusquedasActiva: false, 
-                tarifaEstadisticasActiva: false, 
-                codigoCorto,
-                fechaRegistro
-            };
-            db.ref(`colectivos/${id}`).set(nuevoColObj).then(() => {
-                catGlobal.push({ id, ...nuevoColObj });
-                cerrarModalNuevoColectivo();
-                renderizarAdminPagos();
-                renderizarAdminColectivos();
-                alert("Negocio registrado con éxito. Fecha de registro guardada: " + fechaRegistro + " | Código corto: " + codigoCorto);
-            });
-        }
-
-        function toggleActivoColectivo(colId, nuevoEstado) {
-            db.ref(`colectivos/${colId}/activo`).set(nuevoEstado).then(() => {
-                const col = catGlobal.find(c => c.id === colId);
-                if (col) col.activo = nuevoEstado;
-                renderizarAdminColectivos();
-                renderizarPromocionAleatoria();
-                filtrarProductos(true);
-            });
-        }
-
-        function eliminarColectivo(colId) {
-            if (confirm("¿Estás seguro de eliminar este negocio y sus accesos?")) {
-                db.ref(`colectivos/${colId}`).remove().then(() => {
-                    catGlobal = catGlobal.filter(c => c.id !== colId);
-                    renderizarAdminPagos();
-                    renderizarAdminColectivos();
-                    renderizarPromocionAleatoria();
-                    filtrarProductos(true);
-                });
-            }
-        }
-    </script>
-</body>
-</html>
+                preview.innerHTML = `<img src="${escaparHtml(promo.imagen)}" class="w-20 h-16 object-cover rounded border cursor-pointer" onclick="ampliarFoto('${escap
