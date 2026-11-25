@@ -44,6 +44,27 @@
             background-size: 44px 44px;
             background-position: 0 0, 22px 22px;
         }
+        /* Carrusel táctil fluido en tarjetas de artículos */
+        .carousel-snap {
+            display: flex;
+            overflow-x: auto;
+            scroll-snap-type: x mandatory;
+            scroll-behavior: smooth;
+            -webkit-overflow-scrolling: touch;
+        }
+        .carousel-snap::-webkit-scrollbar {
+            display: none;
+        }
+        .carousel-snap {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        .carousel-slide {
+            flex: 0 0 100%;
+            width: 100%;
+            height: 100%;
+            scroll-snap-align: start;
+        }
     </style>
 </head>
 <body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col">
@@ -941,6 +962,7 @@
         let promoImgTempBase64 = "";
         let timeoutBusqueda = null;
         let promosAleatoriasSeleccionadasIds = [];
+        let fotoActualTarjetaMap = {};
 
         function usuarioAEmailInterno(usuario) {
             const limpio = String(usuario || "").trim().toLowerCase();
@@ -1477,6 +1499,39 @@
             renderizarProductos();
         }
 
+        function moverCarruselTarjeta(event, prodId, direccion) {
+            event.stopPropagation();
+            const track = document.getElementById(`track_${prodId}`);
+            if (!track) return;
+            const ancho = track.clientWidth;
+            track.scrollBy({ left: direccion * ancho, behavior: 'smooth' });
+        }
+
+        function actualizarDotsTarjeta(prodId, totalFotos) {
+            const track = document.getElementById(`track_${prodId}`);
+            if (!track || !track.clientWidth) return;
+            const indiceActivo = Math.max(0, Math.min(totalFotos - 1, Math.round(track.scrollLeft / track.clientWidth)));
+            fotoActualTarjetaMap[prodId] = indiceActivo;
+
+            for (let i = 0; i < totalFotos; i++) {
+                const dot = document.getElementById(`dot_${prodId}_${i}`);
+                if (dot) {
+                    dot.className = i === indiceActivo
+                        ? "w-2 h-1.5 rounded-full bg-teal-400 transition-all shadow-xs"
+                        : "w-1.5 h-1.5 rounded-full bg-white/75 transition-all shadow-xs";
+                }
+            }
+        }
+
+        function ampliarFotoActualTarjeta(prodId) {
+            const p = productosGlobal[prodId];
+            if (!p) return;
+            const fotos = (p.fotos && p.fotos.length > 0) ? p.fotos : ["https://via.placeholder.com/200x200?text=Sin+Foto"];
+            const indice = fotoActualTarjetaMap[prodId] || 0;
+            const urlActiva = fotos[indice] || fotos[0];
+            ampliarFoto(urlActiva);
+        }
+
         function renderizarProductos() {
             const grid = document.getElementById("gridProductos");
             const contenedorVerMas = document.getElementById("contenedorVerMasProductos");
@@ -1516,14 +1571,37 @@
             let html = "";
 
             visibles.forEach(({ prodId, p, col, nombreCol }) => {
-                const primeraFoto = (p.fotos && p.fotos.length > 0) ? p.fotos[0] : "https://via.placeholder.com/200x200?text=Sin+Foto";
+                const fotos = (p.fotos && p.fotos.length > 0) ? p.fotos : ["https://via.placeholder.com/200x200?text=Sin+Foto"];
+                const tieneVarias = fotos.length > 1;
+                fotoActualTarjetaMap[prodId] = 0;
+
+                const slidesHtml = fotos.map((fotoUrl, idx) => `
+                    <div class="carousel-slide relative overflow-hidden">
+                        <img src="${escaparHtml(fotoUrl)}" loading="lazy" decoding="async" class="w-full h-full object-cover group-hover:scale-105 transition duration-300" alt="${escaparHtml(p.titulo)} (${idx + 1}/${fotos.length})">
+                    </div>
+                `).join('');
+
+                const controlesCarruselHtml = tieneVarias ? `
+                    <button type="button" onclick="moverCarruselTarjeta(event, '${escaparAtributoJs(prodId)}', -1)" aria-label="Foto anterior" class="hidden sm:flex opacity-0 group-hover:opacity-100 absolute left-1.5 top-1/2 -translate-y-1/2 w-6 h-6 rounded-full bg-black/50 hover:bg-black/75 text-white items-center justify-center text-[10px] transition z-10">
+                        <i class="fa-solid fa-chevron-left"></i>
+                    </button>
+                    <button type="button" onclick="moverCarruselTarjeta(event, '${escaparAtributoJs(prodId)}', 1)" aria-label="Foto siguiente" class="hidden sm:flex opacity-0 group-hover:opacity-100 absolute right-1.5 top-1/2 -translate-y-1/2 w-6 h-6 rounded-full bg-black/50 hover:bg-black/75 text-white items-center justify-center text-[10px] transition z-10">
+                        <i class="fa-solid fa-chevron-right"></i>
+                    </button>
+                    <div class="absolute bottom-1.5 left-1/2 -translate-x-1/2 flex items-center gap-1 bg-black/40 backdrop-blur-xs px-2 py-0.5 rounded-full pointer-events-none z-10">
+                        ${fotos.map((_, i) => `<span id="dot_${escaparHtml(prodId)}_${i}" class="${i === 0 ? 'w-2 h-1.5 rounded-full bg-teal-400' : 'w-1.5 h-1.5 rounded-full bg-white/75'} transition-all"></span>`).join('')}
+                    </div>
+                ` : '';
 
                 html += `
                     <div class="h-full bg-white border-slate-200 hover:border-teal-400 rounded-2xl border overflow-hidden shadow-2xs hover:shadow-md transition flex flex-col justify-between group">
                         <div class="flex-1 flex flex-col">
-                            <div class="relative h-36 sm:h-44 bg-slate-100 overflow-hidden cursor-pointer shrink-0" onclick="verDetalleProducto('${escaparAtributoJs(prodId)}')" title="Ver detalles y fotos">
-                                <img src="${escaparHtml(primeraFoto)}" loading="lazy" decoding="async" class="w-full h-full object-cover group-hover:scale-105 transition duration-300" alt="${escaparHtml(p.titulo)}">
-                                <span class="absolute top-1.5 left-1.5 bg-[#0B2A4A]/90 backdrop-blur-xs text-teal-200 text-[9px] px-2 py-0.5 rounded-full font-semibold">${escaparHtml(p.categoria)}</span>
+                            <div class="relative h-36 sm:h-44 bg-slate-100 overflow-hidden cursor-pointer shrink-0" onclick="verDetalleProducto('${escaparAtributoJs(prodId)}')" title="${tieneVarias ? 'Desliza hacia los lados para ver más fotos o toca para ver detalles' : 'Ver detalles y fotos'}">
+                                <div id="track_${escaparHtml(prodId)}" onscroll="actualizarDotsTarjeta('${escaparAtributoJs(prodId)}', ${fotos.length})" class="carousel-snap w-full h-full">
+                                    ${slidesHtml}
+                                </div>
+                                <span class="absolute top-1.5 left-1.5 bg-[#0B2A4A]/90 backdrop-blur-xs text-teal-200 text-[9px] px-2 py-0.5 rounded-full font-semibold z-10 pointer-events-none">${escaparHtml(p.categoria)}</span>
+                                ${controlesCarruselHtml}
                             </div>
                             <div class="p-2.5 pb-1.5 cursor-pointer flex-1 flex flex-col justify-between" onclick="verDetalleProducto('${escaparAtributoJs(prodId)}')">
                                 <div>
@@ -1535,7 +1613,7 @@
                         <div class="p-2.5 pt-2 border-t border-slate-100 bg-slate-50/60 space-y-1">
                             <div class="flex justify-between items-center gap-1">
                                 <span class="text-teal-800 font-extrabold text-base sm:text-lg leading-tight cursor-pointer truncate" onclick="verDetalleProducto('${escaparAtributoJs(prodId)}')">${escaparHtml(p.precio)} <small class="text-[10px] font-bold">MXN</small></span>
-                                <button onclick="ampliarFoto('${escaparAtributoJs(primeraFoto)}')" class="text-[10px] bg-slate-200 hover:bg-slate-300 text-slate-700 px-2 py-1 rounded font-semibold transition shrink-0 inline-flex items-center gap-1" title="Ampliar foto"><i class="fa-solid fa-magnifying-glass-plus"></i></button>
+                                <button onclick="ampliarFotoActualTarjeta('${escaparAtributoJs(prodId)}')" class="text-[10px] bg-slate-200 hover:bg-slate-300 text-slate-700 px-2 py-1 rounded font-semibold transition shrink-0 inline-flex items-center gap-1" title="Ampliar foto"><i class="fa-solid fa-magnifying-glass-plus"></i></button>
                             </div>
                             <div class="text-[11px] font-bold text-slate-700 truncate cursor-pointer" onclick="verDetalleProducto('${escaparAtributoJs(prodId)}')" title="${escaparHtml(nombreCol)}">${escaparHtml(nombreCol)}</div>
                         </div>
