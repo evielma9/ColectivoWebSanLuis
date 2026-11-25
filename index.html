@@ -178,42 +178,38 @@
     </div>
 
     <!-- BANNER HERO ATÍPICO (AZUL MARINO PROFUNDO + TURQUESA + ÁMBAR, CON DETALLE NAVIDEÑO SUTIL #2) -->
-    <section class="bg-gradient-to-r from-[#081C34] via-[#0B2A4A] to-teal-900 mesh-pattern text-white py-3 sm:py-4 px-3 sm:px-4 border-b-2 border-teal-400/70 relative overflow-hidden">
-        <div class="max-w-5xl mx-auto relative z-10 flex flex-col md:flex-row items-center justify-between gap-2.5 md:gap-4">
-            <!-- Texto compacto a la izquierda -->
-            <div class="flex items-center gap-3 text-center md:text-left">
-                <div class="w-10 h-10 rounded-xl bg-teal-400/15 border border-teal-300/30 flex items-center justify-center shrink-0 hidden sm:flex">
-                    <i class="fa-solid fa-bag-shopping text-teal-300 text-lg"></i>
-                </div>
-                <div class="min-w-0">
-                    <h2 class="font-logo text-base sm:text-lg font-extrabold text-white leading-tight tracking-tight">
-                        Compra, Descubre y Conecta <span class="text-teal-300">en San Luis R.C.</span>
-                    </h2>
-                    <p class="text-slate-200 text-[11px] sm:text-xs leading-snug line-clamp-2 md:line-clamp-1">
-                        Catálogos locales, servicios y promociones de temporada <span class="text-amber-300 font-semibold"><i class="fa-solid fa-gift text-[10px]"></i> especiales de fin de año</span> directo con negocios de nuestra ciudad.
-                    </p>
-                </div>
+    <section class="bg-gradient-to-r from-[#081C34] via-[#0B2A4A] to-teal-900 mesh-pattern text-white py-3 sm:py-3.5 px-3 sm:px-4 border-b-2 border-teal-400/70 relative overflow-hidden">
+        <div class="max-w-7xl mx-auto relative z-10 flex items-center justify-center md:justify-start gap-3">
+            <div class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-teal-400/15 border border-teal-300/30 flex items-center justify-center shrink-0 hidden sm:flex">
+                <i class="fa-solid fa-bag-shopping text-teal-300 text-base sm:text-lg"></i>
             </div>
-            
-            <!-- BUSCADOR PRINCIPAL COMPACTO -->
-            <div class="bg-white/95 backdrop-blur p-1.5 rounded-xl shadow-md border border-teal-300/50 w-full md:w-80 lg:w-96 shrink-0">
-                <div class="flex items-center bg-slate-50 px-3 rounded-lg border border-slate-200 focus-within:border-teal-600 focus-within:ring-2 focus-within:ring-teal-600/20 transition">
-                    <i class="fa-solid fa-magnifying-glass text-teal-700 mr-2 text-xs"></i>
-                    <input type="text" id="inputBuscar" oninput="filtrarProductos(); registrarBusquedaUsuario();" placeholder="Buscar artículo, servicio, negocio..." class="w-full py-1.5 bg-transparent text-xs focus:outline-none text-slate-800 placeholder-slate-400">
-                </div>
+            <div class="min-w-0 text-center md:text-left">
+                <h2 class="font-logo text-base sm:text-lg font-extrabold text-white leading-tight tracking-tight">
+                    Compra, Descubre y Conecta <span class="text-teal-300">en San Luis R.C.</span>
+                </h2>
+                <p class="text-slate-200 text-[11px] sm:text-xs leading-snug line-clamp-2 md:line-clamp-1">
+                    Catálogos locales, servicios y promociones de temporada <span class="text-amber-300 font-semibold"><i class="fa-solid fa-gift text-[10px]"></i> especiales de fin de año</span> directo con negocios de nuestra ciudad.
+                </p>
             </div>
         </div>
     </section>
 
-    <!-- CONTENIDO PRINCIPAL: 3 PROMOCIONES ALEATORIAS DE ANUNCIANTES, CATÁLOGO Y FILTROS -->
+    <!-- CONTENIDO PRINCIPAL: MÁXIMO 2 PROMOCIONES ALEATORIAS DE ANUNCIANTES, BUSCADOR + FILTROS Y CATÁLOGO -->
     <main class="max-w-7xl mx-auto px-3 sm:px-4 py-4 w-full flex-1">
         <section class="space-y-3.5">
-            <!-- MÁXIMO 3 PROMOCIONES ALEATORIAS DE LAS COMPAÑÍAS QUE SOLO SE ANUNCIAN -->
+            <!-- MÁXIMO 2 PROMOCIONES ALEATORIAS DE LAS COMPAÑÍAS QUE SOLO SE ANUNCIAN -->
             <div id="contenedorPromoAleatoria" class="hidden"></div>
 
-            <!-- BARRA DE FILTROS / CATEGORÍAS -->
-            <div class="w-full">
-                <div id="contenedorCategorias" class="flex items-center gap-2 overflow-x-auto pb-1.5 scrollbar-none">
+            <!-- BUSCADOR PEGADO AL ÁREA DE FILTROS / CATEGORÍAS -->
+            <div class="bg-white border border-slate-200 rounded-2xl p-2.5 shadow-2xs space-y-2">
+                <!-- BUSCADOR INTEGRADO JUNTO A LOS FILTROS -->
+                <div class="flex items-center bg-slate-50 px-3 py-1.5 rounded-xl border border-slate-200 focus-within:border-teal-600 focus-within:ring-2 focus-within:ring-teal-600/20 transition">
+                    <i class="fa-solid fa-magnifying-glass text-teal-700 mr-2 text-xs"></i>
+                    <input type="text" id="inputBuscar" oninput="filtrarProductos(); registrarBusquedaUsuario();" placeholder="Buscar artículo, servicio, categoría o negocio..." class="w-full py-0.5 bg-transparent text-xs focus:outline-none text-slate-800 placeholder-slate-400">
+                </div>
+
+                <!-- BARRA DE FILTROS / CATEGORÍAS -->
+                <div id="contenedorCategorias" class="flex items-center gap-2 overflow-x-auto pb-0.5 scrollbar-none">
                     <!-- Generado dinámicamente (incluye el filtro "Promociones" de colectivos) -->
                 </div>
             </div>
@@ -1216,7 +1212,7 @@
             return copia;
         }
 
-        // BLOQUE INICIAL: HASTA 3 PROMOCIONES ALEATORIAS DE LAS COMPAÑÍAS QUE SOLO SE ANUNCIAN (2 COLUMNAS EN CELULAR)
+        // BLOQUE INICIAL: MÁXIMO 2 PROMOCIONES ALEATORIAS DE LAS COMPAÑÍAS QUE SOLO SE ANUNCIAN
         function renderizarPromocionAleatoria() {
             const contenedor = document.getElementById("contenedorPromoAleatoria");
             if (!contenedor) return;
@@ -1231,12 +1227,13 @@
 
             let seleccionadas = promosAleatoriasSeleccionadasIds
                 .map(id => activasAnunciantes.find(item => item.id === id))
-                .filter(Boolean);
+                .filter(Boolean)
+                .slice(0, 2);
 
-            if (seleccionadas.length < 3 && seleccionadas.length < activasAnunciantes.length) {
+            if (seleccionadas.length < 2 && seleccionadas.length < activasAnunciantes.length) {
                 const idsYaElegidos = new Set(seleccionadas.map(item => item.id));
                 const restantes = mezclarArrayAleatorio(activasAnunciantes.filter(item => !idsYaElegidos.has(item.id)));
-                seleccionadas = seleccionadas.concat(restantes.slice(0, 3 - seleccionadas.length));
+                seleccionadas = seleccionadas.concat(restantes.slice(0, 2 - seleccionadas.length));
             }
 
             promosAleatoriasSeleccionadasIds = seleccionadas.map(item => item.id);
@@ -1264,7 +1261,7 @@
                        </div>`;
 
                 const btnWpHtml = permiteWpPromo
-                    ? `<a href="https://wa.me/${wpCol}?text=${mensajeWp}" onclick="registrarEventoColectivo('${escaparAtributoJs(col.id)}', 'whatsapp', '${escaparAtributoJs(promoId)}')" target="_blank" rel="noopener noreferrer" class="bg-teal-600 hover:bg-teal-700 text-white px-2 py-1 rounded-lg text-[10px] font-bold inline-flex items-center gap-1 shadow-2xs transition shrink-0" title="Contactar por WhatsApp">
+                    ? `<a href="https://wa.me/${wpCol}?text=${mensajeWp}" onclick="registrarEventoColectivo('${escaparAtributoJs(col.id)}', 'whatsapp', '${escaparAtributoJs(promoId)}')" target="_blank" rel="noopener noreferrer" class="bg-teal-600 hover:bg-teal-700 text-white px-2.5 py-1 rounded-lg text-[10px] font-bold inline-flex items-center gap-1 shadow-2xs transition shrink-0" title="Contactar por WhatsApp">
                            <i class="fa-brands fa-whatsapp"></i> <span class="hidden sm:inline">Contactar</span>
                        </a>`
                     : '';
@@ -1299,7 +1296,7 @@
                         </span>
                         <span class="text-[10px] font-semibold text-slate-500">Negocios en SLRC</span>
                     </div>
-                    <div class="grid grid-cols-2 md:grid-cols-3 gap-2.5 sm:gap-3 items-stretch">
+                    <div class="grid grid-cols-2 gap-2.5 sm:gap-3 items-stretch">
                         ${tarjetasHtml}
                     </div>
                 </div>
