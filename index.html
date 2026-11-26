@@ -228,12 +228,17 @@
             <!-- MÁXIMO 2 PROMOCIONES ALEATORIAS DE LAS COMPAÑÍAS QUE SOLO SE ANUNCIAN -->
             <div id="contenedorPromoAleatoria" class="hidden"></div>
 
-            <!-- BUSCADOR PEGADO AL ÁREA DE FILTROS / CATEGORÍAS -->
-            <div class="bg-white border border-slate-200 rounded-2xl p-2 shadow-2xs space-y-1.5">
-                <!-- BUSCADOR INTEGRADO JUNTO A LOS FILTROS -->
-                <div class="flex items-center bg-slate-50 px-3 py-1 rounded-xl border border-slate-200 focus-within:border-teal-600 focus-within:ring-2 focus-within:ring-teal-600/20 transition">
-                    <i class="fa-solid fa-magnifying-glass text-teal-700 mr-2 text-xs"></i>
-                    <input type="text" id="inputBuscar" oninput="filtrarProductos(); registrarBusquedaUsuario();" placeholder="Buscar artículo, regalo, servicio, categoría o negocio..." class="w-full py-0.5 bg-transparent text-xs focus:outline-none text-slate-800 placeholder-slate-400">
+            <!-- BUSCADOR DESTACADO TONO MUY CLARITO SUTIL PEGADO AL ÁREA DE FILTROS / CATEGORÍAS -->
+            <div class="bg-gradient-to-r from-teal-50/90 via-slate-100/95 to-sky-50/90 border border-teal-300/75 rounded-2xl p-2.5 sm:p-3 shadow-2xs space-y-2.5">
+                <!-- BUSCADOR INTEGRADO DE ALTO CONTRASTE (text-base evita el zoom automático en celular) -->
+                <div class="flex items-center bg-white px-3.5 py-2 rounded-xl border border-teal-400/80 shadow-2xs focus-within:border-[#0B2A4A] focus-within:ring-4 focus-within:ring-teal-500/15 transition">
+                    <div class="w-7 h-7 rounded-lg bg-teal-600 text-white flex items-center justify-center mr-2.5 shrink-0 shadow-2xs">
+                        <i class="fa-solid fa-magnifying-glass text-xs"></i>
+                    </div>
+                    <input type="text" id="inputBuscar" oninput="filtrarProductos(); registrarBusquedaUsuario(); actualizarBotonLimpiarBusqueda();" placeholder="¿Qué buscas hoy? Artículo, regalo, servicio..." class="w-full py-0.5 bg-transparent text-base sm:text-sm font-medium focus:outline-none text-slate-900 placeholder-slate-500">
+                    <button type="button" id="btnLimpiarBusqueda" onclick="limpiarBusquedaRapida()" class="hidden text-slate-400 hover:text-rose-600 px-1.5 transition" title="Limpiar búsqueda">
+                        <i class="fa-solid fa-circle-xmark text-base"></i>
+                    </button>
                 </div>
 
                 <!-- BARRA DE FILTROS / CATEGORÍAS -->
@@ -1096,6 +1101,24 @@
                     }
                 }
             });
+        }
+
+        function actualizarBotonLimpiarBusqueda() {
+            const input = document.getElementById("inputBuscar");
+            const btn = document.getElementById("btnLimpiarBusqueda");
+            if (input && btn) {
+                btn.classList.toggle("hidden", !input.value.trim());
+            }
+        }
+
+        function limpiarBusquedaRapida() {
+            const input = document.getElementById("inputBuscar");
+            if (input) {
+                input.value = "";
+                input.focus();
+            }
+            actualizarBotonLimpiarBusqueda();
+            filtrarProductos();
         }
 
         function registrarBusquedaUsuario() {
