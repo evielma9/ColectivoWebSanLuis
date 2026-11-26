@@ -37,12 +37,12 @@
             -ms-overflow-style: none;
             scrollbar-width: none;
         }
-        /* Patrón sutil geométrico para el hero moderno */
+        /* Patrón sutil invernal/navideño para el hero */
         .mesh-pattern {
-            background-image: radial-gradient(rgba(45, 212, 191, 0.16) 1.5px, transparent 1.5px),
-                              radial-gradient(rgba(251, 191, 36, 0.14) 1px, transparent 1px);
-            background-size: 44px 44px;
-            background-position: 0 0, 22px 22px;
+            background-image: radial-gradient(rgba(255, 255, 255, 0.16) 1.5px, transparent 1.5px),
+                              radial-gradient(rgba(251, 191, 36, 0.18) 1px, transparent 1px);
+            background-size: 38px 38px;
+            background-position: 0 0, 19px 19px;
         }
         /* Carrusel táctil fluido en tarjetas de artículos */
         .carousel-snap {
@@ -69,21 +69,24 @@
 </head>
 <body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col">
 
+    <!-- FRANJA SUPERIOR NAVIDEÑA SUTIL -->
+    <div class="h-1 w-full bg-gradient-to-r from-emerald-700 via-rose-600 to-amber-500"></div>
+
     <!-- HEADER RESPONSIVO CON MENÚ DE 3 LÍNEAS A LA IZQUIERDA Y LOGO GOSHOPPING SAN LUIS R C -->
     <header class="bg-white/95 backdrop-blur-md border-b border-slate-200 shadow-2xs sticky top-0 z-40">
-        <div class="max-w-7xl mx-auto px-3 sm:px-6 py-1.5 sm:py-2 flex justify-between items-center gap-2">
+        <div class="max-w-7xl mx-auto px-3 sm:px-6 py-1.5 flex justify-between items-center gap-2">
             
             <!-- IZQUIERDA: BOTÓN 3 LÍNEAS + LOGO -->
             <div class="flex items-center gap-2.5 sm:gap-3.5 min-w-0">
-                <button type="button" onclick="abrirMenuLateral()" aria-label="Abrir menú principal" title="Menú" class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-slate-100 hover:bg-teal-50 text-[#0B2A4A] hover:text-teal-700 border border-slate-200 flex items-center justify-center transition shrink-0 shadow-2xs">
+                <button type="button" onclick="abrirMenuLateral()" aria-label="Abrir menú principal" title="Menú" class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-slate-100 hover:bg-rose-50 text-[#0B2A4A] hover:text-rose-700 border border-slate-200 flex items-center justify-center transition shrink-0 shadow-2xs">
                     <i class="fa-solid fa-bars text-base sm:text-lg"></i>
                 </button>
 
                 <!-- LOGO GOSHOPPING TU MERCADO LOCAL SAN LUIS R C -->
                 <a href="#" onclick="seleccionarCategoria('Todos'); window.scrollTo({top:0, behavior:'smooth'}); return false;" class="flex items-center select-none group min-w-0" title="GoShopping San Luis R C - Tu Mercado Local">
-                    <img src="logo.jpeg" alt="GoShopping Tu Mercado Local San Luis R C" class="h-11 sm:h-14 w-auto object-contain" onerror="this.style.display='none'; document.getElementById('logoSvgPrincipal').classList.remove('hidden');">
+                    <img src="logo.jpeg" alt="GoShopping Tu Mercado Local San Luis R C" class="h-10 sm:h-12 w-auto object-contain" onerror="this.style.display='none'; document.getElementById('logoSvgPrincipal').classList.remove('hidden');">
                     
-                    <svg id="logoSvgPrincipal" class="hidden h-11 sm:h-14 w-auto shrink-0 transition-transform duration-200 group-hover:scale-[1.02]" viewBox="0 0 365 148" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="GoShopping Tu Mercado Local San Luis R C">
+                    <svg id="logoSvgPrincipal" class="hidden h-10 sm:h-12 w-auto shrink-0 transition-transform duration-200 group-hover:scale-[1.02]" viewBox="0 0 365 148" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="GoShopping Tu Mercado Local San Luis R C">
                         <defs>
                             <linearGradient id="bagBodyGrad" x1="42" y1="30" x2="105" y2="122" gradientUnits="userSpaceOnUse">
                                 <stop offset="0%" stop-color="#2DD4BF"/>
@@ -123,12 +126,12 @@
                 </a>
             </div>
 
-            <!-- DERECHA: DETALLE NAVIDEÑO SUTIL #1 + BOTÓN CONTACTAR ADMIN -->
+            <!-- DERECHA: DETALLE NAVIDEÑO SUTIL + BOTÓN CONTACTAR ADMIN -->
             <div class="flex items-center gap-2 shrink-0">
-                <span class="hidden md:inline-flex items-center gap-1.5 bg-teal-50 text-teal-900 border border-teal-200 px-2.5 py-1 rounded-full text-[11px] font-bold">
-                    <i class="fa-solid fa-snowflake text-teal-600"></i> Edición Invierno 2026
+                <span class="hidden md:inline-flex items-center gap-1.5 bg-rose-50/90 text-rose-800 border border-rose-200 px-2.5 py-1 rounded-full text-[11px] font-bold">
+                    <i class="fa-solid fa-snowflake text-rose-600"></i> Navidad Local 2026
                 </span>
-                <button onclick="abrirModalContactoAdmin()" class="bg-[#0B2A4A] hover:bg-slate-800 text-white px-3 sm:px-3.5 py-2 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition shadow-2xs">
+                <button onclick="abrirModalContactoAdmin()" class="bg-[#0B2A4A] hover:bg-slate-800 text-white px-3 sm:px-3.5 py-1.5 sm:py-2 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition shadow-2xs">
                     <i class="fa-solid fa-headset text-teal-300"></i>
                     <span class="hidden sm:inline">Contactar Admin</span>
                     <span class="sm:hidden">Admin</span>
@@ -198,84 +201,90 @@
         </aside>
     </div>
 
-    <!-- BANNER HERO ATÍPICO (AZUL MARINO PROFUNDO + TURQUESA + ÁMBAR, CON DETALLE NAVIDEÑO SUTIL #2) -->
-    <section class="bg-gradient-to-r from-[#081C34] via-[#0B2A4A] to-teal-900 mesh-pattern text-white py-3 sm:py-3.5 px-3 sm:px-4 border-b-2 border-teal-400/70 relative overflow-hidden">
-        <div class="max-w-7xl mx-auto relative z-10 flex items-center justify-center md:justify-start gap-3">
-            <div class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-teal-400/15 border border-teal-300/30 flex items-center justify-center shrink-0 hidden sm:flex">
-                <i class="fa-solid fa-bag-shopping text-teal-300 text-base sm:text-lg"></i>
+    <!-- BANNER HERO COMPACTO CON DETALLE NAVIDEÑO SUTIL -->
+    <section class="bg-gradient-to-r from-[#081C34] via-[#0B2A4A] to-emerald-950 mesh-pattern text-white py-2.5 sm:py-3 px-3 sm:px-4 border-b-2 border-rose-500/60 relative overflow-hidden">
+        <!-- Copos decorativos muy tenues -->
+        <i class="fa-solid fa-snowflake text-white/10 text-4xl absolute -top-1 right-6 pointer-events-none"></i>
+        <i class="fa-solid fa-snowflake text-amber-300/10 text-2xl absolute bottom-0.5 right-28 pointer-events-none hidden sm:block"></i>
+
+        <div class="max-w-7xl mx-auto relative z-10 flex items-center justify-center md:justify-start gap-2.5">
+            <div class="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-rose-500/20 border border-rose-300/30 flex items-center justify-center shrink-0 hidden sm:flex">
+                <i class="fa-solid fa-gifts text-amber-300 text-sm sm:text-base"></i>
             </div>
             <div class="min-w-0 text-center md:text-left">
-                <h2 class="font-logo text-base sm:text-lg font-extrabold text-white leading-tight tracking-tight">
-                    Compra, Descubre y Conecta <span class="text-teal-300">en San Luis R.C.</span>
+                <h2 class="font-logo text-sm sm:text-base font-extrabold text-white leading-tight tracking-tight">
+                    Compra, Descubre y Regala <span class="text-teal-300">en San Luis R.C.</span>
                 </h2>
-                <p class="text-slate-200 text-[11px] sm:text-xs leading-snug line-clamp-2 md:line-clamp-1">
-                    Catálogos locales, servicios y promociones de temporada <span class="text-amber-300 font-semibold"><i class="fa-solid fa-gift text-[10px]"></i> especiales de fin de año</span> directo con negocios de nuestra ciudad.
+                <p class="text-slate-200 text-[10px] sm:text-xs leading-snug line-clamp-1">
+                    Catálogos locales, servicios y <span class="text-amber-300 font-semibold"><i class="fa-solid fa-sleigh text-[10px]"></i> promociones navideñas</span> directo con negocios de nuestra ciudad.
                 </p>
             </div>
         </div>
     </section>
 
     <!-- CONTENIDO PRINCIPAL: MÁXIMO 2 PROMOCIONES ALEATORIAS DE ANUNCIANTES, BUSCADOR + FILTROS Y CATÁLOGO -->
-    <main class="max-w-7xl mx-auto px-3 sm:px-4 py-4 w-full flex-1">
-        <section class="space-y-3.5">
+    <main class="max-w-7xl mx-auto px-3 sm:px-4 py-3 w-full flex-1">
+        <section class="space-y-2.5">
             <!-- MÁXIMO 2 PROMOCIONES ALEATORIAS DE LAS COMPAÑÍAS QUE SOLO SE ANUNCIAN -->
             <div id="contenedorPromoAleatoria" class="hidden"></div>
 
             <!-- BUSCADOR PEGADO AL ÁREA DE FILTROS / CATEGORÍAS -->
-            <div class="bg-white border border-slate-200 rounded-2xl p-2.5 shadow-2xs space-y-2">
+            <div class="bg-white border border-slate-200 rounded-2xl p-2 shadow-2xs space-y-1.5">
                 <!-- BUSCADOR INTEGRADO JUNTO A LOS FILTROS -->
-                <div class="flex items-center bg-slate-50 px-3 py-1.5 rounded-xl border border-slate-200 focus-within:border-teal-600 focus-within:ring-2 focus-within:ring-teal-600/20 transition">
+                <div class="flex items-center bg-slate-50 px-3 py-1 rounded-xl border border-slate-200 focus-within:border-teal-600 focus-within:ring-2 focus-within:ring-teal-600/20 transition">
                     <i class="fa-solid fa-magnifying-glass text-teal-700 mr-2 text-xs"></i>
-                    <input type="text" id="inputBuscar" oninput="filtrarProductos(); registrarBusquedaUsuario();" placeholder="Buscar artículo, servicio, categoría o negocio..." class="w-full py-0.5 bg-transparent text-xs focus:outline-none text-slate-800 placeholder-slate-400">
+                    <input type="text" id="inputBuscar" oninput="filtrarProductos(); registrarBusquedaUsuario();" placeholder="Buscar artículo, regalo, servicio, categoría o negocio..." class="w-full py-0.5 bg-transparent text-xs focus:outline-none text-slate-800 placeholder-slate-400">
                 </div>
 
                 <!-- BARRA DE FILTROS / CATEGORÍAS -->
-                <div id="contenedorCategorias" class="flex items-center gap-2 overflow-x-auto pb-0.5 scrollbar-none">
+                <div id="contenedorCategorias" class="flex items-center gap-1.5 overflow-x-auto pb-0.5 scrollbar-none">
                     <!-- Generado dinámicamente (incluye el filtro "Promociones" de colectivos) -->
                 </div>
             </div>
 
-            <!-- ENCABEZADO DE RESULTADOS -->
-            <div class="bg-white border border-slate-200 rounded-2xl p-3 shadow-2xs flex justify-between items-center">
+            <!-- ENCABEZADO DE RESULTADOS COMPACTO -->
+            <div class="bg-white border border-slate-200 rounded-xl px-3 py-2 shadow-2xs flex justify-between items-center">
                 <h3 id="tituloResultados" class="text-xs font-extrabold text-[#0B2A4A] uppercase tracking-wider flex items-center gap-1.5">
                     <i class="fa-solid fa-bag-shopping text-teal-600"></i> Catálogo General
                 </h3>
-                <span id="contadorResultados" class="text-xs bg-teal-50 text-teal-900 border border-teal-200 px-3 py-0.5 rounded-full font-bold">0 artículos</span>
+                <span id="contadorResultados" class="text-[11px] bg-teal-50 text-teal-900 border border-teal-200 px-2.5 py-0.5 rounded-full font-bold">0 artículos</span>
             </div>
 
-            <!-- GRID DE ARTÍCULOS NORMALES -->
-            <div id="gridProductos" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 items-stretch">
+            <!-- GRID DE ARTÍCULOS NORMALES (COMPACTO PARA VER MÁS ARTÍCULOS) -->
+            <div id="gridProductos" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-2.5 items-stretch">
                 <!-- Tarjetas inyectadas por JS -->
             </div>
 
             <!-- BOTÓN VER MÁS ARTÍCULOS (PAGINACIÓN DE 20 EN 20) -->
-            <div id="contenedorVerMasProductos" class="hidden text-center pt-3">
-                <button type="button" onclick="cargarMasArticulos()" class="bg-white hover:bg-teal-50 text-[#0B2A4A] border border-teal-300 font-bold text-xs px-5 py-2.5 rounded-xl shadow-2xs transition inline-flex items-center gap-2">
+            <div id="contenedorVerMasProductos" class="hidden text-center pt-2">
+                <button type="button" onclick="cargarMasArticulos()" class="bg-white hover:bg-teal-50 text-[#0B2A4A] border border-teal-300 font-bold text-xs px-5 py-2 rounded-xl shadow-2xs transition inline-flex items-center gap-2">
                     <i class="fa-solid fa-plus text-teal-600"></i> Ver más artículos (<span id="lblRestantes">0</span> restantes)
                 </button>
             </div>
 
             <!-- GRID DE PROMOCIONES DE COLECTIVOS (SOLO VISIBLE AL PRESIONAR EL FILTRO "PROMOCIONES") -->
-            <div id="gridPromociones" class="hidden grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2.5 sm:gap-3.5 items-stretch">
+            <div id="gridPromociones" class="hidden grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2.5 items-stretch">
                 <!-- Promociones inyectadas por JS -->
             </div>
 
             <!-- ESTADO SIN RESULTADOS -->
-            <div id="sinResultados" class="hidden text-center py-16 bg-white rounded-2xl border border-slate-200 mt-2">
-                <i class="fa-solid fa-box-open text-4xl text-slate-300 mb-2"></i>
-                <p id="textoSinResultados" class="text-slate-500 text-sm">No se encontraron artículos con esos criterios.</p>
+            <div id="sinResultados" class="hidden text-center py-12 bg-white rounded-2xl border border-slate-200 mt-2">
+                <i class="fa-solid fa-box-open text-3xl text-slate-300 mb-2"></i>
+                <p id="textoSinResultados" class="text-slate-500 text-xs">No se encontraron artículos con esos criterios.</p>
             </div>
         </section>
     </main>
 
     <!-- FOOTER -->
-    <footer class="bg-[#081C34] text-slate-300 border-t-4 border-teal-500 mt-12 py-6 text-center text-xs px-4 space-y-2">
-        <p class="font-logo text-base text-teal-300 font-extrabold tracking-wide">GoShopping San Luis R C</p>
+    <footer class="bg-[#081C34] text-slate-300 border-t-4 border-rose-600/80 mt-10 py-5 text-center text-xs px-4 space-y-2">
+        <p class="font-logo text-base text-teal-300 font-extrabold tracking-wide flex items-center justify-center gap-1.5">
+            <i class="fa-solid fa-snowflake text-rose-400 text-xs"></i> GoShopping San Luis R C <i class="fa-solid fa-snowflake text-rose-400 text-xs"></i>
+        </p>
         <p>GoShopping San Luis R C &copy; 2026 - Tu Mercado Local en San Luis Río Colorado, Sonora. Todos los derechos reservados.</p>
-        <div class="pt-2 flex flex-col items-center justify-center gap-1 select-none" title="Desarrollado por SLRC Web">
+        <div class="pt-1 flex flex-col items-center justify-center gap-1 select-none" title="Desarrollado por SLRC Web">
             <span class="text-[10px] text-slate-400 uppercase tracking-wider">Desarrollado por</span>
             <div class="bg-white/95 px-3 py-1 rounded-xl shadow-sm inline-flex items-center justify-center">
-                <svg class="h-8 w-auto" viewBox="0 0 130 68" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="SLRC Web">
+                <svg class="h-7 w-auto" viewBox="0 0 130 68" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="SLRC Web">
                     <text x="60" y="29" text-anchor="middle" fill="#103766" font-family="'Plus Jakarta Sans', sans-serif" font-weight="800" font-size="31" letter-spacing="0.5">SLRC</text>
                     <text x="53" y="59" text-anchor="middle" fill="#3399C6" font-family="'Plus Jakarta Sans', sans-serif" font-weight="800" font-size="31" letter-spacing="-0.5">web</text>
                     <path d="M90 36C94.5 32.5 101 32.5 105.5 36" stroke="#3399C6" stroke-width="2.6" stroke-linecap="round"/>
@@ -285,7 +294,7 @@
             </div>
         </div>
         <!-- CONTADOR DE VISITAS AL FINAL DE LA PÁGINA -->
-        <div class="pt-2 flex items-center justify-center">
+        <div class="pt-1 flex items-center justify-center">
             <span class="text-[11px] text-teal-200 font-bold inline-flex items-center gap-1.5 bg-[#0B2A4A] border border-teal-400/30 px-3 py-1 rounded-full shadow-2xs">
                 <i class="fa-solid fa-eye text-amber-400 text-[10px]"></i> Visitas: <span id="contadorVisitas" class="font-extrabold">...</span>
             </span>
@@ -1121,14 +1130,14 @@
 
             const esPromoActiva = categoriaActiva === FILTRO_PROMOCIONES;
             const botonPromosHtml = `
-                <button onclick="seleccionarCategoria('${FILTRO_PROMOCIONES}')" class="px-4 py-1.5 rounded-full text-xs font-bold whitespace-nowrap transition shrink-0 inline-flex items-center gap-1.5 ${esPromoActiva ? 'bg-amber-500 text-slate-950 shadow-sm border border-amber-600' : 'bg-amber-50 text-amber-900 border border-amber-300 hover:bg-amber-100'}">
-                    <i class="fa-solid fa-bolt text-amber-500"></i> Promociones
+                <button onclick="seleccionarCategoria('${FILTRO_PROMOCIONES}')" class="px-3.5 py-1 rounded-full text-xs font-bold whitespace-nowrap transition shrink-0 inline-flex items-center gap-1.5 ${esPromoActiva ? 'bg-rose-600 text-white shadow-sm border border-rose-700' : 'bg-rose-50 text-rose-900 border border-rose-200 hover:bg-rose-100'}">
+                    <i class="fa-solid fa-bolt ${esPromoActiva ? 'text-amber-300' : 'text-rose-600'}"></i> Promociones
                 </button>
             `;
 
             const listaCategorias = ["Todos", ...categoriasDinamicas];
             const botonesCategoriasHtml = listaCategorias.map(cat => `
-                <button onclick="seleccionarCategoria('${escaparAtributoJs(cat)}')" class="px-4 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap transition shrink-0 inline-flex items-center ${categoriaActiva === cat ? 'bg-[#0B2A4A] text-white shadow-sm border border-[#0B2A4A]' : 'bg-white text-slate-600 border border-slate-200 hover:border-teal-400 hover:bg-teal-50/40'}">
+                <button onclick="seleccionarCategoria('${escaparAtributoJs(cat)}')" class="px-3.5 py-1 rounded-full text-xs font-semibold whitespace-nowrap transition shrink-0 inline-flex items-center ${categoriaActiva === cat ? 'bg-[#0B2A4A] text-white shadow-sm border border-[#0B2A4A]' : 'bg-white text-slate-600 border border-slate-200 hover:border-teal-400 hover:bg-teal-50/40'}">
                     ${escaparHtml(cat)}
                 </button>
             `).join('');
@@ -1234,7 +1243,7 @@
             return copia;
         }
 
-        // BLOQUE INICIAL: MÁXIMO 2 PROMOCIONES ALEATORIAS DE LAS COMPAÑÍAS QUE SOLO SE ANUNCIAN
+        // BLOQUE INICIAL COMPACTO: PRECIO A LA IZQUIERDA E INFORMACIÓN A LA DERECHA
         function renderizarPromocionAleatoria() {
             const contenedor = document.getElementById("contenedorPromoAleatoria");
             if (!contenedor) return;
@@ -1267,15 +1276,15 @@
                 let ubicacionPromoHtml = '';
                 if (mostrarDir && col.direccion) {
                     ubicacionPromoHtml = `
-                        <p class="text-[10px] sm:text-[11px] text-slate-600 mt-1 flex items-center gap-1 truncate" title="${escaparHtml(col.direccion)}">
-                            <i class="fa-solid fa-location-dot text-teal-600 shrink-0"></i>
+                        <p class="text-[10px] text-slate-500 flex items-center gap-1 truncate" title="${escaparHtml(col.direccion)}">
+                            <i class="fa-solid fa-location-dot text-teal-600 shrink-0 text-[9px]"></i>
                             <span class="truncate">${escaparHtml(col.direccion)}</span>
                         </p>`;
                 } else if (promo.envioGratis !== false) {
                     ubicacionPromoHtml = `
-                        <p class="text-[10px] sm:text-[11px] text-teal-700 font-semibold mt-1 flex items-center gap-1 truncate">
-                            <i class="fa-solid fa-truck-fast shrink-0"></i>
-                            <span class="truncate">Servicio a domicilio / Envío gratis</span>
+                        <p class="text-[10px] text-teal-700 font-semibold flex items-center gap-1 truncate">
+                            <i class="fa-solid fa-truck-fast shrink-0 text-[9px]"></i>
+                            <span class="truncate">A domicilio / Envío gratis</span>
                         </p>`;
                 }
 
@@ -1284,58 +1293,60 @@
                 const mensajeWp = encodeURIComponent(`Hola, vi su anuncio "${promo.titulo}" (${promo.precio} MXN) de ${nombreCol} en GoShopping San Luis R C. Me interesa más información.`);
 
                 const imgHtml = promo.imagen
-                    ? `<div class="relative w-full h-32 sm:h-40 overflow-hidden bg-slate-100 cursor-pointer shrink-0" onclick="registrarEventoColectivo('${escaparAtributoJs(col.id)}', 'visita', '${escaparAtributoJs(promoId)}'); ampliarFoto('${escaparAtributoJs(promo.imagen)}')" title="Clic para ampliar imagen">
+                    ? `<div class="relative w-full h-24 sm:h-32 overflow-hidden bg-slate-100 cursor-pointer shrink-0" onclick="registrarEventoColectivo('${escaparAtributoJs(col.id)}', 'visita', '${escaparAtributoJs(promoId)}'); ampliarFoto('${escaparAtributoJs(promo.imagen)}')" title="Clic para ampliar imagen">
                            <img src="${escaparHtml(promo.imagen)}" loading="lazy" decoding="async" alt="${escaparHtml(promo.titulo)}" class="w-full h-full object-cover group-hover:scale-105 transition duration-300">
-                           <span class="absolute top-1.5 left-1.5 bg-[#0B2A4A]/95 backdrop-blur-xs text-teal-300 border border-teal-400/30 text-[8px] sm:text-[9px] px-2 py-0.5 rounded-full font-extrabold uppercase tracking-wider inline-flex items-center gap-1 shadow-xs">
+                           <span class="absolute top-1.5 left-1.5 bg-[#0B2A4A]/95 backdrop-blur-xs text-teal-300 border border-teal-400/30 text-[8px] px-1.5 py-0.5 rounded-full font-extrabold uppercase tracking-wider inline-flex items-center gap-1 shadow-xs">
                                <i class="fa-solid fa-star text-amber-400"></i> Destacado
                            </span>
                        </div>`
-                    : `<div class="relative w-full h-32 sm:h-40 bg-gradient-to-br from-[#0B2A4A] via-slate-800 to-teal-900 flex flex-col items-center justify-center text-white shrink-0">
-                           <span class="absolute top-1.5 left-1.5 bg-amber-400 text-slate-950 text-[8px] sm:text-[9px] px-2 py-0.5 rounded-full font-extrabold uppercase tracking-wider inline-flex items-center gap-1">
-                               <i class="fa-solid fa-star"></i> Destacado
+                    : `<div class="relative w-full h-24 sm:h-32 bg-gradient-to-br from-[#0B2A4A] via-slate-800 to-emerald-950 flex flex-col items-center justify-center text-white shrink-0">
+                           <span class="absolute top-1.5 left-1.5 bg-rose-600 text-white text-[8px] px-1.5 py-0.5 rounded-full font-extrabold uppercase tracking-wider inline-flex items-center gap-1">
+                               <i class="fa-solid fa-star text-amber-300"></i> Destacado
                            </span>
-                           <i class="fa-solid fa-bullhorn text-xl sm:text-2xl text-teal-300"></i>
-                           <span class="text-[9px] sm:text-[10px] font-bold uppercase mt-1 text-slate-200">Promoción Local</span>
+                           <i class="fa-solid fa-bullhorn text-lg sm:text-xl text-teal-300"></i>
+                           <span class="text-[9px] font-bold uppercase mt-0.5 text-slate-200">Promoción Local</span>
                        </div>`;
 
                 const btnWpHtml = permiteWpPromo
-                    ? `<a href="https://wa.me/${wpCol}?text=${mensajeWp}" onclick="registrarEventoColectivo('${escaparAtributoJs(col.id)}', 'whatsapp', '${escaparAtributoJs(promoId)}')" target="_blank" rel="noopener noreferrer" class="bg-teal-600 hover:bg-teal-700 text-white px-2.5 py-1 rounded-lg text-[10px] font-bold inline-flex items-center gap-1 shadow-2xs transition shrink-0" title="Contactar por WhatsApp">
-                           <i class="fa-brands fa-whatsapp"></i> <span class="hidden sm:inline">Contactar</span>
+                    ? `<a href="https://wa.me/${wpCol}?text=${mensajeWp}" onclick="registrarEventoColectivo('${escaparAtributoJs(col.id)}', 'whatsapp', '${escaparAtributoJs(promoId)}')" target="_blank" rel="noopener noreferrer" class="bg-teal-600 hover:bg-teal-700 text-white px-2 py-1 rounded-lg text-[10px] font-bold inline-flex items-center gap-1 shadow-2xs transition shrink-0" title="Contactar por WhatsApp">
+                           <i class="fa-brands fa-whatsapp"></i> <span class="hidden sm:inline">Pedir</span>
                        </a>`
                     : '';
 
                 return `
-                    <div class="h-full bg-white border border-teal-200 hover:border-teal-400 rounded-2xl overflow-hidden shadow-2xs hover:shadow-md transition flex flex-col justify-between group">
-                        <div class="flex-1 flex flex-col">
-                            ${imgHtml}
-                            <div class="p-2 sm:p-2.5 pb-1.5 flex-1 flex flex-col justify-between">
-                                <div>
-                                    <h4 class="font-bold text-xs sm:text-sm text-[#0B2A4A] leading-snug line-clamp-1 group-hover:text-teal-800 transition" title="${escaparHtml(promo.titulo)}">${escaparHtml(promo.titulo)}</h4>
-                                    <p class="text-[10px] sm:text-[11px] text-slate-500 line-clamp-1 mt-0.5 leading-tight">${escaparHtml(promo.descripcion || '')}</p>
-                                    ${ubicacionPromoHtml}
+                    <div class="h-full bg-white border border-rose-200/80 hover:border-teal-400 rounded-xl overflow-hidden shadow-2xs hover:shadow-md transition flex flex-col justify-between group">
+                        ${imgHtml}
+                        <!-- PRECIO A LA IZQUIERDA E INFORMACIÓN A LA DERECHA (COMPACTO) -->
+                        <div class="p-2 flex items-center gap-2 bg-white flex-1">
+                            <div class="shrink-0 pr-2 border-r border-slate-200 text-left">
+                                <span class="text-teal-800 font-extrabold text-sm sm:text-base leading-none block">${escaparHtml(promo.precio)}</span>
+                                <span class="text-[8px] sm:text-[9px] font-bold text-slate-500 uppercase">MXN</span>
+                            </div>
+                            <div class="min-w-0 flex-1 space-y-0.5">
+                                <h4 class="font-bold text-[11px] sm:text-xs text-[#0B2A4A] leading-tight line-clamp-1 group-hover:text-teal-800 transition" title="${escaparHtml(promo.titulo)}">${escaparHtml(promo.titulo)}</h4>
+                                <p class="text-[10px] text-slate-500 line-clamp-1 leading-tight">${escaparHtml(promo.descripcion || '')}</p>
+                                <div class="flex items-center justify-between gap-1 pt-0.5">
+                                    <div class="min-w-0 flex-1">
+                                        <p class="text-[10px] font-bold text-slate-700 truncate leading-tight" title="${escaparHtml(nombreCol)}">${escaparHtml(nombreCol)}</p>
+                                        ${ubicacionPromoHtml}
+                                    </div>
+                                    ${btnWpHtml}
                                 </div>
                             </div>
-                        </div>
-                        <div class="p-2 sm:p-2.5 pt-1.5 border-t border-slate-100 bg-slate-50/60 space-y-1">
-                            <div class="flex items-center justify-between gap-1">
-                                <span class="text-teal-800 font-extrabold text-sm sm:text-base leading-tight truncate">${escaparHtml(promo.precio)} <small class="text-[9px] sm:text-[10px] font-bold">MXN</small></span>
-                                ${btnWpHtml}
-                            </div>
-                            <div class="text-[10px] sm:text-[11px] font-bold text-slate-700 truncate" title="${escaparHtml(nombreCol)}">${escaparHtml(nombreCol)}</div>
                         </div>
                     </div>
                 `;
             }).join('');
 
             contenedor.innerHTML = `
-                <div class="bg-gradient-to-r from-teal-50/80 via-slate-100/80 to-amber-50/60 border border-teal-200/80 p-2.5 sm:p-3 rounded-2xl space-y-2">
+                <div class="bg-gradient-to-r from-rose-50/70 via-slate-100/80 to-emerald-50/60 border border-rose-200/70 p-2 sm:p-2.5 rounded-2xl space-y-1.5">
                     <div class="flex items-center justify-between px-0.5">
                         <span class="text-[10px] sm:text-[11px] font-extrabold text-[#0B2A4A] uppercase tracking-wider flex items-center gap-1.5">
-                            <i class="fa-solid fa-star text-amber-500"></i> Anuncios y Servicios Destacados
+                            <i class="fa-solid fa-gift text-rose-600"></i> Anuncios y Ofertas de Temporada
                         </span>
                         <span class="text-[10px] font-semibold text-slate-500">Negocios en SLRC</span>
                     </div>
-                    <div class="grid grid-cols-2 gap-2.5 sm:gap-3 items-stretch">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 items-stretch">
                         ${tarjetasHtml}
                     </div>
                 </div>
@@ -1419,7 +1430,7 @@
             });
         }
 
-        // PROMOCIONES DE LOS COLECTIVOS (SOLO SE VEN AL PRESIONAR EL FILTRO "PROMOCIONES")
+        // PROMOCIONES DE LOS COLECTIVOS (PRECIO A LA IZQUIERDA E INFORMACIÓN A LA DERECHA, COMPACTO)
         function renderizarPromociones() {
             const grid = document.getElementById("gridPromociones");
             const txtBuscar = document.getElementById("inputBuscar").value.toLowerCase().trim();
@@ -1457,10 +1468,10 @@
                 
                 let infoEnvioHtml = '';
                 if (promo.envioGratis !== false) {
-                    infoEnvioHtml = `<span class="text-teal-800 font-extrabold bg-teal-100/80 border border-teal-200 px-1.5 py-0.5 rounded inline-block">¡Envío Gratis!</span>`;
+                    infoEnvioHtml = `<span class="text-teal-800 font-extrabold bg-teal-100/80 border border-teal-200 px-1.5 py-0.2 rounded inline-block">Envío Gratis</span>`;
                 } else {
                     infoEnvioHtml = mostrarDir && col.direccion
-                        ? `<span class="inline-flex items-center gap-1"><i class="fa-solid fa-location-dot text-teal-700 shrink-0"></i><span class="truncate">${escaparHtml(col.direccion)}</span></span>`
+                        ? `<span class="inline-flex items-center gap-1 truncate"><i class="fa-solid fa-location-dot text-teal-700 shrink-0"></i><span class="truncate">${escaparHtml(col.direccion)}</span></span>`
                         : `<span class="text-amber-800 font-semibold">Envío aplicable</span>`;
                 }
 
@@ -1470,42 +1481,56 @@
 
                 count++;
                 const imgHtml = promo.imagen
-                    ? `<div class="h-36 overflow-hidden rounded-xl mb-2.5 border border-slate-200 cursor-pointer bg-white" onclick="registrarEventoColectivo('${escaparAtributoJs(col.id)}', 'visita', '${escaparAtributoJs(promoId)}'); ampliarFoto('${escaparAtributoJs(promo.imagen)}')"><img src="${escaparHtml(promo.imagen)}" alt="${escaparHtml(promo.titulo)}" class="w-full h-full object-cover hover:scale-105 transition duration-300" title="Clic para ampliar imagen"></div>`
-                    : `<div class="h-36 rounded-xl mb-2.5 border border-slate-200 bg-gradient-to-br from-slate-100 via-teal-50 to-amber-50 flex flex-col items-center justify-center text-[#0B2A4A]/70"><i class="fa-solid fa-bolt text-3xl mb-1 text-amber-500"></i><span class="text-[10px] font-bold uppercase tracking-wider">Promoción Especial</span></div>`;
+                    ? `<div class="relative h-28 sm:h-32 overflow-hidden bg-white cursor-pointer shrink-0 border-b border-slate-100" onclick="registrarEventoColectivo('${escaparAtributoJs(col.id)}', 'visita', '${escaparAtributoJs(promoId)}'); ampliarFoto('${escaparAtributoJs(promo.imagen)}')">
+                           <img src="${escaparHtml(promo.imagen)}" alt="${escaparHtml(promo.titulo)}" class="w-full h-full object-cover hover:scale-105 transition duration-300" title="Clic para ampliar imagen">
+                           <span class="absolute top-1.5 left-1.5 bg-[#0B2A4A]/90 text-teal-200 text-[8px] px-2 py-0.5 rounded-full font-bold uppercase tracking-wide">${escaparHtml(tipoNegocio)}</span>
+                       </div>`
+                    : `<div class="relative h-28 sm:h-32 border-b border-slate-100 bg-gradient-to-br from-slate-100 via-teal-50 to-rose-50 flex flex-col items-center justify-center text-[#0B2A4A]/70 shrink-0">
+                           <span class="absolute top-1.5 left-1.5 bg-[#0B2A4A]/90 text-teal-200 text-[8px] px-2 py-0.5 rounded-full font-bold uppercase tracking-wide">${escaparHtml(tipoNegocio)}</span>
+                           <i class="fa-solid fa-bolt text-2xl mb-0.5 text-rose-500"></i>
+                           <span class="text-[9px] font-bold uppercase tracking-wider">Promoción Especial</span>
+                       </div>`;
                 
                 let botonWpHtml = '';
                 if (permiteWpPromo) {
                     botonWpHtml = `
-                        <a href="https://wa.me/${wpCol}?text=${mensajeWp}" onclick="registrarEventoColectivo('${escaparAtributoJs(col.id)}', 'whatsapp', '${escaparAtributoJs(promoId)}')" target="_blank" rel="noopener noreferrer" class="bg-teal-600 hover:bg-teal-700 text-white px-3 py-1.5 rounded-lg text-[11px] font-bold inline-flex items-center gap-1 shadow-sm transition shrink-0">
-                            <i class="fa-brands fa-whatsapp text-xs"></i> Pedir
+                        <a href="https://wa.me/${wpCol}?text=${mensajeWp}" onclick="registrarEventoColectivo('${escaparAtributoJs(col.id)}', 'whatsapp', '${escaparAtributoJs(promoId)}')" target="_blank" rel="noopener noreferrer" class="bg-teal-600 hover:bg-teal-700 text-white px-2 py-1 rounded-lg text-[10px] font-bold inline-flex items-center gap-1 shadow-2xs transition shrink-0">
+                            <i class="fa-brands fa-whatsapp"></i> Pedir
                         </a>`;
                 } else {
-                    botonWpHtml = `<span class="text-[10px] text-slate-400 italic">WhatsApp desactivado</span>`;
+                    botonWpHtml = `<span class="text-[9px] text-slate-400 italic">Sin WA</span>`;
                 }
 
                 html += `
-                    <div class="h-full bg-white border border-amber-300/80 rounded-2xl p-3.5 shadow-2xs hover:shadow-md transition flex flex-col justify-between relative overflow-hidden">
-                        <div>
-                            ${imgHtml}
-                            <div class="flex justify-between items-center gap-1.5">
-                                <span class="bg-[#0B2A4A] text-teal-200 text-[9px] px-2 py-0.5 rounded-full font-bold uppercase tracking-wide shrink-0">${escaparHtml(tipoNegocio)}</span>
-                                <span class="text-[10px] text-slate-600 font-bold truncate" title="${escaparHtml(nombreCol)}">${escaparHtml(nombreCol)}</span>
+                    <div class="h-full bg-white border border-rose-200/80 hover:border-amber-400 rounded-xl shadow-2xs hover:shadow-md transition flex flex-col justify-between overflow-hidden">
+                        ${imgHtml}
+                        <!-- PRECIO A LA IZQUIERDA E INFORMACIÓN A LA DERECHA -->
+                        <div class="p-2 flex items-start gap-2 flex-1">
+                            <div class="shrink-0 pr-2 border-r border-slate-200 text-left pt-0.5">
+                                <span class="text-[#0B2A4A] font-extrabold text-sm sm:text-base leading-none block">${escaparHtml(promo.precio)}</span>
+                                <span class="text-[8px] font-bold text-slate-500 uppercase">MXN</span>
                             </div>
-                            <h4 class="font-bold text-sm text-slate-900 mt-1.5 line-clamp-1" title="${escaparHtml(promo.titulo)}">${escaparHtml(promo.titulo)}</h4>
-                            <p class="text-xs text-slate-600 mt-1 line-clamp-2 min-h-[2rem]">${escaparHtml(promo.descripcion || '')}</p>
-                            <div class="text-[10px] text-slate-700 font-medium mt-1.5 min-h-[1.25rem] flex items-center">${infoEnvioHtml}</div>
-                            <p class="text-[10px] text-slate-500 mt-1 flex items-center gap-1"><i class="fa-regular fa-calendar-days text-teal-700"></i> <span>${escaparHtml(promo.fechaInicio || 'Hoy')} al ${escaparHtml(promo.fechaFin || 'Indefinida')}</span></p>
-                        </div>
-                        <div class="mt-3 pt-2.5 border-t border-slate-100 flex items-center justify-between gap-2">
-                            <span class="text-[#0B2A4A] font-extrabold text-sm">${escaparHtml(promo.precio)} <small class="text-[10px]">MXN</small></span>
-                            ${botonWpHtml}
+                            <div class="min-w-0 flex-1 flex flex-col justify-between h-full space-y-1">
+                                <div>
+                                    <h4 class="font-bold text-xs text-slate-900 line-clamp-1 leading-tight" title="${escaparHtml(promo.titulo)}">${escaparHtml(promo.titulo)}</h4>
+                                    <p class="text-[10px] text-slate-500 line-clamp-1 leading-tight mt-0.5">${escaparHtml(promo.descripcion || '')}</p>
+                                    <p class="text-[10px] text-slate-700 font-bold truncate mt-0.5" title="${escaparHtml(nombreCol)}">${escaparHtml(nombreCol)}</p>
+                                </div>
+                                <div class="pt-1 border-t border-slate-100 flex items-center justify-between gap-1">
+                                    <div class="min-w-0 flex-1 text-[9px] text-slate-600 truncate">
+                                        ${infoEnvioHtml}
+                                        <span class="block text-slate-400 truncate"><i class="fa-regular fa-calendar text-teal-700"></i> Hasta ${escaparHtml(promo.fechaFin || 'Indef.')}</span>
+                                    </div>
+                                    ${botonWpHtml}
+                                </div>
+                            </div>
                         </div>
                     </div>
                 `;
             });
 
             grid.innerHTML = html;
-            document.getElementById("tituloResultados").innerHTML = `<i class="fa-solid fa-bolt text-amber-500"></i> Ofertas y Promociones de Colectivos`;
+            document.getElementById("tituloResultados").innerHTML = `<i class="fa-solid fa-bolt text-rose-600"></i> Ofertas y Promociones de Colectivos`;
             document.getElementById("contadorResultados").innerText = `${count} promociones`;
             document.getElementById("textoSinResultados").innerText = "No hay promociones vigentes de colectivos con esos criterios.";
             document.getElementById("sinResultados").classList.toggle("hidden", count > 0);
@@ -1549,6 +1574,7 @@
             ampliarFoto(urlActiva);
         }
 
+        // ARTÍCULOS NORMALES: PRECIO A LA IZQUIERDA E INFORMACIÓN A LA DERECHA (MENOR ALTURA VERTICAL)
         function renderizarProductos() {
             const grid = document.getElementById("gridProductos");
             const contenedorVerMas = document.getElementById("contenedorVerMasProductos");
@@ -1605,34 +1631,43 @@
                     <button type="button" onclick="moverCarruselTarjeta(event, '${escaparAtributoJs(prodId)}', 1)" aria-label="Foto siguiente" class="hidden sm:flex opacity-0 group-hover:opacity-100 absolute right-1.5 top-1/2 -translate-y-1/2 w-6 h-6 rounded-full bg-black/50 hover:bg-black/75 text-white items-center justify-center text-[10px] transition z-10">
                         <i class="fa-solid fa-chevron-right"></i>
                     </button>
-                    <div class="absolute bottom-1.5 left-1/2 -translate-x-1/2 flex items-center gap-1 bg-black/40 backdrop-blur-xs px-2 py-0.5 rounded-full pointer-events-none z-10">
+                    <div class="absolute bottom-1 left-1/2 -translate-x-1/2 flex items-center gap-1 bg-black/40 backdrop-blur-xs px-1.5 py-0.5 rounded-full pointer-events-none z-10">
                         ${fotos.map((_, i) => `<span id="dot_${escaparHtml(prodId)}_${i}" class="${i === 0 ? 'w-2 h-1.5 rounded-full bg-teal-400' : 'w-1.5 h-1.5 rounded-full bg-white/75'} transition-all"></span>`).join('')}
                     </div>
                 ` : '';
 
+                const badgeRegaloHtml = p.envolturaActiva
+                    ? `<span class="absolute top-1.5 right-1.5 bg-rose-600/90 text-white text-[8px] px-1.5 py-0.5 rounded-full font-bold z-10 pointer-events-none shadow-2xs" title="Disponible con envoltura de regalo"><i class="fa-solid fa-gift"></i></span>`
+                    : '';
+
                 html += `
-                    <div class="h-full bg-white border-slate-200 hover:border-teal-400 rounded-2xl border overflow-hidden shadow-2xs hover:shadow-md transition flex flex-col justify-between group">
-                        <div class="flex-1 flex flex-col">
-                            <div class="relative h-36 sm:h-44 bg-slate-100 overflow-hidden cursor-pointer shrink-0" onclick="verDetalleProducto('${escaparAtributoJs(prodId)}')" title="${tieneVarias ? 'Desliza hacia los lados para ver más fotos o toca para ver detalles' : 'Ver detalles y fotos'}">
-                                <div id="track_${escaparHtml(prodId)}" onscroll="actualizarDotsTarjeta('${escaparAtributoJs(prodId)}', ${fotos.length})" class="carousel-snap w-full h-full">
-                                    ${slidesHtml}
-                                </div>
-                                <span class="absolute top-1.5 left-1.5 bg-[#0B2A4A]/90 backdrop-blur-xs text-teal-200 text-[9px] px-2 py-0.5 rounded-full font-semibold z-10 pointer-events-none">${escaparHtml(p.categoria)}</span>
-                                ${controlesCarruselHtml}
+                    <div class="h-full bg-white border-slate-200 hover:border-teal-400 rounded-xl border overflow-hidden shadow-2xs hover:shadow-md transition flex flex-col justify-between group">
+                        <div class="relative h-28 sm:h-36 bg-slate-100 overflow-hidden cursor-pointer shrink-0" onclick="verDetalleProducto('${escaparAtributoJs(prodId)}')" title="${tieneVarias ? 'Desliza hacia los lados para ver más fotos o toca para ver detalles' : 'Ver detalles y fotos'}">
+                            <div id="track_${escaparHtml(prodId)}" onscroll="actualizarDotsTarjeta('${escaparAtributoJs(prodId)}', ${fotos.length})" class="carousel-snap w-full h-full">
+                                ${slidesHtml}
                             </div>
-                            <div class="p-2.5 pb-1.5 cursor-pointer flex-1 flex flex-col justify-between" onclick="verDetalleProducto('${escaparAtributoJs(prodId)}')">
-                                <div>
-                                    <h4 class="font-bold text-xs sm:text-sm text-slate-800 line-clamp-1 group-hover:text-teal-800 transition" title="${escaparHtml(p.titulo)}">${escaparHtml(p.titulo)}</h4>
-                                    <p class="text-[11px] text-slate-500 line-clamp-1 mt-0.5">${escaparHtml(p.descripcion || '')}</p>
-                                </div>
-                            </div>
+                            <span class="absolute top-1.5 left-1.5 bg-[#0B2A4A]/90 backdrop-blur-xs text-teal-200 text-[8px] sm:text-[9px] px-2 py-0.5 rounded-full font-semibold z-10 pointer-events-none">${escaparHtml(p.categoria)}</span>
+                            ${badgeRegaloHtml}
+                            ${controlesCarruselHtml}
                         </div>
-                        <div class="p-2.5 pt-2 border-t border-slate-100 bg-slate-50/60 space-y-1">
-                            <div class="flex justify-between items-center gap-1">
-                                <span class="text-teal-800 font-extrabold text-base sm:text-lg leading-tight cursor-pointer truncate" onclick="verDetalleProducto('${escaparAtributoJs(prodId)}')">${escaparHtml(p.precio)} <small class="text-[10px] font-bold">MXN</small></span>
-                                <button onclick="ampliarFotoActualTarjeta('${escaparAtributoJs(prodId)}')" class="text-[10px] bg-slate-200 hover:bg-slate-300 text-slate-700 px-2 py-1 rounded font-semibold transition shrink-0 inline-flex items-center gap-1" title="Ampliar foto"><i class="fa-solid fa-magnifying-glass-plus"></i></button>
+
+                        <!-- PRECIO DEL LADO IZQUIERDO Y DEMÁS INFORMACIÓN DEL LADO DERECHO (COMPACTO) -->
+                        <div class="p-2 flex items-center gap-2 flex-1 bg-white">
+                            <div class="shrink-0 pr-2 border-r border-slate-200 cursor-pointer text-left" onclick="verDetalleProducto('${escaparAtributoJs(prodId)}')">
+                                <span class="text-teal-800 font-extrabold text-sm sm:text-base leading-none block">${escaparHtml(p.precio)}</span>
+                                <span class="text-[8px] sm:text-[9px] font-bold text-slate-500 uppercase">MXN</span>
                             </div>
-                            <div class="text-[11px] font-bold text-slate-700 truncate cursor-pointer" onclick="verDetalleProducto('${escaparAtributoJs(prodId)}')" title="${escaparHtml(nombreCol)}">${escaparHtml(nombreCol)}</div>
+
+                            <div class="min-w-0 flex-1 flex items-center justify-between gap-1">
+                                <div class="min-w-0 flex-1 cursor-pointer space-y-0.5" onclick="verDetalleProducto('${escaparAtributoJs(prodId)}')">
+                                    <h4 class="font-bold text-[11px] sm:text-xs text-slate-800 line-clamp-1 leading-tight group-hover:text-teal-800 transition" title="${escaparHtml(p.titulo)}">${escaparHtml(p.titulo)}</h4>
+                                    <p class="text-[10px] text-slate-500 line-clamp-1 leading-tight">${escaparHtml(p.descripcion || '')}</p>
+                                    <p class="text-[10px] font-bold text-slate-700 truncate leading-tight" title="${escaparHtml(nombreCol)}">${escaparHtml(nombreCol)}</p>
+                                </div>
+                                <button onclick="ampliarFotoActualTarjeta('${escaparAtributoJs(prodId)}')" class="w-6 h-6 flex items-center justify-center text-[10px] bg-slate-100 hover:bg-teal-100 text-slate-600 hover:text-teal-900 rounded-lg font-semibold transition shrink-0" title="Ampliar foto">
+                                    <i class="fa-solid fa-magnifying-glass-plus"></i>
+                                </button>
+                            </div>
                         </div>
                     </div>
                 `;
@@ -1822,11 +1857,11 @@
             let opcionEnvolturaHtml = '';
             if (envolturaActiva && permiteWp) {
                 opcionEnvolturaHtml = `
-                    <div class="bg-teal-50/80 border border-teal-200 p-3 rounded-xl mb-3 text-xs space-y-1.5">
+                    <div class="bg-rose-50/70 border border-rose-200 p-3 rounded-xl mb-3 text-xs space-y-1.5">
                         <label for="checkEnvolverRegaloCliente" class="flex items-start gap-2.5 cursor-pointer select-none">
-                            <input type="checkbox" id="checkEnvolverRegaloCliente" onchange="actualizarEnlaceWhatsAppDetalle()" class="w-4 h-4 mt-0.5 text-teal-600 rounded shrink-0">
+                            <input type="checkbox" id="checkEnvolverRegaloCliente" onchange="actualizarEnlaceWhatsAppDetalle()" class="w-4 h-4 mt-0.5 text-rose-600 rounded shrink-0">
                             <div>
-                                <span class="font-bold text-[#0B2A4A] block"><i class="fa-solid fa-gift text-teal-600 mr-1"></i> Quiero este artículo envuelto para regalo (+${costoEnvoltura} MXN)</span>
+                                <span class="font-bold text-[#0B2A4A] block"><i class="fa-solid fa-gift text-rose-600 mr-1"></i> Quiero este artículo envuelto para regalo (+${costoEnvoltura} MXN)</span>
                                 <span class="text-[11px] text-slate-600">Se especificará automáticamente en tu mensaje de WhatsApp.</span>
                             </div>
                         </label>
