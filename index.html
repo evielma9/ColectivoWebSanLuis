@@ -416,6 +416,17 @@
                 </div>
             </div>
 
+            <!-- BANDEJA DE MENSAJES DEL ADMINISTRADOR PARA ESTE NEGOCIO -->
+            <div id="contenedorMensajesAdminPanel" class="hidden mb-4 bg-orange-50/90 border-2 border-orange-400 p-3.5 rounded-xl space-y-2.5 text-xs shadow-sm">
+                <div class="flex items-center justify-between border-b border-orange-200 pb-2">
+                    <h4 class="font-extrabold text-orange-950 flex items-center gap-1.5">
+                        <i class="fa-solid fa-bullhorn text-orange-600"></i> Avisos y Mensajes de Administración
+                    </h4>
+                    <span id="badgeMensajesNoLeidos" class="bg-orange-600 text-white text-[10px] font-extrabold px-2.5 py-0.5 rounded-full shadow-2xs">0 avisos</span>
+                </div>
+                <div id="listaMensajesAdminPanel" class="space-y-2 max-h-56 overflow-y-auto pr-1"></div>
+            </div>
+
             <!-- BLOQUE DE RESTRICCIÓN DE BÚSQUEDAS POR TARIFA EXTRA -->
             <div id="panelBloqueBusquedasColectivo" class="space-y-4 mb-4">
                 <div id="avisoTarifaBusquedasPanel" class="hidden bg-amber-50 border border-amber-300 p-3 rounded-xl text-xs text-amber-900 flex items-center gap-2">
@@ -732,6 +743,83 @@
             </div>
 
             <div id="adminDashboardView" class="hidden space-y-6">
+                <!-- ENVÍO DE MENSAJE A TODOS LOS NEGOCIOS (CON EXCLUSIÓN INDIVIDUAL) -->
+                <div class="bg-sky-50/80 border border-sky-200 p-3 sm:p-4 rounded-xl space-y-3 text-xs">
+                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 border-b border-sky-200 pb-2">
+                        <div>
+                            <h3 class="font-bold text-[#0B2A4A] flex items-center gap-1.5">
+                                <i class="fa-solid fa-paper-plane text-sky-600"></i> Enviar Mensaje a Negocios
+                            </h3>
+                            <p class="text-[11px] text-slate-600">Se enviará a todos los negocios de la lista. Elimina con <i class="fa-solid fa-xmark text-rose-600"></i> a los negocios a los que NO quieras enviárselo.</p>
+                        </div>
+                        <div class="flex flex-wrap items-center gap-1.5">
+                            <button type="button" onclick="restaurarDestinatariosMensajeAdmin()" class="bg-white border border-sky-300 hover:bg-sky-100 text-sky-900 px-2.5 py-1 rounded text-[11px] font-semibold transition">
+                                <i class="fa-solid fa-rotate-left mr-1"></i>Incluir todos
+                            </button>
+                            <button type="button" onclick="excluirSuspendidosMensajeAdmin()" class="bg-white border border-amber-300 hover:bg-amber-50 text-amber-900 px-2.5 py-1 rounded text-[11px] font-semibold transition">
+                                <i class="fa-solid fa-filter mr-1"></i>Excluir suspendidos
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                        <div>
+                            <label class="block font-semibold text-slate-700 mb-1">Asunto / Título del Mensaje</label>
+                            <input type="text" id="adminMsgAsunto" placeholder="Ej. Aviso importante / Recordatorio de corte" class="w-full p-2 border border-sky-200 rounded-lg bg-white outline-none focus:ring-2 focus:ring-sky-500">
+                        </div>
+                        <div>
+                            <label class="block font-semibold text-slate-700 mb-1">Prioridad / Etiqueta</label>
+                            <select id="adminMsgTipo" class="w-full p-2 border border-sky-200 rounded-lg bg-white outline-none focus:ring-2 focus:ring-sky-500">
+                                <option value="informativo">Aviso General</option>
+                                <option value="urgente">Urgente / Importante</option>
+                                <option value="promocion">Oportunidad / Temporada</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block font-semibold text-slate-700 mb-1">Contenido del Mensaje</label>
+                        <textarea id="adminMsgTexto" rows="3" placeholder="Escribe aquí el comunicado para los negocios seleccionados..." class="w-full p-2 border border-sky-200 rounded-lg bg-white outline-none focus:ring-2 focus:ring-sky-500"></textarea>
+                    </div>
+
+                    <!-- LISTA INTERACTIVA DE DESTINATARIOS CON BOTÓN ELIMINAR POR NEGOCIO -->
+                    <div class="bg-white border border-sky-200 rounded-xl p-2.5 space-y-2">
+                        <div class="flex items-center justify-between">
+                            <span class="font-bold text-slate-700 text-[11px]">
+                                Destinatarios seleccionados: <span id="contadorDestinatariosMsg" class="text-sky-700 font-extrabold">0</span> de <span id="totalNegociosMsg">0</span>
+                            </span>
+                            <span id="lblExcluidosMsg" class="text-[10px] text-rose-600 font-semibold hidden">0 excluidos</span>
+                        </div>
+                        <div id="listaDestinatariosMensajeAdmin" class="flex flex-wrap gap-1.5 max-h-40 overflow-y-auto p-1"></div>
+                    </div>
+
+                    <div class="flex flex-col sm:flex-row gap-2 pt-1">
+                        <button type="button" onclick="enviarMensajeInternoNegocios()" class="flex-1 bg-[#0B2A4A] hover:bg-slate-800 text-white py-2.5 px-4 rounded-lg font-bold flex items-center justify-center gap-2 shadow transition">
+                            <i class="fa-solid fa-bell text-teal-300"></i> Publicar Aviso en Panel de Negocios
+                        </button>
+                        <button type="button" onclick="prepararEnvioWhatsAppNegocios()" class="sm:w-auto bg-teal-600 hover:bg-teal-700 text-white py-2.5 px-4 rounded-lg font-bold flex items-center justify-center gap-2 shadow transition">
+                            <i class="fa-brands fa-whatsapp text-base"></i> Enviar por WhatsApp
+                        </button>
+                    </div>
+
+                    <!-- LISTA DE ENLACES DIRECTOS DE WHATSAPP PARA LOS DESTINATARIOS SELECCIONADOS -->
+                    <div id="contenedorLinksWpMasivo" class="hidden bg-emerald-50 border border-emerald-200 rounded-xl p-3 space-y-2">
+                        <div class="flex items-center justify-between border-b border-emerald-200 pb-1.5">
+                            <span class="font-bold text-emerald-950 text-[11px]"><i class="fa-brands fa-whatsapp text-emerald-600 mr-1"></i> Envío Directo por WhatsApp (Haz clic en cada negocio):</span>
+                            <button type="button" onclick="document.getElementById('contenedorLinksWpMasivo').classList.add('hidden')" class="text-[10px] text-slate-500 hover:text-slate-800 font-semibold">Cerrar</button>
+                        </div>
+                        <div id="listaLinksWpMasivo" class="grid grid-cols-1 sm:grid-cols-2 gap-1.5 max-h-44 overflow-y-auto"></div>
+                    </div>
+
+                    <!-- HISTORIAL DE MENSAJES ENVIADOS POR EL ADMIN -->
+                    <div class="border-t border-sky-200 pt-2.5 space-y-1.5">
+                        <div class="flex items-center justify-between">
+                            <span class="font-bold text-slate-700 text-[11px]"><i class="fa-solid fa-clock-rotate-left text-sky-600 mr-1"></i> Últimos avisos enviados</span>
+                        </div>
+                        <div id="historialMensajesAdmin" class="space-y-1.5 max-h-36 overflow-y-auto pr-1"></div>
+                    </div>
+                </div>
+
                 <!-- GESTIÓN DE INFORMACIÓN DE CONTACTO DEL ADMINISTRADOR -->
                 <div class="bg-slate-50 border border-slate-200 p-3 sm:p-4 rounded-xl space-y-3 text-xs">
                     <h3 class="font-bold text-[#0B2A4A] flex items-center gap-1.5 border-b border-slate-200 pb-2">
@@ -969,6 +1057,8 @@
         let estadisticasGlobal = {};
         let busquedasGlobal = {};
         let configAdminGlobal = {};
+        let mensajesAdminGlobal = {};
+        let destinatariosMensajeIds = [];
         let categoriasDinamicas = ["Ropa y Calzado", "Accesorios", "Hogar", "Belleza", "Varios"];
         let tiposNegocioDinamicos = ["Colectivo", "Segunda", "Emprendedor", "Boutique", "Local Comercial", "Autolavado", "Salón de Belleza", "Servicios"];
         let colectivoActualId = null;
@@ -1266,7 +1356,7 @@
             return copia;
         }
 
-        // NUEVA FUNCIÓN: VER DETALLE COMPLETO DE UNA PROMOCIÓN (FOTO COMPLETA + DETALLES COMPLETOS)
+        // VER DETALLE COMPLETO DE UNA PROMOCIÓN (FOTO COMPLETA + DETALLES COMPLETOS)
         function verDetallePromocion(promoId) {
             const promo = promocionesGlobal[promoId];
             if (!promo) return;
@@ -1565,7 +1655,6 @@
                 
                 if (!col || col.activo === false) return;
 
-                // En el filtro de promociones mostramos las promociones de los colectivos/negocios de catálogo
                 if (esCuentaSoloPromociones(col)) return;
 
                 if (promo.fechaInicio && promo.fechaFin) {
@@ -2072,7 +2161,6 @@
                 const cred = await auth.signInWithEmailAndPassword(emailAuth, p);
                 const uid = cred.user.uid;
 
-                // Buscar el negocio vinculado por authUid o por usuario
                 let colectivo = catGlobal.find(c => c.authUid === uid);
                 if (!colectivo) {
                     colectivo = catGlobal.find(c => (c.usuario || "").toLowerCase() === u.toLowerCase());
@@ -2090,7 +2178,6 @@
                     return;
                 }
 
-                // Si aún no tenía guardado el authUid en la base de datos, intentar vincularlo
                 if (!colectivo.authUid) {
                     try {
                         await db.ref(`colectivos/${colectivo.id}/authUid`).set(uid);
@@ -2121,7 +2208,8 @@
                 const promesas = [
                     db.ref(`estadisticas/${colectivoActualId}`).once("value"),
                     db.ref("productos").once("value"),
-                    db.ref("promociones").once("value")
+                    db.ref("promociones").once("value"),
+                    db.ref("mensajesAdmin").once("value")
                 ];
                 if (colectivo.tarifaBusquedasActiva) {
                     promesas.push(db.ref("busquedasUsuarios").once("value"));
@@ -2131,12 +2219,15 @@
                 estadisticasGlobal[colectivoActualId] = resultados[0].val() || {};
                 productosGlobal = resultados[1].val() || {};
                 promocionesGlobal = resultados[2].val() || {};
-                if (colectivo.tarifaBusquedasActiva && resultados[3]) {
-                    busquedasGlobal = resultados[3].val() || {};
+                mensajesAdminGlobal = resultados[3].val() || {};
+                if (colectivo.tarifaBusquedasActiva && resultados[4]) {
+                    busquedasGlobal = resultados[4].val() || {};
                 }
             } catch (err) {
                 console.error("Error cargando datos del panel de negocio:", err);
             }
+
+            renderizarMensajesAdminParaColectivo();
 
             const soloPromos = esCuentaSoloPromociones(colectivo);
             const tipo = colectivo.tipoNegocio || 'Colectivo';
@@ -2194,6 +2285,62 @@
             }
             renderizarMisPromos();
             document.getElementById("modalPanelColectivo").classList.remove("hidden");
+        }
+
+        function renderizarMensajesAdminParaColectivo() {
+            const contenedor = document.getElementById("contenedorMensajesAdminPanel");
+            const lista = document.getElementById("listaMensajesAdminPanel");
+            const badge = document.getElementById("badgeMensajesNoLeidos");
+            if (!contenedor || !lista || !colectivoActualId) return;
+
+            const mensajesDirigidos = [];
+            Object.keys(mensajesAdminGlobal).forEach(msgId => {
+                const msg = mensajesAdminGlobal[msgId];
+                if (!msg || !msg.destinatarios) return;
+                const esDestinatario = Array.isArray(msg.destinatarios)
+                    ? msg.destinatarios.includes(colectivoActualId)
+                    : Boolean(msg.destinatarios[colectivoActualId]);
+
+                if (esDestinatario) {
+                    mensajesDirigidos.push({ id: msgId, ...msg });
+                }
+            });
+
+            mensajesDirigidos.sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
+
+            if (mensajesDirigidos.length === 0) {
+                contenedor.classList.add("hidden");
+                lista.innerHTML = "";
+                return;
+            }
+
+            if (badge) {
+                const total = mensajesDirigidos.length;
+                badge.innerText = `${total} aviso${total > 1 ? 's' : ''}`;
+                badge.className = "bg-orange-600 text-white text-[10px] font-extrabold px-2.5 py-0.5 rounded-full shadow-2xs";
+            }
+
+            lista.innerHTML = mensajesDirigidos.map(m => {
+                const etiquetaColor = m.tipo === 'urgente'
+                    ? 'bg-rose-100 text-rose-800 border-rose-300'
+                    : (m.tipo === 'promocion' ? 'bg-amber-100 text-amber-900 border-amber-300' : 'bg-orange-100 text-orange-900 border-orange-300');
+                const etiquetaTexto = m.tipo === 'urgente' ? 'Urgente' : (m.tipo === 'promocion' ? 'Temporada' : 'Aviso');
+
+                return `
+                    <div class="bg-white border-2 border-orange-400 shadow-2xs p-3 rounded-lg space-y-1.5">
+                        <div class="flex items-start justify-between gap-2">
+                            <div class="flex items-center gap-1.5 flex-wrap">
+                                <span class="text-[9px] font-extrabold uppercase px-1.5 py-0.5 rounded border ${etiquetaColor}">${etiquetaTexto}</span>
+                                <strong class="text-orange-950 text-xs">${escaparHtml(m.asunto || 'Mensaje de Administración')}</strong>
+                            </div>
+                            <span class="text-[10px] text-orange-700 font-semibold shrink-0">${escaparHtml(m.fecha || '')}</span>
+                        </div>
+                        <p class="text-slate-800 whitespace-pre-line leading-relaxed text-[11px] bg-orange-50/70 border-2 border-orange-400 rounded-md p-2.5">${escaparHtml(m.texto || '')}</p>
+                    </div>
+                `;
+            }).join('');
+
+            contenedor.classList.remove("hidden");
         }
 
         function cerrarPanelColectivo() {
@@ -2814,16 +2961,18 @@
                     return;
                 }
 
-                const [snapPagos, snapStats, snapBusq, snapCol] = await Promise.all([
+                const [snapPagos, snapStats, snapBusq, snapCol, snapMensajes] = await Promise.all([
                     db.ref("pagos").once("value"),
                     db.ref("estadisticas").once("value"),
                     db.ref("busquedasUsuarios").once("value"),
-                    db.ref("colectivos").once("value")
+                    db.ref("colectivos").once("value"),
+                    db.ref("mensajesAdmin").once("value")
                 ]);
 
                 pagosGlobal = snapPagos.val() || {};
                 estadisticasGlobal = snapStats.val() || {};
                 busquedasGlobal = snapBusq.val() || {};
+                mensajesAdminGlobal = snapMensajes.val() || {};
                 const colectivosObj = snapCol.val() || {};
                 catGlobal = Object.keys(colectivosObj).map(id => ({ id, ...colectivosObj[id] }));
 
@@ -2857,11 +3006,194 @@
             document.getElementById("adminConfigEmail").value = configAdminGlobal.email || "";
             document.getElementById("adminConfigWp").value = configAdminGlobal.whatsapp || "";
 
+            restaurarDestinatariosMensajeAdmin();
+            renderizarHistorialMensajesAdmin();
             renderizarAdminPagos();
             renderizarAdminColectivos();
             renderizarCategoriasAdmin();
             renderizarTiposNegocioAdmin();
             renderizarAnalisisBusquedasAdmin();
+        }
+
+        // FUNCIONES DE ENVÍO DE MENSAJES A NEGOCIOS CON EXCLUSIÓN INDIVIDUAL
+        function restaurarDestinatariosMensajeAdmin() {
+            destinatariosMensajeIds = catGlobal.map(c => c.id);
+            renderizarDestinatariosMensajeAdmin();
+        }
+
+        function excluirSuspendidosMensajeAdmin() {
+            destinatariosMensajeIds = catGlobal.filter(c => c.activo !== false).map(c => c.id);
+            renderizarDestinatariosMensajeAdmin();
+        }
+
+        function eliminarDestinatarioMensajeAdmin(colId) {
+            destinatariosMensajeIds = destinatariosMensajeIds.filter(id => id !== colId);
+            renderizarDestinatariosMensajeAdmin();
+        }
+
+        function renderizarDestinatariosMensajeAdmin() {
+            const lista = document.getElementById("listaDestinatariosMensajeAdmin");
+            const contador = document.getElementById("contadorDestinatariosMsg");
+            const totalSpan = document.getElementById("totalNegociosMsg");
+            const lblExcluidos = document.getElementById("lblExcluidosMsg");
+            if (!lista) return;
+
+            const seleccionSet = new Set(destinatariosMensajeIds);
+            const seleccionados = catGlobal.filter(c => seleccionSet.has(c.id));
+            const excluidosCount = Math.max(0, catGlobal.length - seleccionados.length);
+
+            if (contador) contador.innerText = seleccionados.length;
+            if (totalSpan) totalSpan.innerText = catGlobal.length;
+            if (lblExcluidos) {
+                lblExcluidos.innerText = `${excluidosCount} excluido${excluidosCount === 1 ? '' : 's'}`;
+                lblExcluidos.classList.toggle("hidden", excluidosCount === 0);
+            }
+
+            if (catGlobal.length === 0) {
+                lista.innerHTML = '<p class="text-[11px] text-slate-400 italic py-1">No hay negocios registrados.</p>';
+                return;
+            }
+
+            if (seleccionados.length === 0) {
+                lista.innerHTML = '<p class="text-[11px] text-rose-600 font-semibold py-1">Has eliminado a todos los negocios de la lista. Haz clic en "Incluir todos" para volver a agregarlos.</p>';
+                return;
+            }
+
+            lista.innerHTML = seleccionados.map(c => {
+                const suspendido = c.activo === false;
+                return `
+                    <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-semibold border ${suspendido ? 'bg-amber-50 text-amber-900 border-amber-300' : 'bg-sky-50 text-[#0B2A4A] border-sky-200'} shadow-2xs">
+                        <span class="truncate max-w-[160px]" title="${escaparHtml(c.nombre)}">${escaparHtml(c.nombre)}</span>
+                        ${suspendido ? '<span class="text-[9px] text-amber-700 font-bold">(Susp.)</span>' : ''}
+                        <button type="button" onclick="eliminarDestinatarioMensajeAdmin('${escaparAtributoJs(c.id)}')" class="w-4 h-4 rounded-full bg-rose-100 hover:bg-rose-600 text-rose-700 hover:text-white flex items-center justify-center transition shrink-0" title="Eliminar a ${escaparHtml(c.nombre)} del envío">
+                            <i class="fa-solid fa-xmark text-[9px]"></i>
+                        </button>
+                    </span>
+                `;
+            }).join('');
+        }
+
+        function enviarMensajeInternoNegocios() {
+            const asunto = document.getElementById("adminMsgAsunto").value.trim();
+            const tipo = document.getElementById("adminMsgTipo").value;
+            const texto = document.getElementById("adminMsgTexto").value.trim();
+
+            if (!texto) {
+                alert("Por favor escribe el mensaje que deseas enviar a los negocios.");
+                return;
+            }
+            if (destinatariosMensajeIds.length === 0) {
+                alert("No hay ningún negocio seleccionado para recibir el mensaje.");
+                return;
+            }
+
+            const msgId = 'msg_' + Date.now();
+            const nuevoMensaje = {
+                asunto: asunto || "Aviso de Administración",
+                tipo,
+                texto,
+                destinatarios: [...destinatariosMensajeIds],
+                leidos: {},
+                fecha: obtenerFechaLocalISO(),
+                timestamp: Date.now()
+            };
+
+            db.ref(`mensajesAdmin/${msgId}`).set(nuevoMensaje).then(() => {
+                mensajesAdminGlobal[msgId] = nuevoMensaje;
+                document.getElementById("adminMsgAsunto").value = "";
+                document.getElementById("adminMsgTexto").value = "";
+                renderizarHistorialMensajesAdmin();
+                alert(`Mensaje enviado correctamente a ${destinatariosMensajeIds.length} negocio(s).`);
+            });
+        }
+
+        function prepararEnvioWhatsAppNegocios() {
+            const asunto = document.getElementById("adminMsgAsunto").value.trim();
+            const texto = document.getElementById("adminMsgTexto").value.trim();
+
+            if (!texto) {
+                alert("Por favor escribe el mensaje antes de generar los envíos por WhatsApp.");
+                return;
+            }
+            if (destinatariosMensajeIds.length === 0) {
+                alert("No hay ningún negocio seleccionado en la lista.");
+                return;
+            }
+
+            const seleccionSet = new Set(destinatariosMensajeIds);
+            const seleccionados = catGlobal.filter(c => seleccionSet.has(c.id));
+            const contenedor = document.getElementById("contenedorLinksWpMasivo");
+            const lista = document.getElementById("listaLinksWpMasivo");
+
+            const cuerpoMensaje = asunto
+                ? `*${asunto}* - GoShopping San Luis R C\n\n${texto}`
+                : `*Aviso GoShopping San Luis R C*\n\n${texto}`;
+
+            lista.innerHTML = seleccionados.map(c => {
+                const wpLimpio = String(c.whatsapp || "").replace(/\D/g, "");
+                if (!wpLimpio) {
+                    return `
+                        <div class="bg-white border border-slate-200 p-2 rounded-lg flex items-center justify-between text-[11px] opacity-60">
+                            <span class="truncate font-semibold text-slate-700">${escaparHtml(c.nombre)}</span>
+                            <span class="text-[10px] text-rose-600 font-bold">Sin WhatsApp</span>
+                        </div>
+                    `;
+                }
+                const urlWp = `https://wa.me/${wpLimpio}?text=${encodeURIComponent(cuerpoMensaje)}`;
+                return `
+                    <a href="${urlWp}" target="_blank" rel="noopener noreferrer" onclick="this.classList.add('bg-emerald-100','border-emerald-400')" class="bg-white hover:bg-emerald-50 border border-emerald-200 p-2 rounded-lg flex items-center justify-between gap-2 text-[11px] transition shadow-2xs">
+                        <span class="truncate font-bold text-slate-800">${escaparHtml(c.nombre)}</span>
+                        <span class="bg-teal-600 text-white px-2 py-0.5 rounded font-bold text-[10px] shrink-0 inline-flex items-center gap-1">
+                            <i class="fa-brands fa-whatsapp"></i> Enviar
+                        </span>
+                    </a>
+                `;
+            }).join('');
+
+            contenedor.classList.remove("hidden");
+        }
+
+        function renderizarHistorialMensajesAdmin() {
+            const contenedor = document.getElementById("historialMensajesAdmin");
+            if (!contenedor) return;
+
+            const lista = Object.keys(mensajesAdminGlobal)
+                .map(id => ({ id, ...mensajesAdminGlobal[id] }))
+                .sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0))
+                .slice(0, 10);
+
+            if (lista.length === 0) {
+                contenedor.innerHTML = '<p class="text-[11px] text-slate-400 italic text-center py-1">Aún no se han publicado avisos.</p>';
+                return;
+            }
+
+            contenedor.innerHTML = lista.map(m => {
+                const totalDest = Array.isArray(m.destinatarios) ? m.destinatarios.length : Object.keys(m.destinatarios || {}).length;
+                const totalLeidos = m.leidos ? Object.keys(m.leidos).length : 0;
+                return `
+                    <div class="bg-white border border-sky-100 p-2 rounded-lg flex items-center justify-between gap-2 text-[11px]">
+                        <div class="min-w-0 flex-1">
+                            <p class="font-bold text-slate-800 truncate">${escaparHtml(m.asunto || 'Aviso')} <span class="font-normal text-slate-400">(${escaparHtml(m.fecha || '')})</span></p>
+                            <p class="text-slate-500 truncate">${escaparHtml(m.texto || '')}</p>
+                        </div>
+                        <div class="flex items-center gap-1.5 shrink-0">
+                            <span class="bg-orange-100 text-orange-900 border border-orange-300 font-bold px-2 py-0.5 rounded text-[10px]" title="Negocios destinatarios">Enviado a ${totalDest}</span>
+                            <button type="button" onclick="eliminarMensajeAdmin('${escaparAtributoJs(m.id)}')" class="w-6 h-6 rounded bg-rose-100 hover:bg-rose-200 text-rose-700 flex items-center justify-center" title="Eliminar aviso">
+                                <i class="fa-solid fa-trash text-[10px]"></i>
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function eliminarMensajeAdmin(msgId) {
+            if (confirm("¿Eliminar este aviso para todos los negocios?")) {
+                db.ref(`mensajesAdmin/${msgId}`).remove().then(() => {
+                    delete mensajesAdminGlobal[msgId];
+                    renderizarHistorialMensajesAdmin();
+                });
+            }
         }
 
         function establecerRangoBusquedaAdmin(preset) {
@@ -3405,7 +3737,6 @@ Ingresa el monto recibido ($ MXN):`, montoSugerido);
                 const id = 'col_' + Date.now();
                 const codigoCorto = 'CL-' + Math.floor(10 + Math.random() * 90);
 
-                // Nota: NO se guarda 'password' en Realtime Database por seguridad
                 const nuevoColObj = {
                     tipoPlan,
                     nombre, 
@@ -3426,8 +3757,10 @@ Ingresa el monto recibido ($ MXN):`, montoSugerido);
 
                 await db.ref(`colectivos/${id}`).set(nuevoColObj);
                 catGlobal.push({ id, ...nuevoColObj });
+                destinatariosMensajeIds.push(id);
                 e.target.reset();
                 cerrarModalNuevoColectivo();
+                renderizarDestinatariosMensajeAdmin();
                 renderizarAdminPagos();
                 renderizarAdminColectivos();
                 alert("Cuenta registrada con éxito en Firebase Auth y Base de Datos.\nUsuario: " + usuario + "\nPlan: " + (tipoPlan === 'solo_promociones' ? 'Solo Promociones (Máx 2)' : 'Catálogo Completo') + " | Código: " + codigoCorto);
@@ -3445,6 +3778,7 @@ Ingresa el monto recibido ($ MXN):`, montoSugerido);
             db.ref(`colectivos/${colId}/activo`).set(nuevoEstado).then(() => {
                 const col = catGlobal.find(c => c.id === colId);
                 if (col) col.activo = nuevoEstado;
+                renderizarDestinatariosMensajeAdmin();
                 renderizarAdminColectivos();
                 renderizarPromocionAleatoria();
                 filtrarProductos(true);
@@ -3455,6 +3789,8 @@ Ingresa el monto recibido ($ MXN):`, montoSugerido);
             if (confirm("¿Estás seguro de eliminar este negocio y sus accesos?")) {
                 db.ref(`colectivos/${colId}`).remove().then(() => {
                     catGlobal = catGlobal.filter(c => c.id !== colId);
+                    destinatariosMensajeIds = destinatariosMensajeIds.filter(id => id !== colId);
+                    renderizarDestinatariosMensajeAdmin();
                     renderizarAdminPagos();
                     renderizarAdminColectivos();
                     renderizarPromocionAleatoria();
