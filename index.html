@@ -368,6 +368,14 @@
                         </select>
                     </div>
                     <div>
+                        <label class="block font-semibold text-slate-700 mb-1">Categoría / Tipo de negocio</label>
+                        <select id="altaTipoNegocio" onchange="toggleAltaNuevaCategoria()" required class="w-full p-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-teal-600 outline-none bg-white"></select>
+                    </div>
+                    <div id="contenedorAltaNuevaCategoria" class="hidden">
+                        <label class="block font-semibold text-teal-800 mb-1">Escribe la nueva categoría de negocio</label>
+                        <input type="text" id="altaNuevaCategoriaInput" placeholder="Ej. Cafetería, Barbería, Florería..." class="w-full p-2.5 border border-teal-300 bg-teal-50/40 rounded-lg focus:ring-2 focus:ring-teal-600 outline-none">
+                    </div>
+                    <div>
                         <label class="block font-semibold text-slate-700 mb-1">Productos o servicios que ofrece</label>
                         <textarea id="altaProductosVende" rows="3" required placeholder="Ej. Ropa de dama, accesorios / Lavado y detallado de autos..." class="w-full p-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-teal-600 outline-none"></textarea>
                     </div>
@@ -776,6 +784,28 @@
             </div>
 
             <div id="adminDashboardView" class="hidden space-y-6">
+                <!-- ÁREA DE SOLICITUDES DE ALTA DE NEGOCIOS (ADMIN) -->
+                <div class="bg-amber-50/90 border-2 border-amber-300 p-3 sm:p-4 rounded-xl space-y-3 text-xs shadow-2xs">
+                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 border-b border-amber-200 pb-2">
+                        <div>
+                            <h3 class="font-bold text-[#0B2A4A] flex items-center gap-1.5 text-xs sm:text-sm">
+                                <i class="fa-solid fa-inbox text-amber-600"></i> Solicitudes de Alta de Negocios
+                                <span id="badgeSolicitudesPendientesAdmin" class="bg-rose-600 text-white text-[10px] font-extrabold px-2 py-0.5 rounded-full">0 pendientes</span>
+                            </h3>
+                            <p class="text-[11px] text-slate-600">Revisa día y hora de solicitud, cambia estatus, asigna categoría, crea la cuenta con usuario único y envía credenciales por WhatsApp.</p>
+                        </div>
+                        <div class="flex items-center gap-1.5">
+                            <select id="filtroEstatusSolicitudAdmin" onchange="renderizarSolicitudesAltaAdmin()" class="p-1.5 border border-amber-300 rounded-lg bg-white text-[11px] font-semibold text-slate-800 outline-none">
+                                <option value="todas">Todas las solicitudes</option>
+                                <option value="pendiente" selected>Pendientes</option>
+                                <option value="aprobada">Aprobadas / Creadas</option>
+                                <option value="rechazada">Rechazadas</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div id="listaSolicitudesAltaAdmin" class="space-y-3 max-h-[420px] overflow-y-auto pr-1"></div>
+                </div>
+
                 <!-- ENVÍO DE MENSAJE A TODOS LOS NEGOCIOS (CON EXCLUSIÓN INDIVIDUAL) -->
                 <div class="bg-sky-50/80 border border-sky-200 p-3 sm:p-4 rounded-xl space-y-3 text-xs">
                     <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 border-b border-sky-200 pb-2">
@@ -1091,6 +1121,7 @@
         let busquedasGlobal = {};
         let configAdminGlobal = {};
         let mensajesAdminGlobal = {};
+        let solicitudesAltaGlobal = {};
         let destinatariosMensajeIds = [];
         let categoriasDinamicas = ["Ropa y Calzado", "Accesorios", "Hogar", "Belleza", "Varios"];
         let tiposNegocioDinamicos = ["Colectivo", "Segunda", "Emprendedor", "Boutique", "Local Comercial", "Autolavado", "Salón de Belleza", "Servicios"];
@@ -1426,6 +1457,24 @@
             if (selectColTipo) {
                 selectColTipo.innerHTML = tiposNegocioDinamicos.map(t => `<option value="${escaparHtml(t)}">${escaparHtml(t)}</option>`).join('');
             }
+            const selectAltaTipo = document.getElementById("altaTipoNegocio");
+            if (selectAltaTipo) {
+                const opciones = tiposNegocioDinamicos.map(t => `<option value="${escaparHtml(t)}">${escaparHtml(t)}</option>`).join('');
+                selectAltaTipo.innerHTML = opciones + `<option value="__OTRA__">+ Otra categoría (Escribir nueva)</option>`;
+            }
+        }
+
+        function toggleAltaNuevaCategoria() {
+            const select = document.getElementById("altaTipoNegocio");
+            const cont = document.getElementById("contenedorAltaNuevaCategoria");
+            const input = document.getElementById("altaNuevaCategoriaInput");
+            if (!select || !cont) return;
+            const esOtra = select.value === "__OTRA__";
+            cont.classList.toggle("hidden", !esOtra);
+            if (input) {
+                input.required = esOtra;
+                if (!esOtra) input.value = "";
+            }
         }
 
         async function cargarDatosPublicos(mantenerLimite = false) {
@@ -1742,8 +1791,57 @@
             abrirModalAdmin();
         }
 
+        function generarUsuarioSugeridoUnico(nombreNegocio, usuariosExtraUsados = []) {
+            let base = String(nombreNegocio || "negocio")
+                .normalize("NFD")
+                .replace(/[\u0300-\u036f]/g, "")
+                .toLowerCase()
+                .replace(/[^a-z0-9]/g, "");
+            if (base.length < 4) {
+                base = (base + "slrc").slice(0, 6);
+            } else {
+                base = base.slice(0, 12);
+            }
+
+            const existentes = new Set([
+                ...catGlobal.map(c => String(c.usuario || "").trim().toLowerCase()),
+                ...Object.values(solicitudesAltaGlobal || {}).map(s => String(s.usuarioSugerido || "").trim().toLowerCase()),
+                ...usuariosExtraUsados.map(u => String(u || "").trim().toLowerCase())
+            ]);
+
+            if (!existentes.has(base)) return base;
+
+            let contador = 1;
+            while (existentes.has(`${base}${contador}`)) {
+                contador++;
+            }
+            return `${base}${contador}`;
+        }
+
+        function generarPasswordDefaultDesdeUsuario(usuario) {
+            const limpio = String(usuario || "")
+                .normalize("NFD")
+                .replace(/[\u0300-\u036f]/g, "")
+                .toLowerCase()
+                .replace(/[^a-z0-9]/g, "");
+            const prefijo = (limpio + "user").slice(0, 4);
+            return `${prefijo}1234`;
+        }
+
+        function normalizarTelefonoWhatsAppMX(telefono) {
+            let digits = String(telefono || "").replace(/\D/g, "");
+            if (digits.length === 10) {
+                digits = "521" + digits;
+            } else if (digits.length === 12 && digits.startsWith("52")) {
+                digits = "521" + digits.slice(2);
+            }
+            return digits;
+        }
+
         function mostrarFormularioAltaNegocio() {
+            actualizarSelectTiposNegocioAdmin();
             document.getElementById("formSolicitudAltaAdmin").reset();
+            toggleAltaNuevaCategoria();
             document.getElementById("vistaOpcionesContactoAdmin").classList.add("hidden");
             document.getElementById("vistaRespuestaAltaAdmin").classList.add("hidden");
             document.getElementById("vistaFormularioAltaAdmin").classList.remove("hidden");
@@ -1755,11 +1853,13 @@
             document.getElementById("vistaOpcionesContactoAdmin").classList.remove("hidden");
         }
 
-        function enviarSolicitudAltaWhatsApp(e) {
+        async function enviarSolicitudAltaWhatsApp(e) {
             e.preventDefault();
             const celular = document.getElementById("altaCelular").value.trim();
             const nombreNegocio = document.getElementById("altaNombreNegocio").value.trim();
             const modalidad = document.getElementById("altaModalidadDeseada").value;
+            const tipoSeleccionado = document.getElementById("altaTipoNegocio").value;
+            const nuevaCategoriaInput = document.getElementById("altaNuevaCategoriaInput").value.trim();
             const productosVende = document.getElementById("altaProductosVende").value.trim();
 
             if (!celular || !nombreNegocio || !productosVende) {
@@ -1767,17 +1867,59 @@
                 return;
             }
 
-            const wpAdminRaw = (configAdminGlobal.whatsapp || "526530000000").replace(/\D/g, "");
+            const esNuevaCategoria = tipoSeleccionado === "__OTRA__";
+            if (esNuevaCategoria && !nuevaCategoriaInput) {
+                alert("Por favor escribe el nombre de la nueva categoría de negocio.");
+                return;
+            }
+
+            const categoriaSolicitada = esNuevaCategoria ? nuevaCategoriaInput : tipoSeleccionado;
+            const ahora = new Date();
+            const fechaISO = obtenerFechaLocalISO(ahora);
+            const horaStr = ahora.toLocaleTimeString('es-MX', { hour: '2-digit', minute: '2-digit', hour12: true });
+            const fechaHoraTexto = `${fechaISO} ${horaStr}`;
+            const solicitudId = "sol_" + Date.now();
+
+            const nuevaSolicitud = {
+                celular,
+                nombreNegocio,
+                modalidad,
+                tipoNegocioSolicitado: categoriaSolicitada,
+                esNuevaCategoria,
+                productosVende,
+                fecha: fechaISO,
+                hora: horaStr,
+                fechaHora: fechaHoraTexto,
+                timestamp: Date.now(),
+                estatus: "pendiente"
+            };
+
+            try {
+                await db.ref(`solicitudesAlta/${solicitudId}`).set(nuevaSolicitud);
+                solicitudesAltaGlobal[solicitudId] = nuevaSolicitud;
+            } catch (err) {
+                console.error("Error guardando solicitud en Firebase:", err);
+                alert("No se pudo registrar la solicitud en el sistema. Verifica tu conexión o las reglas de Firebase.");
+                return;
+            }
+
+            const wpAdminRaw = normalizarTelefonoWhatsAppMX(configAdminGlobal.whatsapp || "526530000000");
+            const etiquetaCat = esNuevaCategoria ? `${categoriaSolicitada} (Nueva categoría)` : categoriaSolicitada;
             const mensaje = `Hola Administrador, solicito darme de alta en GoShopping San Luis R C:
 
 • *Nombre / Negocio:* ${nombreNegocio}
+• *Categoría Negocio:* ${etiquetaCat}
 • *Celular:* ${celular}
 • *Modalidad:* ${modalidad}
 • *Productos/Servicios:* ${productosVende}`;
-            const urlWp = `https://wa.me/${wpAdminRaw}?text=${encodeURIComponent(mensaje)}`;
 
-            window.open(urlWp, "_blank", "noopener,noreferrer");
+            if (wpAdminRaw && wpAdminRaw !== "5216530000000") {
+                const urlWp = `https://wa.me/${wpAdminRaw}?text=${encodeURIComponent(mensaje)}`;
+                window.open(urlWp, "_blank", "noopener,noreferrer");
+            }
+
             document.getElementById("formSolicitudAltaAdmin").reset();
+            toggleAltaNuevaCategoria();
             document.getElementById("vistaFormularioAltaAdmin").classList.add("hidden");
             document.getElementById("vistaRespuestaAltaAdmin").classList.remove("hidden");
         }
@@ -3173,18 +3315,20 @@
                     return;
                 }
 
-                const [snapPagos, snapStats, snapBusq, snapCol, snapMensajes] = await Promise.all([
+                const [snapPagos, snapStats, snapBusq, snapCol, snapMensajes, snapSolicitudes] = await Promise.all([
                     db.ref("pagos").once("value"),
                     db.ref("estadisticas").once("value"),
                     db.ref("busquedasUsuarios").once("value"),
                     db.ref("colectivos").once("value"),
-                    db.ref("mensajesAdmin").once("value")
+                    db.ref("mensajesAdmin").once("value"),
+                    db.ref("solicitudesAlta").once("value")
                 ]);
 
                 pagosGlobal = snapPagos.val() || {};
                 estadisticasGlobal = snapStats.val() || {};
                 busquedasGlobal = snapBusq.val() || {};
                 mensajesAdminGlobal = snapMensajes.val() || {};
+                solicitudesAltaGlobal = snapSolicitudes.val() || {};
                 const colectivosObj = snapCol.val() || {};
                 catGlobal = Object.keys(colectivosObj).map(id => ({ id, ...colectivosObj[id] }));
 
@@ -3218,6 +3362,7 @@
             document.getElementById("adminConfigEmail").value = configAdminGlobal.email || "";
             document.getElementById("adminConfigWp").value = configAdminGlobal.whatsapp || "";
 
+            renderizarSolicitudesAltaAdmin();
             restaurarDestinatariosMensajeAdmin();
             renderizarHistorialMensajesAdmin();
             renderizarAdminPagos();
@@ -3225,6 +3370,296 @@
             renderizarCategoriasAdmin();
             renderizarTiposNegocioAdmin();
             renderizarAnalisisBusquedasAdmin();
+        }
+
+        // ÁREA DE SOLICITUDES DE ALTA DE NEGOCIOS (ADMIN)
+        function renderizarSolicitudesAltaAdmin() {
+            const lista = document.getElementById("listaSolicitudesAltaAdmin");
+            const badge = document.getElementById("badgeSolicitudesPendientesAdmin");
+            const filtroEstatus = document.getElementById("filtroEstatusSolicitudAdmin")?.value || "pendiente";
+            if (!lista) return;
+
+            const todas = Object.keys(solicitudesAltaGlobal || {})
+                .map(id => ({ id, ...solicitudesAltaGlobal[id] }))
+                .sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
+
+            const pendientesCount = todas.filter(s => (s.estatus || "pendiente") === "pendiente").length;
+            if (badge) {
+                badge.innerText = `${pendientesCount} pendiente${pendientesCount === 1 ? '' : 's'}`;
+                badge.className = pendientesCount > 0
+                    ? "bg-rose-600 text-white text-[10px] font-extrabold px-2 py-0.5 rounded-full"
+                    : "bg-emerald-600 text-white text-[10px] font-extrabold px-2 py-0.5 rounded-full";
+            }
+
+            const filtradas = todas.filter(s => {
+                const est = s.estatus || "pendiente";
+                if (filtroEstatus === "todas") return true;
+                return est === filtroEstatus;
+            });
+
+            if (filtradas.length === 0) {
+                lista.innerHTML = `<p class="text-xs text-slate-500 italic text-center py-3 bg-white rounded-lg border border-amber-200">No hay solicitudes en estado "${escaparHtml(filtroEstatus)}".</p>`;
+                return;
+            }
+
+            const usuariosAsignadosEnRender = [];
+
+            lista.innerHTML = filtradas.map(sol => {
+                const estatus = sol.estatus || "pendiente";
+                const usuarioSugerido = sol.usuarioSugerido || generarUsuarioSugeridoUnico(sol.nombreNegocio, usuariosAsignadosEnRender);
+                usuariosAsignadosEnRender.push(usuarioSugerido);
+                const passwordDefault = sol.passwordAsignado || generarPasswordDefaultDesdeUsuario(usuarioSugerido);
+                const planSugerido = (sol.modalidad || "").toLowerCase().includes("solo promociones") ? "solo_promociones" : "catalogo";
+
+                const catSolicitada = sol.tipoNegocioSolicitado || tiposNegocioDinamicos[0] || "Colectivo";
+                const yaExisteCat = tiposNegocioDinamicos.some(t => t.toLowerCase() === catSolicitada.toLowerCase());
+
+                const opcionesCatHtml = [
+                    ...(yaExisteCat ? [] : [`<option value="__CREAR_NUEVA__">+ Crear y asignar: "${escaparHtml(catSolicitada)}"</option>`]),
+                    ...tiposNegocioDinamicos.map(t => `<option value="${escaparHtml(t)}" ${t.toLowerCase() === catSolicitada.toLowerCase() ? 'selected' : ''}>${escaparHtml(t)}</option>`)
+                ].join('');
+
+                const badgeEstatus = estatus === "aprobada"
+                    ? `<span class="bg-emerald-100 text-emerald-800 border border-emerald-300 px-2 py-0.5 rounded text-[10px] font-bold">Aprobada / Activa</span>`
+                    : (estatus === "rechazada"
+                        ? `<span class="bg-rose-100 text-rose-800 border border-rose-300 px-2 py-0.5 rounded text-[10px] font-bold">Rechazada</span>`
+                        : `<span class="bg-amber-200 text-amber-950 border border-amber-400 px-2 py-0.5 rounded text-[10px] font-bold">Pendiente</span>`);
+
+                const fechaHoraMostrar = sol.fechaHora || `${sol.fecha || ''} ${sol.hora || ''}`.trim() || 'Sin fecha';
+
+                const botonCrearCuentaHtml = estatus !== "aprobada"
+                    ? `<button type="button" onclick="aprobarYCrearNegocioDesdeSolicitud('${escaparAtributoJs(sol.id)}')" class="bg-[#0B2A4A] hover:bg-slate-800 text-white px-3 py-1.5 rounded-lg font-bold inline-flex items-center gap-1.5 shadow-2xs transition">
+                           <i class="fa-solid fa-user-check text-teal-300"></i> Crear Cuenta y Aprobar
+                       </button>`
+                    : `<span class="text-[11px] font-bold text-emerald-700 inline-flex items-center gap-1"><i class="fa-solid fa-circle-check"></i> Cuenta creada en Firebase Auth</span>`;
+
+                return `
+                    <div class="bg-white border border-amber-300 rounded-xl p-3 space-y-2.5 shadow-2xs">
+                        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 border-b border-slate-100 pb-2">
+                            <div class="min-w-0">
+                                <div class="flex items-center gap-2 flex-wrap">
+                                    <h4 class="font-extrabold text-sm text-[#0B2A4A]">${escaparHtml(sol.nombreNegocio || 'Sin nombre')}</h4>
+                                    ${badgeEstatus}
+                                    ${sol.esNuevaCategoria && !yaExisteCat ? `<span class="bg-purple-100 text-purple-900 border border-purple-300 px-2 py-0.5 rounded text-[10px] font-bold"><i class="fa-solid fa-sparkles mr-0.5"></i>Nueva categoría sugerida: ${escaparHtml(catSolicitada)}</span>` : ''}
+                                </div>
+                                <p class="text-[11px] text-slate-500 mt-0.5">
+                                    <i class="fa-regular fa-clock text-amber-600 mr-1"></i>Solicitado: <strong>${escaparHtml(fechaHoraMostrar)}</strong>
+                                    | <i class="fa-brands fa-whatsapp text-teal-600 mr-1"></i>Tel: <strong>${escaparHtml(sol.celular || '')}</strong>
+                                    | Modalidad: <strong>${escaparHtml(sol.modalidad || 'Catálogo')}</strong>
+                                </p>
+                            </div>
+                            <div class="flex items-center gap-1.5 shrink-0">
+                                <select onchange="cambiarEstatusSolicitudAdmin('${escaparAtributoJs(sol.id)}', this.value)" class="p-1.5 border border-slate-300 rounded-lg text-[11px] font-bold bg-slate-50 text-slate-800 outline-none" title="Cambiar estatus de la solicitud">
+                                    <option value="pendiente" ${estatus === 'pendiente' ? 'selected' : ''}>Estatus: Pendiente</option>
+                                    <option value="aprobada" ${estatus === 'aprobada' ? 'selected' : ''}>Estatus: Aprobada</option>
+                                    <option value="rechazada" ${estatus === 'rechazada' ? 'selected' : ''}>Estatus: Rechazada</option>
+                                </select>
+                                <button type="button" onclick="eliminarSolicitudAltaAdmin('${escaparAtributoJs(sol.id)}')" class="w-7 h-7 rounded-lg bg-rose-100 hover:bg-rose-200 text-rose-700 flex items-center justify-center" title="Eliminar solicitud">
+                                    <i class="fa-solid fa-trash text-xs"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <p class="text-[11px] text-slate-700 bg-slate-50 p-2 rounded-lg border border-slate-200">
+                            <strong>Productos / Servicios:</strong> ${escaparHtml(sol.productosVende || '')}
+                        </p>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-4 gap-2 bg-teal-50/60 border border-teal-200 p-2.5 rounded-lg">
+                            <div>
+                                <label class="block text-[10px] font-bold text-slate-600 mb-0.5">Categoría de Negocio</label>
+                                <select id="solCat_${escaparHtml(sol.id)}" class="w-full p-1.5 border border-teal-300 rounded bg-white text-[11px] font-semibold outline-none">
+                                    ${opcionesCatHtml}
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-[10px] font-bold text-slate-600 mb-0.5">Plan</label>
+                                <select id="solPlan_${escaparHtml(sol.id)}" class="w-full p-1.5 border border-teal-300 rounded bg-white text-[11px] font-semibold outline-none">
+                                    <option value="catalogo" ${planSugerido === 'catalogo' ? 'selected' : ''}>Catálogo Completo</option>
+                                    <option value="solo_promociones" ${planSugerido === 'solo_promociones' ? 'selected' : ''}>Solo Promos (Máx 2)</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-[10px] font-bold text-slate-600 mb-0.5">Usuario Sugerido</label>
+                                <input type="text" id="solUser_${escaparHtml(sol.id)}" value="${escaparHtml(usuarioSugerido)}" oninput="actualizarPasswordSugeridoSolicitud('${escaparAtributoJs(sol.id)}')" class="w-full p-1.5 border border-teal-300 rounded bg-white text-[11px] font-mono font-bold text-[#0B2A4A] outline-none">
+                            </div>
+                            <div>
+                                <label class="block text-[10px] font-bold text-slate-600 mb-0.5">Password (4 letras + 1234)</label>
+                                <input type="text" id="solPass_${escaparHtml(sol.id)}" value="${escaparHtml(passwordDefault)}" class="w-full p-1.5 border border-teal-300 rounded bg-white text-[11px] font-mono font-bold text-teal-900 outline-none">
+                            </div>
+                        </div>
+
+                        <div class="flex flex-wrap items-center justify-between gap-2 pt-1">
+                            <div class="flex items-center gap-2 flex-wrap">
+                                ${botonCrearCuentaHtml}
+                            </div>
+                            <button type="button" onclick="enviarCredencialesWhatsAppSolicitud('${escaparAtributoJs(sol.id)}')" class="bg-teal-600 hover:bg-teal-700 text-white px-3.5 py-1.5 rounded-lg font-bold inline-flex items-center gap-1.5 shadow-2xs transition">
+                                <i class="fa-brands fa-whatsapp text-sm"></i> Enviar Datos por WhatsApp
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function actualizarPasswordSugeridoSolicitud(solId) {
+            const userInput = document.getElementById(`solUser_${solId}`);
+            const passInput = document.getElementById(`solPass_${solId}`);
+            if (!userInput || !passInput) return;
+            passInput.value = generarPasswordDefaultDesdeUsuario(userInput.value);
+        }
+
+        function cambiarEstatusSolicitudAdmin(solId, nuevoEstatus) {
+            db.ref(`solicitudesAlta/${solId}/estatus`).set(nuevoEstatus).then(() => {
+                if (solicitudesAltaGlobal[solId]) {
+                    solicitudesAltaGlobal[solId].estatus = nuevoEstatus;
+                }
+                renderizarSolicitudesAltaAdmin();
+            });
+        }
+
+        function eliminarSolicitudAltaAdmin(solId) {
+            if (confirm("¿Eliminar esta solicitud de alta?")) {
+                db.ref(`solicitudesAlta/${solId}`).remove().then(() => {
+                    delete solicitudesAltaGlobal[solId];
+                    renderizarSolicitudesAltaAdmin();
+                });
+            }
+        }
+
+        async function aprobarYCrearNegocioDesdeSolicitud(solId) {
+            const sol = solicitudesAltaGlobal[solId];
+            if (!sol) return;
+
+            const catSelect = document.getElementById(`solCat_${solId}`);
+            const planSelect = document.getElementById(`solPlan_${solId}`);
+            const userInput = document.getElementById(`solUser_${solId}`);
+            const passInput = document.getElementById(`solPass_${solId}`);
+
+            const usuario = (userInput ? userInput.value : "").trim();
+            const password = (passInput ? passInput.value : "").trim();
+            const tipoPlan = planSelect ? planSelect.value : "catalogo";
+            let tipoNegocio = catSelect ? catSelect.value : (sol.tipoNegocioSolicitado || "Colectivo");
+
+            if (!usuario || password.length < 6) {
+                alert("Verifica que el usuario no esté vacío y la contraseña tenga al menos 6 caracteres.");
+                return;
+            }
+
+            const existe = catGlobal.some(c => (c.usuario || "").toLowerCase() === usuario.toLowerCase());
+            if (existe) {
+                alert("Ese nombre de usuario ya está en uso. Modifícalo antes de crear la cuenta.");
+                return;
+            }
+
+            try {
+                // Si se eligió crear la nueva categoría solicitada por el negocio
+                if (tipoNegocio === "__CREAR_NUEVA__") {
+                    const nuevaCat = (sol.tipoNegocioSolicitado || "").trim();
+                    if (nuevaCat && !tiposNegocioDinamicos.some(t => t.toLowerCase() === nuevaCat.toLowerCase())) {
+                        tiposNegocioDinamicos.push(nuevaCat);
+                        await db.ref("tiposNegocio").set(tiposNegocioDinamicos);
+                        renderizarTiposNegocioAdmin();
+                        actualizarSelectTiposNegocioAdmin();
+                    }
+                    tipoNegocio = nuevaCat || tiposNegocioDinamicos[0] || "Colectivo";
+                }
+
+                const emailAuth = usuarioAEmailInterno(usuario);
+                const authUid = await crearUsuarioAuthSecundario(emailAuth, password);
+
+                const colId = 'col_' + Date.now();
+                const numeroAleatorio = Math.floor(10 + Math.random() * 90);
+                const iniciales = (sol.nombreNegocio || "CL").replace(/[^a-zA-Z]/g, '').substring(0, 2).toUpperCase() || 'CL';
+                const codigoCorto = `${iniciales}-${numeroAleatorio}`;
+                const wpNormalizado = normalizarTelefonoWhatsAppMX(sol.celular || "");
+                const fechaRegistro = obtenerFechaLocalISO();
+
+                const nuevoNegocio = {
+                    tipoPlan,
+                    nombre: sol.nombreNegocio,
+                    tipoNegocio,
+                    direccion: "",
+                    usuario,
+                    authUid,
+                    whatsapp: wpNormalizado || sol.celular || "",
+                    whatsappActivo: true,
+                    paginaActiva: false,
+                    paginaUrl: "",
+                    mostrarDireccion: false,
+                    diaPago: new Date().getDate() <= 30 ? new Date().getDate() : 15,
+                    activo: true,
+                    tarifaEstadisticasActiva: true,
+                    tarifaBusquedasActiva: false,
+                    codigoCorto,
+                    fechaRegistro
+                };
+
+                await db.ref(`colectivos/${colId}`).set(nuevoNegocio);
+                await db.ref(`solicitudesAlta/${solId}`).update({
+                    estatus: "aprobada",
+                    usuarioSugerido: usuario,
+                    passwordAsignado: password,
+                    tipoNegocioAsignado: tipoNegocio,
+                    colectivoCreadoId: colId
+                });
+
+                catGlobal.push({ id: colId, ...nuevoNegocio });
+                destinatariosMensajeIds.push(colId);
+                solicitudesAltaGlobal[solId] = {
+                    ...sol,
+                    estatus: "aprobada",
+                    usuarioSugerido: usuario,
+                    passwordAsignado: password,
+                    tipoNegocioAsignado: tipoNegocio,
+                    colectivoCreadoId: colId
+                };
+
+                renderizarSolicitudesAltaAdmin();
+                renderizarDestinatariosMensajeAdmin();
+                renderizarAdminPagos();
+                renderizarAdminColectivos();
+                alert(`¡Negocio "${sol.nombreNegocio}" creado y aprobado!
+Usuario: ${usuario}
+Contraseña: ${password}
+Categoría: ${tipoNegocio}`);
+            } catch (err) {
+                alert(traducirErrorFirebaseAuth(err));
+            }
+        }
+
+        function enviarCredencialesWhatsAppSolicitud(solId) {
+            const sol = solicitudesAltaGlobal[solId];
+            if (!sol) return;
+
+            const userInput = document.getElementById(`solUser_${solId}`);
+            const passInput = document.getElementById(`solPass_${solId}`);
+            const usuario = (userInput ? userInput.value : (sol.usuarioSugerido || "")).trim();
+            const password = (passInput ? passInput.value : (sol.passwordAsignado || "")).trim();
+
+            const telefonoCliente = normalizarTelefonoWhatsAppMX(sol.celular || "");
+            if (!telefonoCliente) {
+                alert("El número de celular del cliente no es válido.");
+                return;
+            }
+
+            const urlSitio = window.location.origin + window.location.pathname;
+            const mensaje = `¡Hola *${sol.nombreNegocio}*! Bienvenido(a) a *GoShopping San Luis R C* 🎉
+
+` +
+                `Tu cuenta ya está lista para que empieces a subir tus artículos y promociones:
+
+` +
+                `• *Enlace:* ${urlSitio}
+` +
+                `• *Usuario:* ${usuario}
+` +
+                `• *Contraseña:* ${password}
+
+` +
+                `Entra al menú de las 3 líneas (izquierda) -> *Acceso Negocios* para ingresar a tu panel. ¡Mucho éxito en tus ventas!`;
+
+            const urlWp = `https://wa.me/${telefonoCliente}?text=${encodeURIComponent(mensaje)}`;
+            window.open(urlWp, "_blank", "noopener,noreferrer");
         }
 
         // FUNCIONES DE ENVÍO DE MENSAJES A NEGOCIOS CON EXCLUSIÓN INDIVIDUAL
