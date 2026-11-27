@@ -29,20 +29,13 @@
             -webkit-box-orient: vertical;
             overflow: hidden;
         }
-        /* Ocultar barra de scroll en categorías manteniendo funcionalidad táctil */
+        /* Ocultar barra de scroll en categorías manteniendo funcionalidad táctil y arrastre */
         .scrollbar-none::-webkit-scrollbar {
             display: none;
         }
         .scrollbar-none {
             -ms-overflow-style: none;
             scrollbar-width: none;
-        }
-        /* Patrón sutil invernal/navideño para el hero */
-        .mesh-pattern {
-            background-image: radial-gradient(rgba(255, 255, 255, 0.16) 1.5px, transparent 1.5px),
-                              radial-gradient(rgba(251, 191, 36, 0.18) 1px, transparent 1px);
-            background-size: 38px 38px;
-            background-position: 0 0, 19px 19px;
         }
         /* Carrusel táctil fluido en tarjetas de artículos */
         .carousel-snap {
@@ -225,7 +218,7 @@
             <!-- MÁXIMO 2 PROMOCIONES ALEATORIAS DE LAS COMPAÑÍAS QUE SOLO SE ANUNCIAN -->
             <div id="contenedorPromoAleatoria" class="hidden"></div>
 
-            <!-- BUSCADOR INDEPENDIENTE (FUERA DEL ÁREA AZUL) -->
+            <!-- BUSCADOR INDEPENDIENTE -->
             <div class="flex items-center bg-slate-50 border border-slate-200 px-3.5 py-2 rounded-2xl shadow-2xs focus-within:bg-white focus-within:border-[#0B2A4A]/40 focus-within:ring-2 focus-within:ring-[#0B2A4A]/15 transition">
                 <div class="w-7 h-7 rounded-lg bg-[#0B2A4A] text-white flex items-center justify-center mr-2.5 shrink-0 shadow-2xs">
                     <i class="fa-solid fa-magnifying-glass text-xs"></i>
@@ -236,11 +229,22 @@
                 </button>
             </div>
 
-            <!-- ÁREA AZUL SOLO PARA LOS FILTROS / CATEGORÍAS (IGUAL QUE LA PARTE DE ARRIBA) -->
-            <div class="bg-gradient-to-r from-[#081C34] via-[#0B2A4A] to-teal-950 rounded-2xl px-3 py-2.5 shadow-sm">
-                <div id="contenedorCategorias" class="flex items-center gap-2 overflow-x-auto scrollbar-none">
-                    <!-- Generado dinámicamente con botones uniformes en color azul -->
+            <!-- ÁREA AZUL DINÁMICA PARA LOS FILTROS / CATEGORÍAS (SOLO TEXTOS DESLIZABLES EN CELL Y PC) -->
+            <div class="bg-gradient-to-r from-[#081C34] via-[#0B2A4A] to-teal-950 rounded-2xl px-2 sm:px-3 py-2 shadow-sm relative flex items-center gap-1">
+                <!-- Flecha izquierda dinámica cuando hay más filtros ocultos -->
+                <button type="button" id="btnScrollFiltrosIzq" onclick="desplazarFiltros(-220)" aria-label="Ver filtros anteriores" class="hidden w-6 h-6 rounded-full bg-white/15 hover:bg-white/25 text-white flex items-center justify-center shrink-0 transition text-[10px]">
+                    <i class="fa-solid fa-chevron-left"></i>
+                </button>
+
+                <!-- Contenedor deslizable de textos de filtro -->
+                <div id="contenedorCategorias" onscroll="actualizarFlechasFiltros()" class="flex-1 flex items-center gap-1 overflow-x-auto scrollbar-none scroll-smooth select-none cursor-grab active:cursor-grabbing py-0.5">
+                    <!-- Generado dinámicamente solo como texto -->
                 </div>
+
+                <!-- Flecha derecha dinámica cuando hay más filtros ocultos -->
+                <button type="button" id="btnScrollFiltrosDer" onclick="desplazarFiltros(220)" aria-label="Ver más filtros" class="hidden w-6 h-6 rounded-full bg-white/15 hover:bg-white/25 text-teal-200 flex items-center justify-center shrink-0 transition text-[10px]">
+                    <i class="fa-solid fa-chevron-right"></i>
+                </button>
             </div>
 
             <!-- ENCABEZADO DE RESULTADOS COMPACTO -->
@@ -308,7 +312,7 @@
         </div>
     </footer>
 
-    <!-- MODAL CONTACTO ADMINISTRADOR (CON ACCESO ADMIN INTEGRADO) -->
+    <!-- MODAL CONTACTO ADMINISTRADOR (CON ACCESO ADMIN INTEGRADO Y MENSAJE DE CONFIRMACIÓN DE ALTA) -->
     <div id="modalContactoAdmin" class="fixed inset-0 bg-slate-950/60 backdrop-blur-xs hidden z-50 flex items-center justify-center p-3 sm:p-4">
         <div class="bg-white rounded-2xl max-w-md w-full p-5 sm:p-6 shadow-2xl border-t-4 border-teal-500 relative max-h-[90vh] overflow-y-auto">
             <button onclick="cerrarModalContactoAdmin()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark text-lg"></i></button>
@@ -371,6 +375,21 @@
                         <i class="fa-brands fa-whatsapp text-base"></i> Enviar Solicitud al Administrador
                     </button>
                 </form>
+            </div>
+
+            <!-- RESPUESTA FINAL AL ENVIAR SOLICITUD DE ALTA -->
+            <div id="vistaRespuestaAltaAdmin" class="hidden text-center space-y-4 py-3">
+                <div class="w-14 h-14 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center mx-auto shadow-xs">
+                    <i class="fa-solid fa-circle-check text-3xl"></i>
+                </div>
+                <div class="bg-emerald-50 border border-emerald-200 rounded-xl p-4 space-y-2">
+                    <p class="text-sm font-extrabold text-[#0B2A4A] leading-relaxed">
+                        ¡Gracias! Estamos procesando tu solicitud, en 1 hora estaremos mandándote tu usuario y password para que puedas empezar a promocionar tus productos!!
+                    </p>
+                </div>
+                <button type="button" onclick="cerrarModalContactoAdmin()" class="w-full bg-[#0B2A4A] hover:bg-slate-800 text-white py-2.5 rounded-xl font-bold text-xs shadow transition">
+                    Entendido, cerrar
+                </button>
             </div>
         </div>
     </div>
@@ -1231,8 +1250,79 @@
 
         document.addEventListener("DOMContentLoaded", () => {
             registrarYMostrarVisitas();
+            configurarArrastreFiltrosPC();
+            window.addEventListener("resize", actualizarFlechasFiltros);
             cargarDatosFirebase();
         });
+
+        // Permite arrastrar horizontalmente los filtros con el mouse en PC además del toque en celular
+        function configurarArrastreFiltrosPC() {
+            const slider = document.getElementById("contenedorCategorias");
+            if (!slider) return;
+
+            let isDown = false;
+            let startX = 0;
+            let scrollLeft = 0;
+            let moved = false;
+
+            slider.addEventListener("mousedown", (e) => {
+                isDown = true;
+                moved = false;
+                startX = e.pageX - slider.offsetLeft;
+                scrollLeft = slider.scrollLeft;
+            });
+
+            slider.addEventListener("mouseleave", () => {
+                isDown = false;
+            });
+
+            slider.addEventListener("mouseup", () => {
+                isDown = false;
+                setTimeout(() => { moved = false; }, 50);
+            });
+
+            slider.addEventListener("mousemove", (e) => {
+                if (!isDown) return;
+                e.preventDefault();
+                const x = e.pageX - slider.offsetLeft;
+                const walk = (x - startX) * 1.5;
+                if (Math.abs(walk) > 4) moved = true;
+                slider.scrollLeft = scrollLeft - walk;
+            });
+
+            slider.addEventListener("click", (e) => {
+                if (moved) {
+                    e.stopPropagation();
+                    e.preventDefault();
+                }
+            }, true);
+        }
+
+        function desplazarFiltros(distancia) {
+            const contenedor = document.getElementById("contenedorCategorias");
+            if (!contenedor) return;
+            contenedor.scrollBy({ left: distancia, behavior: "smooth" });
+        }
+
+        function actualizarFlechasFiltros() {
+            const contenedor = document.getElementById("contenedorCategorias");
+            const btnIzq = document.getElementById("btnScrollFiltrosIzq");
+            const btnDer = document.getElementById("btnScrollFiltrosDer");
+            if (!contenedor || !btnIzq || !btnDer) return;
+
+            const hayOverflow = contenedor.scrollWidth > contenedor.clientWidth + 4;
+            if (!hayOverflow) {
+                btnIzq.classList.add("hidden");
+                btnDer.classList.add("hidden");
+                return;
+            }
+
+            const alInicio = contenedor.scrollLeft <= 4;
+            const alFinal = contenedor.scrollLeft + contenedor.clientWidth >= contenedor.scrollWidth - 4;
+
+            btnIzq.classList.toggle("hidden", alInicio);
+            btnDer.classList.toggle("hidden", alFinal);
+        }
 
         function registrarYMostrarVisitas() {
             const contadorRef = db.ref('contadorVisitas');
@@ -1293,29 +1383,32 @@
             });
         }
 
+        // FILTROS DINÁMICOS SOLO TEXTO (SIN BOTÓN/CÁPSULA INDIVIDUAL POR CADA FILTRO)
         function inicializarCategoriasUI() {
             const contenedor = document.getElementById("contenedorCategorias");
             const selectProd = document.getElementById("prodCategoria");
 
-            const claseBotonBase = "px-3.5 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap transition shrink-0 inline-flex items-center gap-1.5 border";
-            const claseBotonActivo = "bg-[#16528E] text-white border-sky-300/60 shadow-xs";
-            const claseBotonInactivo = "bg-white/15 text-slate-100 border-white/15 hover:bg-white/25 hover:text-white";
+            const claseTextoBase = "px-2 py-1 text-xs whitespace-nowrap transition shrink-0 inline-flex items-center gap-1 cursor-pointer bg-transparent border-b-2 focus:outline-none";
+            const claseTextoActivo = "text-teal-300 font-extrabold border-teal-300";
+            const claseTextoInactivo = "text-slate-200/90 hover:text-white font-medium border-transparent";
+            const separadorHtml = `<span class="text-white/20 text-[11px] select-none shrink-0">|</span>`;
 
             const esPromoActiva = categoriaActiva === FILTRO_PROMOCIONES;
-            const botonPromosHtml = `
-                <button type="button" onclick="seleccionarCategoria('${FILTRO_PROMOCIONES}')" class="${claseBotonBase} ${esPromoActiva ? claseBotonActivo : claseBotonInactivo}">
-                    <i class="fa-solid fa-bolt text-sky-300"></i> Promociones
+            const itemPromosHtml = `
+                <button type="button" onclick="seleccionarCategoria('${FILTRO_PROMOCIONES}')" class="${claseTextoBase} ${esPromoActiva ? claseTextoActivo : claseTextoInactivo}">
+                    <i class="fa-solid fa-bolt text-amber-300 text-[10px]"></i> Promociones
                 </button>
             `;
 
             const listaCategorias = ["Todos", ...categoriasDinamicas];
-            const botonesCategoriasHtml = listaCategorias.map(cat => `
-                <button type="button" onclick="seleccionarCategoria('${escaparAtributoJs(cat)}')" class="${claseBotonBase} ${categoriaActiva === cat ? claseBotonActivo : claseBotonInactivo}">
+            const itemsCategoriasHtml = listaCategorias.map(cat => `
+                <button type="button" onclick="seleccionarCategoria('${escaparAtributoJs(cat)}')" class="${claseTextoBase} ${categoriaActiva === cat ? claseTextoActivo : claseTextoInactivo}">
                     ${escaparHtml(cat)}
                 </button>
-            `).join('');
+            `).join(separadorHtml);
 
-            contenedor.innerHTML = botonPromosHtml + botonesCategoriasHtml;
+            contenedor.innerHTML = itemPromosHtml + separadorHtml + itemsCategoriasHtml;
+            requestAnimationFrame(actualizarFlechasFiltros);
 
             if (selectProd) {
                 selectProd.innerHTML = categoriasDinamicas.map(cat => `<option value="${escaparHtml(cat)}">${escaparHtml(cat)}</option>`).join('');
@@ -1652,11 +1745,13 @@
         function mostrarFormularioAltaNegocio() {
             document.getElementById("formSolicitudAltaAdmin").reset();
             document.getElementById("vistaOpcionesContactoAdmin").classList.add("hidden");
+            document.getElementById("vistaRespuestaAltaAdmin").classList.add("hidden");
             document.getElementById("vistaFormularioAltaAdmin").classList.remove("hidden");
         }
 
         function volverOpcionesContactoAdmin() {
             document.getElementById("vistaFormularioAltaAdmin").classList.add("hidden");
+            document.getElementById("vistaRespuestaAltaAdmin").classList.add("hidden");
             document.getElementById("vistaOpcionesContactoAdmin").classList.remove("hidden");
         }
 
@@ -1682,7 +1777,9 @@
             const urlWp = `https://wa.me/${wpAdminRaw}?text=${encodeURIComponent(mensaje)}`;
 
             window.open(urlWp, "_blank", "noopener,noreferrer");
-            cerrarModalContactoAdmin();
+            document.getElementById("formSolicitudAltaAdmin").reset();
+            document.getElementById("vistaFormularioAltaAdmin").classList.add("hidden");
+            document.getElementById("vistaRespuestaAltaAdmin").classList.remove("hidden");
         }
 
         function guardarConfigAdmin() {
@@ -3742,71 +3839,87 @@ Ingresa el monto recibido ($ MXN):`, montoSugerido);
                 return;
             }
             const emailAuth = usuarioAEmailInterno(usuarioActual);
-            const passInicial = prompt(`Crear acceso en Firebase Authentication para "${col.nombre}" (usuario: ${usuarioActual}).\nIngresa la contraseña inicial (mínimo 6 caracteres):`);
-            if (!passInicial) return;
-            if (passInicial.trim().length < 6) {
+            const passInput = prompt(`Crear cuenta en Firebase Authentication para "${col.nombre}" (usuario: ${usuarioActual}):
+Ingresa la contraseña inicial (mínimo 6 caracteres):`);
+            if (!passInput) return;
+            if (passInput.trim().length < 6) {
                 alert("La contraseña debe tener al menos 6 caracteres.");
                 return;
             }
-
             try {
-                const uid = await crearUsuarioAuthSecundario(emailAuth, passInicial.trim());
-                await db.ref(`colectivos/${colId}/authUid`).set(uid);
+                const uid = await crearUsuarioAuthSecundario(emailAuth, passInput.trim());
+                await db.ref(`colectivos/${colId}`).update({
+                    authUid: uid,
+                    password: null
+                });
                 col.authUid = uid;
-                alert(`¡Acceso creado y vinculado con éxito!\nUsuario: ${usuarioActual}\nUID: ${uid}`);
+                delete col.password;
                 renderizarAdminColectivos();
+                alert(`Cuenta vinculada correctamente a Firebase Authentication (${emailAuth}).`);
             } catch (err) {
-                if (err && err.code === "auth/email-already-in-use") {
-                    const uidManual = prompt("Ese usuario ya existía en Firebase Authentication.\nSi conoces su UID en la consola de Firebase (Authentication > Users), pégalo aquí para vincularlo:");
-                    if (uidManual && uidManual.trim()) {
-                        await db.ref(`colectivos/${colId}/authUid`).set(uidManual.trim());
-                        col.authUid = uidManual.trim();
-                        alert("UID vinculado correctamente.");
-                        renderizarAdminColectivos();
-                    }
-                } else {
-                    alert("Error al vincular cuenta: " + traducirErrorFirebaseAuth(err));
-                }
+                alert(traducirErrorFirebaseAuth(err));
             }
         }
 
         function cambiarUsuarioAdmin(colId) {
             const col = catGlobal.find(c => c.id === colId);
-            const actual = col ? (col.usuario || "") : "";
-            const nuevoUsuario = prompt("Ingresa el nuevo usuario de referencia para este negocio (nota: si ya tiene Auth creado, su correo de acceso seguirá siendo el original):", actual);
-            if (nuevoUsuario && nuevoUsuario.trim() !== "") {
-                const limpio = nuevoUsuario.trim();
-                const duplicado = catGlobal.some(c => c.id !== colId && c.usuario === limpio);
-                if (duplicado) {
-                    alert("Ese nombre de usuario ya está asignado a otro negocio.");
+            const usuarioActual = col ? (col.usuario || '') : '';
+            const nuevoUsuario = prompt("Ingresa el nuevo nombre de usuario de referencia para este negocio:", usuarioActual);
+            if (nuevoUsuario !== null && nuevoUsuario.trim() !== "") {
+                const usuarioLimpio = nuevoUsuario.trim();
+                const existe = catGlobal.some(c => c.id !== colId && (c.usuario || "").toLowerCase() === usuarioLimpio.toLowerCase());
+                if (existe) {
+                    alert("Ese nombre de usuario ya está en uso por otro negocio.");
                     return;
                 }
-                db.ref(`colectivos/${colId}/usuario`).set(limpio).then(() => {
-                    if (col) col.usuario = limpio;
-                    alert("Usuario actualizado exitosamente por el Administrador.");
+                db.ref(`colectivos/${colId}/usuario`).set(usuarioLimpio).then(() => {
+                    if (col) col.usuario = usuarioLimpio;
                     renderizarAdminPagos();
                     renderizarAdminColectivos();
+                    alert("Usuario actualizado correctamente.");
                 });
             }
         }
 
+        function toggleActivoColectivo(colId, nuevoEstado) {
+            db.ref(`colectivos/${colId}/activo`).set(nuevoEstado).then(() => {
+                const col = catGlobal.find(c => c.id === colId);
+                if (col) col.activo = nuevoEstado;
+                renderizarAdminColectivos();
+                renderizarPromocionAleatoria();
+                filtrarProductos(true);
+            });
+        }
+
         function cambiarDiaPago(colId) {
-            const nuevoDia = prompt("Ingresa el nuevo día de pago mensual (1 al 30):");
+            const nuevoDia = prompt("Nuevo día de pago del mes para control administrativo (1 al 30):", "15");
             if (nuevoDia && !isNaN(nuevoDia) && nuevoDia >= 1 && nuevoDia <= 30) {
-                db.ref(`colectivos/${colId}/diaPago`).set(parseInt(nuevoDia)).then(() => {
+                const diaNum = parseInt(nuevoDia);
+                db.ref(`colectivos/${colId}/diaPago`).set(diaNum).then(() => {
                     const col = catGlobal.find(c => c.id === colId);
-                    if (col) col.diaPago = parseInt(nuevoDia);
-                    alert("Día de pago actualizado correctamente.");
+                    if (col) col.diaPago = diaNum;
                     renderizarAdminPagos();
                     renderizarAdminColectivos();
+                    alert("Día de pago actualizado.");
                 });
-            } else if (nuevoDia) {
-                alert("Por favor ingresa un número válido entre 1 y 30.");
+            }
+        }
+
+        function eliminarColectivo(colId) {
+            if (confirm("¿Eliminar este negocio? Sus artículos dejarán de mostrarse.")) {
+                db.ref(`colectivos/${colId}`).remove().then(() => {
+                    catGlobal = catGlobal.filter(c => c.id !== colId);
+                    destinatariosMensajeIds = destinatariosMensajeIds.filter(id => id !== colId);
+                    renderizarDestinatariosMensajeAdmin();
+                    renderizarAdminPagos();
+                    renderizarAdminColectivos();
+                    renderizarPromocionAleatoria();
+                    filtrarProductos(true);
+                });
             }
         }
 
         function abrirModalNuevoColectivo() {
-            actualizarSelectTiposNegocioAdmin();
             document.getElementById("modalNuevoColectivo").classList.remove("hidden");
         }
         function cerrarModalNuevoColectivo() {
@@ -3824,34 +3937,36 @@ Ingresa el monto recibido ($ MXN):`, montoSugerido);
             const whatsapp = document.getElementById("nuevoColWp").value.trim();
             const diaPago = parseInt(document.getElementById("nuevoDiaPago").value);
             const mostrarDireccion = document.getElementById("nuevoMostrarDir").checked;
+            const fechaRegistro = obtenerFechaLocalISO();
 
             if (password.length < 6) {
                 alert("La contraseña debe tener al menos 6 caracteres.");
                 return;
             }
 
-            if (catGlobal.some(c => (c.usuario || "").toLowerCase() === usuario.toLowerCase())) {
-                alert("Ese nombre de usuario ya está registrado.");
+            const existe = catGlobal.some(c => (c.usuario || "").toLowerCase() === usuario.toLowerCase());
+            if (existe) {
+                alert("Ese nombre de usuario ya existe. Elige otro.");
                 return;
             }
 
-            const emailAuth = usuarioAEmailInterno(usuario);
             const btnSubmit = e.target.querySelector('button[type="submit"]');
             const textoOriginal = btnSubmit ? btnSubmit.innerText : "Crear Cuenta";
             if (btnSubmit) {
                 btnSubmit.disabled = true;
-                btnSubmit.innerText = "Creando cuenta segura...";
+                btnSubmit.innerText = "Creando cuenta...";
             }
 
             try {
+                const emailAuth = usuarioAEmailInterno(usuario);
                 const authUid = await crearUsuarioAuthSecundario(emailAuth, password);
 
                 const id = 'col_' + Date.now();
-                const numeroSiguiente = catGlobal.length + 1;
-                const codigoCorto = `CL-${String(numeroSiguiente).padStart(2, '0')}`;
-                const fechaRegistro = obtenerFechaLocalISO();
+                const numeroAleatorio = Math.floor(10 + Math.random() * 90);
+                const iniciales = nombre.replace(/[^a-zA-Z]/g, '').substring(0, 2).toUpperCase() || 'CL';
+                const codigoCorto = `${iniciales}-${numeroAleatorio}`;
 
-                const nuevoColData = {
+                const nuevoNegocio = {
                     tipoPlan,
                     nombre,
                     tipoNegocio,
@@ -3859,56 +3974,35 @@ Ingresa el monto recibido ($ MXN):`, montoSugerido);
                     usuario,
                     authUid,
                     whatsapp,
+                    whatsappActivo: true,
+                    paginaActiva: false,
+                    paginaUrl: '',
+                    mostrarDireccion,
                     diaPago,
                     activo: true,
-                    whatsappActivo: true,
-                    mostrarDireccion,
                     tarifaEstadisticasActiva: true,
                     tarifaBusquedasActiva: false,
                     codigoCorto,
                     fechaRegistro
                 };
 
-                await db.ref(`colectivos/${id}`).set(nuevoColData);
+                await db.ref(`colectivos/${id}`).set(nuevoNegocio);
 
-                catGlobal.push({ id, ...nuevoColData });
-                restaurarDestinatariosMensajeAdmin();
-                e.target.reset();
+                catGlobal.push({ id, ...nuevoNegocio });
+                destinatariosMensajeIds.push(id);
+                renderizarDestinatariosMensajeAdmin();
                 cerrarModalNuevoColectivo();
+                e.target.reset();
                 renderizarAdminPagos();
                 renderizarAdminColectivos();
-                alert(`Negocio registrado en Firebase Authentication y base de datos.\nUsuario: ${usuario}\nCódigo Único: ${codigoCorto}`);
+                alert(`Negocio registrado en Firebase Auth. Usuario: "${usuario}" | Código Único: ${codigoCorto}`);
             } catch (err) {
-                alert("No se pudo crear la cuenta: " + traducirErrorFirebaseAuth(err));
+                alert(traducirErrorFirebaseAuth(err));
             } finally {
                 if (btnSubmit) {
                     btnSubmit.disabled = false;
                     btnSubmit.innerText = textoOriginal;
                 }
-            }
-        }
-
-        function toggleActivoColectivo(colId, estado) {
-            db.ref(`colectivos/${colId}/activo`).set(estado).then(() => {
-                const col = catGlobal.find(c => c.id === colId);
-                if (col) col.activo = estado;
-                renderizarAdminColectivos();
-                renderizarPromocionAleatoria();
-                filtrarProductos(true);
-            });
-        }
-
-        function eliminarColectivo(colId) {
-            if (confirm("¿Eliminar este negocio definitivamente? Se ocultarán sus productos.")) {
-                db.ref(`colectivos/${colId}`).remove().then(() => {
-                    catGlobal = catGlobal.filter(c => c.id !== colId);
-                    destinatariosMensajeIds = destinatariosMensajeIds.filter(id => id !== colId);
-                    renderizarDestinatariosMensajeAdmin();
-                    renderizarAdminPagos();
-                    renderizarAdminColectivos();
-                    renderizarPromocionAleatoria();
-                    filtrarProductos(true);
-                });
             }
         }
     </script>
