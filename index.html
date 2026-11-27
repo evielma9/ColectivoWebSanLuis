@@ -488,11 +488,11 @@
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
                             <div class="flex items-center gap-2 bg-white px-2.5 py-1.5 rounded-lg border border-teal-200">
                                 <label class="text-[11px] font-semibold text-slate-600 shrink-0">Desde:</label>
-                                <input type="date" id="statsFechaInicio" onchange="renderizarEstadisticasColectivo(); renderizarTopProductosConsultados();" class="w-full text-xs outline-none text-slate-800 bg-transparent">
+                                <input type="date" id="statsFechaInicio" onchange="renderizarEstadisticasColectivo(); renderizarTopProductosConsultados(); renderizarMisProductos(); renderizarMisPromos();" class="w-full text-xs outline-none text-slate-800 bg-transparent">
                             </div>
                             <div class="flex items-center gap-2 bg-white px-2.5 py-1.5 rounded-lg border border-teal-200">
                                 <label class="text-[11px] font-semibold text-slate-600 shrink-0">Hasta:</label>
-                                <input type="date" id="statsFechaFin" onchange="renderizarEstadisticasColectivo(); renderizarTopProductosConsultados();" class="w-full text-xs outline-none text-slate-800 bg-transparent">
+                                <input type="date" id="statsFechaFin" onchange="renderizarEstadisticasColectivo(); renderizarTopProductosConsultados(); renderizarMisProductos(); renderizarMisPromos();" class="w-full text-xs outline-none text-slate-800 bg-transparent">
                             </div>
                         </div>
 
@@ -2278,12 +2278,11 @@
 
             if (estadisticasPermitidas) {
                 establecerRangoEstadisticas('mes');
+            } else {
+                if (!soloPromos) renderizarMisProductos();
+                renderizarMisPromos();
             }
 
-            if (!soloPromos) {
-                renderizarMisProductos();
-            }
-            renderizarMisPromos();
             document.getElementById("modalPanelColectivo").classList.remove("hidden");
         }
 
@@ -2372,6 +2371,12 @@
             document.getElementById("statsFechaFin").value = preset === 'todo' ? "" : finStr;
             renderizarEstadisticasColectivo();
             renderizarTopProductosConsultados();
+
+            const colectivo = catGlobal.find(c => c.id === colectivoActualId);
+            if (colectivo && !esCuentaSoloPromociones(colectivo)) {
+                renderizarMisProductos();
+            }
+            renderizarMisPromos();
         }
 
         function establecerRangoBusquedaColectivo(preset) {
@@ -2621,6 +2626,33 @@
             });
         }
 
+        function obtenerMetricasItem(itemId) {
+            if (!colectivoActualId || !itemId) return { vistas: 0, whatsapp: 0 };
+            const datosCol = estadisticasGlobal[colectivoActualId] || {};
+            const visitasObj = datosCol.visitas || {};
+            const whatsappObj = datosCol.whatsapp || {};
+
+            const fechaInicio = document.getElementById("statsFechaInicio")?.value || "";
+            const fechaFin = document.getElementById("statsFechaFin")?.value || "";
+
+            const contar = (registrosObj) => {
+                let total = 0;
+                Object.keys(registrosObj).forEach(k => {
+                    const reg = registrosObj[k];
+                    if (!reg || reg.itemId !== itemId) return;
+                    if (fechaInicio && reg.fecha && reg.fecha < fechaInicio) return;
+                    if (fechaFin && reg.fecha && reg.fecha > fechaFin) return;
+                    total++;
+                });
+                return total;
+            };
+
+            return {
+                vistas: contar(visitasObj),
+                whatsapp: contar(whatsappObj)
+            };
+        }
+
         function renderizarMisProductos() {
             const lista = document.getElementById("listaMisProductos");
             let html = "";
@@ -2632,6 +2664,8 @@
                     count++;
                     const foto = (p.fotos && p.fotos.length > 0) ? p.fotos[0] : "https://via.placeholder.com/150";
                     const envolturaInfo = p.envolturaActiva ? `<span class="text-[9px] bg-teal-100 text-teal-800 px-1.5 py-0.5 rounded ml-1 font-bold">Regalo: +${p.costoEnvoltura || 0}</span>` : '';
+                    const metricas = obtenerMetricasItem(prodId);
+
                     html += `
                         <div class="bg-slate-50 border border-slate-200 rounded-xl p-2.5 flex gap-2 items-center justify-between">
                             <div class="flex gap-2 items-center min-w-0 flex-1">
@@ -2639,7 +2673,15 @@
                                 <div class="flex-1 min-w-0 space-y-0.5">
                                     <h5 class="font-bold text-xs truncate">${escaparHtml(p.titulo)}</h5>
                                     <p class="text-[10px] text-teal-800 font-semibold truncate">${escaparHtml(p.precio)} MXN ${envolturaInfo}</p>
-                                    <span class="inline-block text-[9px] px-1.5 py-0.5 rounded font-semibold ${p.activo ? 'bg-emerald-100 text-emerald-800' : 'bg-rose-100 text-rose-800'}">${p.activo ? 'Activo' : 'Inactivo'}</span>
+                                    <div class="flex items-center gap-1.5 flex-wrap pt-0.5">
+                                        <span class="inline-block text-[9px] px-1.5 py-0.5 rounded font-semibold ${p.activo ? 'bg-emerald-100 text-emerald-800' : 'bg-rose-100 text-rose-800'}">${p.activo ? 'Activo' : 'Inactivo'}</span>
+                                        <span class="inline-flex items-center gap-1 text-[9px] bg-white border border-slate-200 text-slate-700 px-1.5 py-0.5 rounded font-bold" title="Veces visto">
+                                            <i class="fa-solid fa-eye text-slate-500"></i> ${metricas.vistas}
+                                        </span>
+                                        <span class="inline-flex items-center gap-1 text-[9px] bg-teal-50 border border-teal-200 text-teal-800 px-1.5 py-0.5 rounded font-bold" title="Contactos por WhatsApp">
+                                            <i class="fa-brands fa-whatsapp text-teal-600"></i> ${metricas.whatsapp}
+                                        </span>
+                                    </div>
                                 </div>
                             </div>
                             <div class="flex flex-col gap-1 shrink-0">
@@ -2668,14 +2710,24 @@
                 if (promo && promo.colectivoId === colectivoActualId) {
                     count++;
                     const imgThumb = promo.imagen ? `<img src="${escaparHtml(promo.imagen)}" class="w-12 h-12 object-cover rounded mr-2 shrink-0 cursor-pointer hover:opacity-80" onclick="ampliarFoto('${escaparAtributoJs(promo.imagen)}')" title="Clic para ampliar">` : '';
+                    const metricas = obtenerMetricasItem(promoId);
+
                     html += `
                         <div class="bg-amber-50/70 border border-amber-200 p-2.5 rounded-xl flex justify-between items-center gap-2">
                             <div class="flex items-center min-w-0 flex-1">
                                 ${imgThumb}
-                                <div class="min-w-0">
+                                <div class="min-w-0 space-y-0.5">
                                     <h5 class="font-bold text-xs text-slate-900 truncate">${escaparHtml(promo.titulo)}</h5>
                                     <p class="text-[10px] text-slate-600 truncate">Vigencia: ${escaparHtml(promo.fechaInicio)} al ${escaparHtml(promo.fechaFin)}</p>
-                                    <span class="text-[#0B2A4A] font-extrabold text-[10px]">${escaparHtml(promo.precio)} MXN</span>
+                                    <div class="flex items-center gap-1.5 flex-wrap pt-0.5">
+                                        <span class="text-[#0B2A4A] font-extrabold text-[10px]">${escaparHtml(promo.precio)} MXN</span>
+                                        <span class="inline-flex items-center gap-1 text-[9px] bg-white border border-amber-200 text-slate-700 px-1.5 py-0.5 rounded font-bold" title="Veces visto">
+                                            <i class="fa-solid fa-eye text-slate-500"></i> ${metricas.vistas}
+                                        </span>
+                                        <span class="inline-flex items-center gap-1 text-[9px] bg-teal-50 border border-teal-200 text-teal-800 px-1.5 py-0.5 rounded font-bold" title="Contactos por WhatsApp">
+                                            <i class="fa-brands fa-whatsapp text-teal-600"></i> ${metricas.whatsapp}
+                                        </span>
+                                    </div>
                                 </div>
                             </div>
                             <div class="flex items-center gap-1 shrink-0">
