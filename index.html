@@ -626,18 +626,24 @@
                     <label class="block font-semibold text-slate-700 mb-1">Título del Artículo</label>
                     <input type="text" id="prodTitulo" required class="w-full p-2 border rounded-lg focus:ring-2 focus:ring-teal-600 outline-none text-xs">
                 </div>
-                <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
                     <div>
                         <label class="block font-semibold text-slate-700 mb-1">Categoría</label>
                         <select id="prodCategoria" required class="w-full p-2 border rounded-lg focus:ring-2 focus:ring-teal-600 outline-none text-xs"></select>
                     </div>
                     <div>
-                        <label class="block font-semibold text-slate-700 mb-1">Precio ($ MXN)</label>
-                        <input type="text" id="prodPrecio" required placeholder="Ej. 250" class="w-full p-2 border rounded-lg focus:ring-2 focus:ring-teal-600 outline-none text-xs">
-                    </div>
-                    <div>
                         <label class="block font-semibold text-slate-700 mb-1">Costo Envío</label>
                         <input type="text" id="prodEnvio" required placeholder="Ej. 50 o Gratis" class="w-full p-2 border rounded-lg focus:ring-2 focus:ring-teal-600 outline-none text-xs">
+                    </div>
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                    <div>
+                        <label class="block font-semibold text-slate-700 mb-1">Precio Anterior ($ MXN) <span class="text-[10px] font-normal text-slate-400">(Opcional - saldrá tachado)</span></label>
+                        <input type="text" id="prodPrecioAnterior" placeholder="Ej. 350" class="w-full p-2 border rounded-lg focus:ring-2 focus:ring-teal-600 outline-none text-xs">
+                    </div>
+                    <div>
+                        <label class="block font-semibold text-slate-700 mb-1">Precio Actual ($ MXN)</label>
+                        <input type="text" id="prodPrecio" required placeholder="Ej. 250" class="w-full p-2 border rounded-lg focus:ring-2 focus:ring-teal-600 outline-none text-xs font-bold text-slate-950">
                     </div>
                 </div>
                 <div>
@@ -696,9 +702,15 @@
                         <input type="date" id="promoFechaFin" required class="w-full p-2 border rounded-lg outline-none">
                     </div>
                 </div>
-                <div>
-                    <label class="block font-semibold text-slate-700 mb-1">Precio en Oferta ($ MXN)</label>
-                    <input type="text" id="promoPrecio" required placeholder="Ej. 199" class="w-full p-2 border rounded-lg outline-none">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                    <div>
+                        <label class="block font-semibold text-slate-700 mb-1">Precio Anterior ($ MXN) <span class="text-[10px] font-normal text-slate-400">(Opcional - tachado)</span></label>
+                        <input type="text" id="promoPrecioAnterior" placeholder="Ej. 280" class="w-full p-2 border rounded-lg outline-none">
+                    </div>
+                    <div>
+                        <label class="block font-semibold text-slate-700 mb-1">Precio Actual / Oferta ($ MXN)</label>
+                        <input type="text" id="promoPrecio" required placeholder="Ej. 199" class="w-full p-2 border rounded-lg outline-none font-bold text-slate-950">
+                    </div>
                 </div>
                 
                 <div class="bg-amber-50 border border-amber-200 p-2.5 rounded-xl space-y-2">
@@ -1068,6 +1080,48 @@
         let promosAleatoriasSeleccionadasIds = [];
         let fotoActualTarjetaMap = {};
 
+        // Formatea el precio asegurando que siempre incluya el signo $ al inicio
+        function formatearPrecioConSigno(valor) {
+            const limpio = String(valor ?? "").trim();
+            if (!limpio) return "";
+            if (limpio.startsWith("$")) return limpio;
+            return `$${limpio}`;
+        }
+
+        // Genera el bloque visual de precio en tarjetas (precio anterior tachado opcional + precio actual grande y negro)
+        function renderizarBloquePrecioTarjeta(precioActual, precioAnterior, extraClasses = "") {
+            const actualFmt = escaparHtml(formatearPrecioConSigno(precioActual));
+            const anteriorLimpio = String(precioAnterior ?? "").trim();
+            const anteriorHtml = anteriorLimpio
+                ? `<span class="text-[10px] sm:text-xs font-semibold text-slate-400 line-through leading-none block mb-0.5">${escaparHtml(formatearPrecioConSigno(anteriorLimpio))}</span>`
+                : '';
+
+            return `
+                <div class="shrink-0 pr-2 border-r border-slate-200 text-left ${extraClasses}">
+                    ${anteriorHtml}
+                    <span class="text-slate-950 font-black text-base sm:text-lg leading-none tracking-tight block">${actualFmt}</span>
+                    <span class="text-[8px] sm:text-[9px] font-bold text-slate-500 uppercase mt-0.5 block">MXN</span>
+                </div>
+            `;
+        }
+
+        // Genera el bloque visual de precio en el modal de detalle
+        function renderizarBloquePrecioDetalle(precioActual, precioAnterior) {
+            const actualFmt = escaparHtml(formatearPrecioConSigno(precioActual));
+            const anteriorLimpio = String(precioAnterior ?? "").trim();
+            const anteriorHtml = anteriorLimpio
+                ? `<span class="text-sm sm:text-base font-semibold text-slate-400 line-through mr-1.5">${escaparHtml(formatearPrecioConSigno(anteriorLimpio))}</span>`
+                : '';
+
+            return `
+                <div class="mt-1 flex items-baseline justify-center gap-1 flex-wrap">
+                    ${anteriorHtml}
+                    <span class="text-xl sm:text-2xl text-slate-950 font-black tracking-tight">${actualFmt}</span>
+                    <span class="text-xs font-bold text-slate-500 uppercase">MXN</span>
+                </div>
+            `;
+        }
+
         function usuarioAEmailInterno(usuario) {
             const limpio = String(usuario || "").trim().toLowerCase();
             if (!limpio) return "";
@@ -1319,7 +1373,6 @@
             cargarDatosPublicos(false);
         }
 
-        // Obtiene promociones vigentes. Si soloAnunciantes=true, solo devuelve las de cuentas "solo_promociones"
         function obtenerPromocionesActivas(soloAnunciantes = false) {
             const hoyStr = obtenerFechaLocalISO();
             const activas = [];
@@ -1386,9 +1439,10 @@
             const paginaActiva = Boolean(col.paginaActiva && col.paginaUrl);
             const paginaUrlNormalizada = paginaActiva ? normalizarUrlExterna(col.paginaUrl) : "";
 
+            const precioActualFmt = formatearPrecioConSigno(promo.precio);
             const wpCol = col.whatsapp || "526530000000";
             const permiteWpPromo = promo.whatsappActivo !== false && col.whatsappActivo !== false;
-            const mensajeWp = encodeURIComponent(`Hola, vi su promoción "${promo.titulo}" (${promo.precio} MXN) de ${nombreCol} en GoShopping San Luis R C. Me interesa más información.`);
+            const mensajeWp = encodeURIComponent(`Hola, vi su promoción "${promo.titulo}" (${precioActualFmt} MXN) de ${nombreCol} en GoShopping San Luis R C. Me interesa más información.`);
 
             const imagenCompletaHtml = promo.imagen
                 ? `<div class="relative mb-3 bg-slate-100 rounded-xl border border-slate-200 overflow-hidden group cursor-pointer" onclick="ampliarFoto('${escaparAtributoJs(promo.imagen)}')" title="Toca para ver en pantalla completa">
@@ -1429,7 +1483,7 @@
                         <i class="fa-solid fa-star text-amber-500"></i> Promoción Destacada
                     </span>
                     <h3 class="text-base sm:text-lg font-extrabold text-[#0B2A4A] mt-1.5 leading-snug">${escaparHtml(promo.titulo)}</h3>
-                    <p class="text-base sm:text-lg text-teal-700 font-extrabold mt-0.5">${escaparHtml(promo.precio)} MXN</p>
+                    ${renderizarBloquePrecioDetalle(promo.precio, promo.precioAnterior)}
                 </div>
                 ${imagenCompletaHtml}
                 <div class="bg-slate-50 border border-slate-200 p-3.5 rounded-xl mb-3 text-xs space-y-2">
@@ -1495,9 +1549,10 @@
                         </p>`;
                 }
 
+                const precioActualFmt = formatearPrecioConSigno(promo.precio);
                 const wpCol = col.whatsapp;
                 const permiteWpPromo = promo.whatsappActivo !== false && col.whatsappActivo !== false;
-                const mensajeWp = encodeURIComponent(`Hola, vi su anuncio "${promo.titulo}" (${promo.precio} MXN) de ${nombreCol} en GoShopping San Luis R C. Me interesa más información.`);
+                const mensajeWp = encodeURIComponent(`Hola, vi su anuncio "${promo.titulo}" (${precioActualFmt} MXN) de ${nombreCol} en GoShopping San Luis R C. Me interesa más información.`);
 
                 const imgHtml = promo.imagen
                     ? `<div class="relative w-full h-24 sm:h-32 overflow-hidden bg-slate-100 cursor-pointer shrink-0" onclick="verDetallePromocion('${escaparAtributoJs(promoId)}')" title="Clic para ver imagen completa y detalles">
@@ -1528,10 +1583,7 @@
                         ${imgHtml}
                         <!-- PRECIO A LA IZQUIERDA E INFORMACIÓN A LA DERECHA (CLIC ABRE DETALLES COMPLETOS) -->
                         <div class="p-2 flex items-center gap-2 bg-white flex-1 cursor-pointer" onclick="verDetallePromocion('${escaparAtributoJs(promoId)}')" title="Ver detalles completos de la promoción">
-                            <div class="shrink-0 pr-2 border-r border-slate-200 text-left">
-                                <span class="text-teal-800 font-extrabold text-sm sm:text-base leading-none block">${escaparHtml(promo.precio)}</span>
-                                <span class="text-[8px] sm:text-[9px] font-bold text-slate-500 uppercase">MXN</span>
-                            </div>
+                            ${renderizarBloquePrecioTarjeta(promo.precio, promo.precioAnterior)}
                             <div class="min-w-0 flex-1 space-y-0.5">
                                 <h4 class="font-bold text-[11px] sm:text-xs text-[#0B2A4A] leading-tight line-clamp-1 group-hover:text-teal-800 transition" title="${escaparHtml(promo.titulo)}">${escaparHtml(promo.titulo)}</h4>
                                 <p class="text-[10px] text-slate-500 line-clamp-1 leading-tight">${escaparHtml(promo.descripcion || '')}</p>
@@ -1684,9 +1736,10 @@
                         : `<span class="text-amber-800 font-semibold">Envío aplicable</span>`;
                 }
 
+                const precioActualFmt = formatearPrecioConSigno(promo.precio);
                 const wpCol = col.whatsapp;
                 const permiteWpPromo = promo.whatsappActivo !== false && col.whatsappActivo !== false;
-                const mensajeWp = encodeURIComponent(`Hola, me interesa la promoción "${promo.titulo}" (${promo.precio} MXN) ofrecida por ${nombreCol} en GoShopping San Luis R C. ¿Está disponible?`);
+                const mensajeWp = encodeURIComponent(`Hola, me interesa la promoción "${promo.titulo}" (${precioActualFmt} MXN) ofrecida por ${nombreCol} en GoShopping San Luis R C. ¿Está disponible?`);
 
                 count++;
                 const imgHtml = promo.imagen
@@ -1715,10 +1768,7 @@
                         ${imgHtml}
                         <!-- PRECIO A LA IZQUIERDA E INFORMACIÓN A LA DERECHA -->
                         <div class="p-2 flex items-start gap-2 flex-1 cursor-pointer" onclick="verDetallePromocion('${escaparAtributoJs(promoId)}')">
-                            <div class="shrink-0 pr-2 border-r border-slate-200 text-left pt-0.5">
-                                <span class="text-[#0B2A4A] font-extrabold text-sm sm:text-base leading-none block">${escaparHtml(promo.precio)}</span>
-                                <span class="text-[8px] font-bold text-slate-500 uppercase">MXN</span>
-                            </div>
+                            ${renderizarBloquePrecioTarjeta(promo.precio, promo.precioAnterior, "pt-0.5")}
                             <div class="min-w-0 flex-1 flex flex-col justify-between h-full space-y-1">
                                 <div>
                                     <h4 class="font-bold text-xs text-slate-900 line-clamp-1 leading-tight" title="${escaparHtml(promo.titulo)}">${escaparHtml(promo.titulo)}</h4>
@@ -1862,10 +1912,7 @@
 
                         <!-- PRECIO DEL LADO IZQUIERDO Y DEMÁS INFORMACIÓN DEL LADO DERECHO (COMPACTO) -->
                         <div class="p-2 flex items-center gap-2 flex-1 bg-white">
-                            <div class="shrink-0 pr-2 border-r border-slate-200 cursor-pointer text-left" onclick="verDetalleProducto('${escaparAtributoJs(prodId)}')">
-                                <span class="text-teal-800 font-extrabold text-sm sm:text-base leading-none block">${escaparHtml(p.precio)}</span>
-                                <span class="text-[8px] sm:text-[9px] font-bold text-slate-500 uppercase">MXN</span>
-                            </div>
+                            ${renderizarBloquePrecioTarjeta(p.precio, p.precioAnterior, `cursor-pointer" onclick="verDetalleProducto('${escaparAtributoJs(prodId)}')`)}
 
                             <div class="min-w-0 flex-1 flex items-center justify-between gap-1">
                                 <div class="min-w-0 flex-1 cursor-pointer space-y-0.5" onclick="verDetalleProducto('${escaparAtributoJs(prodId)}')">
@@ -1990,11 +2037,12 @@
             const { wpCol, prodTitulo, prodPrecio, nombreCol, envolturaActiva, costoEnvoltura } = detalleActualWpInfo;
             const checkEnvoltura = document.getElementById("checkEnvolverRegaloCliente");
             const quiereEnvoltura = Boolean(envolturaActiva && checkEnvoltura && checkEnvoltura.checked);
+            const precioActualFmt = formatearPrecioConSigno(prodPrecio);
 
             let textoEnvoltura = "";
             if (envolturaActiva) {
                 if (quiereEnvoltura) {
-                    textoEnvoltura = ` | Envoltura de regalo: SÍ quiero envolverlo para regalo (+${costoEnvoltura} MXN).`;
+                    textoEnvoltura = ` | Envoltura de regalo: SÍ quiero envolverlo para regalo (+$${costoEnvoltura} MXN).`;
                 } else {
                     textoEnvoltura = ` | Envoltura de regalo: NO requiere envoltura.`;
                 }
@@ -2005,11 +2053,11 @@
                 const precioBaseNum = parseFloat(String(prodPrecio).replace(/[^0-9.]/g, '')) || 0;
                 const totalEstimado = quiereEnvoltura ? (precioBaseNum + costoEnvoltura) : precioBaseNum;
                 totalLabel.innerText = quiereEnvoltura
-                    ? `Total estimado con envoltura: ${totalEstimado.toLocaleString()} MXN`
-                    : `Precio artículo: ${prodPrecio} MXN`;
+                    ? `Total estimado con envoltura: $${totalEstimado.toLocaleString()} MXN`
+                    : `Precio artículo: ${precioActualFmt} MXN`;
             }
 
-            const mensaje = `Hola, me interesa el artículo "${prodTitulo}" (${prodPrecio} MXN) publicado en GoShopping San Luis R C por ${nombreCol}.${textoEnvoltura} ¿Aún está disponible?`;
+            const mensaje = `Hola, me interesa el artículo "${prodTitulo}" (${precioActualFmt} MXN) publicado en GoShopping San Luis R C por ${nombreCol}.${textoEnvoltura} ¿Aún está disponible?`;
             const btnWp = document.getElementById("btnWhatsappDetalleProd");
             if (btnWp) {
                 btnWp.href = `https://wa.me/${wpCol}?text=${encodeURIComponent(mensaje)}`;
@@ -2070,11 +2118,11 @@
                         <label for="checkEnvolverRegaloCliente" class="flex items-start gap-2.5 cursor-pointer select-none">
                             <input type="checkbox" id="checkEnvolverRegaloCliente" onchange="actualizarEnlaceWhatsAppDetalle()" class="w-4 h-4 mt-0.5 text-rose-600 rounded shrink-0">
                             <div>
-                                <span class="font-bold text-[#0B2A4A] block"><i class="fa-solid fa-gift text-rose-600 mr-1"></i> Quiero este artículo envuelto para regalo (+${costoEnvoltura} MXN)</span>
+                                <span class="font-bold text-[#0B2A4A] block"><i class="fa-solid fa-gift text-rose-600 mr-1"></i> Quiero este artículo envuelto para regalo (+$${costoEnvoltura} MXN)</span>
                                 <span class="text-[11px] text-slate-600">Se especificará automáticamente en tu mensaje de WhatsApp.</span>
                             </div>
                         </label>
-                        <p id="lblTotalConEnvoltura" class="text-[11px] font-bold text-teal-800 pl-6">Precio artículo: ${escaparHtml(p.precio)} MXN</p>
+                        <p id="lblTotalConEnvoltura" class="text-[11px] font-bold text-slate-950 pl-6">Precio artículo: ${escaparHtml(formatearPrecioConSigno(p.precio))} MXN</p>
                     </div>`;
             }
 
@@ -2092,10 +2140,10 @@
             }
 
             document.getElementById("contenidoDetalleProducto").innerHTML = `
-                <div class="text-center mb-3">
+                <div class="text-center mb-3 pr-6 pl-6">
                     <span class="bg-teal-100 text-teal-900 text-[10px] px-2.5 py-0.5 rounded-full font-bold">${escaparHtml(p.categoria)}</span>
                     <h3 class="text-base sm:text-lg font-bold text-slate-900 mt-1.5">${escaparHtml(p.titulo)}</h3>
-                    <p class="text-sm text-teal-700 font-extrabold mt-0.5">${escaparHtml(p.precio)} MXN</p>
+                    ${renderizarBloquePrecioDetalle(p.precio, p.precioAnterior)}
                 </div>
                 ${fotosHtml}
                 <div class="bg-slate-50 border border-slate-200 p-3.5 rounded-xl mb-3 text-xs space-y-1.5">
@@ -2235,7 +2283,6 @@
             document.getElementById("lblTipoNegocioBadge").innerText = tipo;
             document.getElementById("lblPlanNegocioBadge").innerText = soloPromos ? "Solo Promociones (Máx. 2)" : "Catálogo Completo";
 
-            // Adaptar interfaz según plan (Catálogo vs Solo Promociones)
             document.getElementById("btnNuevoArticuloPanel").classList.toggle("hidden", soloPromos);
             document.getElementById("seccionMisArticulosPanel").classList.toggle("hidden", soloPromos);
             document.getElementById("contenedorTopProductosPanel").classList.toggle("hidden", soloPromos);
@@ -2262,7 +2309,6 @@
             document.getElementById("nuevoPassColectivoInput").value = "";
             document.getElementById("lblCodigoUnicoPanel").innerText = colectivo.codigoCorto || 'CL-00';
 
-            // Búsquedas: false por defecto (tarifa extra)
             const busquedasPermitidas = Boolean(colectivo.tarifaBusquedasActiva);
             document.getElementById("avisoTarifaBusquedasPanel").classList.toggle("hidden", busquedasPermitidas);
             document.getElementById("contenidoBusquedasPanel").classList.toggle("hidden", !busquedasPermitidas);
@@ -2271,7 +2317,6 @@
                 establecerRangoBusquedaColectivo('mes');
             }
 
-            // Estadísticas: true por defecto (salvo que el admin lo apague explícitamente)
             const estadisticasPermitidas = colectivo.tarifaEstadisticasActiva !== false;
             document.getElementById("avisoTarifaEspecialPanel").classList.toggle("hidden", estadisticasPermitidas);
             document.getElementById("contenidoEstadisticasPanel").classList.toggle("hidden", !estadisticasPermitidas);
@@ -2663,8 +2708,10 @@
                 if (p && p.colectivoId === colectivoActualId) {
                     count++;
                     const foto = (p.fotos && p.fotos.length > 0) ? p.fotos[0] : "https://via.placeholder.com/150";
-                    const envolturaInfo = p.envolturaActiva ? `<span class="text-[9px] bg-teal-100 text-teal-800 px-1.5 py-0.5 rounded ml-1 font-bold">Regalo: +${p.costoEnvoltura || 0}</span>` : '';
+                    const envolturaInfo = p.envolturaActiva ? `<span class="text-[9px] bg-teal-100 text-teal-800 px-1.5 py-0.5 rounded ml-1 font-bold">Regalo: +$${p.costoEnvoltura || 0}</span>` : '';
                     const metricas = obtenerMetricasItem(prodId);
+                    const anteriorLimpio = String(p.precioAnterior ?? "").trim();
+                    const precioAnteriorHtml = anteriorLimpio ? `<span class="text-slate-400 line-through mr-1 font-normal">${escaparHtml(formatearPrecioConSigno(anteriorLimpio))}</span>` : '';
 
                     html += `
                         <div class="bg-slate-50 border border-slate-200 rounded-xl p-2.5 flex gap-2 items-center justify-between">
@@ -2672,7 +2719,7 @@
                                 <img src="${escaparHtml(foto)}" class="w-14 h-14 object-cover rounded-lg shrink-0 cursor-pointer hover:opacity-80" onclick="ampliarFoto('${escaparAtributoJs(foto)}')" title="Clic para ampliar">
                                 <div class="flex-1 min-w-0 space-y-0.5">
                                     <h5 class="font-bold text-xs truncate">${escaparHtml(p.titulo)}</h5>
-                                    <p class="text-[10px] text-teal-800 font-semibold truncate">${escaparHtml(p.precio)} MXN ${envolturaInfo}</p>
+                                    <p class="text-[11px] text-slate-950 font-extrabold truncate">${precioAnteriorHtml}${escaparHtml(formatearPrecioConSigno(p.precio))} MXN ${envolturaInfo}</p>
                                     <div class="flex items-center gap-1.5 flex-wrap pt-0.5">
                                         <span class="inline-block text-[9px] px-1.5 py-0.5 rounded font-semibold ${p.activo ? 'bg-emerald-100 text-emerald-800' : 'bg-rose-100 text-rose-800'}">${p.activo ? 'Activo' : 'Inactivo'}</span>
                                         <span class="inline-flex items-center gap-1 text-[9px] bg-white border border-slate-200 text-slate-700 px-1.5 py-0.5 rounded font-bold" title="Veces visto">
@@ -2711,6 +2758,8 @@
                     count++;
                     const imgThumb = promo.imagen ? `<img src="${escaparHtml(promo.imagen)}" class="w-12 h-12 object-cover rounded mr-2 shrink-0 cursor-pointer hover:opacity-80" onclick="ampliarFoto('${escaparAtributoJs(promo.imagen)}')" title="Clic para ampliar">` : '';
                     const metricas = obtenerMetricasItem(promoId);
+                    const anteriorLimpio = String(promo.precioAnterior ?? "").trim();
+                    const precioAnteriorHtml = anteriorLimpio ? `<span class="text-slate-400 line-through mr-1 font-normal">${escaparHtml(formatearPrecioConSigno(anteriorLimpio))}</span>` : '';
 
                     html += `
                         <div class="bg-amber-50/70 border border-amber-200 p-2.5 rounded-xl flex justify-between items-center gap-2">
@@ -2720,7 +2769,7 @@
                                     <h5 class="font-bold text-xs text-slate-900 truncate">${escaparHtml(promo.titulo)}</h5>
                                     <p class="text-[10px] text-slate-600 truncate">Vigencia: ${escaparHtml(promo.fechaInicio)} al ${escaparHtml(promo.fechaFin)}</p>
                                     <div class="flex items-center gap-1.5 flex-wrap pt-0.5">
-                                        <span class="text-[#0B2A4A] font-extrabold text-[10px]">${escaparHtml(promo.precio)} MXN</span>
+                                        <span class="text-slate-950 font-extrabold text-[11px]">${precioAnteriorHtml}${escaparHtml(formatearPrecioConSigno(promo.precio))} MXN</span>
                                         <span class="inline-flex items-center gap-1 text-[9px] bg-white border border-amber-200 text-slate-700 px-1.5 py-0.5 rounded font-bold" title="Veces visto">
                                             <i class="fa-solid fa-eye text-slate-500"></i> ${metricas.vistas}
                                         </span>
@@ -2761,6 +2810,7 @@
 
             document.getElementById("formProducto").reset();
             document.getElementById("prodId").value = "";
+            document.getElementById("prodPrecioAnterior").value = "";
             document.getElementById("prodEnvolturaActiva").checked = false;
             document.getElementById("prodCostoEnvoltura").value = "";
             document.getElementById("contenedorProdCostoEnvoltura").classList.add("hidden");
@@ -2777,6 +2827,7 @@
             document.getElementById("prodId").value = prodId;
             document.getElementById("prodTitulo").value = p.titulo || '';
             document.getElementById("prodCategoria").value = p.categoria || categoriasDinamicas[0];
+            document.getElementById("prodPrecioAnterior").value = p.precioAnterior || '';
             document.getElementById("prodPrecio").value = p.precio || '';
             document.getElementById("prodEnvio").value = p.envio || '';
             document.getElementById("prodDesc").value = p.descripcion || '';
@@ -2809,7 +2860,8 @@
             const id = document.getElementById("prodId").value || 'prod_' + Date.now();
             const titulo = document.getElementById("prodTitulo").value.trim();
             const categoria = document.getElementById("prodCategoria").value;
-            const precio = document.getElementById("prodPrecio").value.trim();
+            const precioAnterior = document.getElementById("prodPrecioAnterior").value.trim().replace(/^\$+/, '');
+            const precio = document.getElementById("prodPrecio").value.trim().replace(/^\$+/, '');
             const envio = document.getElementById("prodEnvio").value.trim();
             const descripcion = document.getElementById("prodDesc").value.trim();
             const activo = document.getElementById("prodActivo").checked;
@@ -2826,6 +2878,7 @@
                 colectivoId: colectivoActualId,
                 titulo,
                 categoria,
+                precioAnterior,
                 precio,
                 envio,
                 descripcion,
@@ -2880,6 +2933,7 @@
 
             document.getElementById("formPromo").reset();
             document.getElementById("promoId").value = "";
+            document.getElementById("promoPrecioAnterior").value = "";
             document.getElementById("previewPromoImg").innerHTML = "";
             promoImgTempBase64 = "";
             document.getElementById("tituloFormPromo").innerText = "Crear Promoción / Anuncio con Vigencia";
@@ -2895,6 +2949,7 @@
             document.getElementById("promoDesc").value = promo.descripcion || '';
             document.getElementById("promoFechaInicio").value = promo.fechaInicio || '';
             document.getElementById("promoFechaFin").value = promo.fechaFin || '';
+            document.getElementById("promoPrecioAnterior").value = promo.precioAnterior || '';
             document.getElementById("promoPrecio").value = promo.precio || '';
             document.getElementById("promoEnvioGratis").checked = promo.envioGratis !== false;
             document.getElementById("promoWpActivo").checked = promo.whatsappActivo !== false;
@@ -2936,7 +2991,8 @@
             const id = document.getElementById("promoId").value || 'promo_' + Date.now();
             const titulo = document.getElementById("promoTitulo").value.trim();
             const descripcion = document.getElementById("promoDesc").value.trim();
-            const precio = document.getElementById("promoPrecio").value.trim();
+            const precioAnterior = document.getElementById("promoPrecioAnterior").value.trim().replace(/^\$+/, '');
+            const precio = document.getElementById("promoPrecio").value.trim().replace(/^\$+/, '');
             const fechaInicio = document.getElementById("promoFechaInicio").value;
             const fechaFin = document.getElementById("promoFechaFin").value;
             const envioGratis = document.getElementById("promoEnvioGratis").checked;
@@ -2951,6 +3007,7 @@
                 colectivoId: colectivoActualId,
                 titulo,
                 descripcion,
+                precioAnterior,
                 precio,
                 fechaInicio,
                 fechaFin,
@@ -3221,7 +3278,6 @@
 
             contenedor.innerHTML = lista.map(m => {
                 const totalDest = Array.isArray(m.destinatarios) ? m.destinatarios.length : Object.keys(m.destinatarios || {}).length;
-                const totalLeidos = m.leidos ? Object.keys(m.leidos).length : 0;
                 return `
                     <div class="bg-white border border-sky-100 p-2 rounded-lg flex items-center justify-between gap-2 text-[11px]">
                         <div class="min-w-0 flex-1">
@@ -3450,7 +3506,7 @@
                             <p class="text-[11px] text-slate-600 mt-0.5">
                                 <i class="fa-brands fa-whatsapp text-teal-600"></i> <strong>${escaparHtml(c.whatsapp || 'Sin teléfono')}</strong>
                                 ${estaPagado 
-                                    ? ` • <span class="text-emerald-700 font-bold">Pagado: ${pagoInfo.monto || 0} MXN</span> (${escaparHtml(pagoInfo.fechaPago || '')})${pagoInfo.nota ? ` - <em>${escaparHtml(pagoInfo.nota)}</em>` : ''}` 
+                                    ? ` • <span class="text-emerald-700 font-bold">Pagado: $${pagoInfo.monto || 0} MXN</span> (${escaparHtml(pagoInfo.fechaPago || '')})${pagoInfo.nota ? ` - <em>${escaparHtml(pagoInfo.nota)}</em>` : ''}` 
                                     : ` • <span class="text-rose-700 font-bold">Pendiente de pago</span>`}
                             </p>
                         </div>
@@ -3466,7 +3522,7 @@
 
             document.getElementById("resumenPagosPagados").innerText = pagadosCount;
             document.getElementById("resumenPagosPendientes").innerText = pendientesCount;
-            document.getElementById("resumenPagosTotal").innerText = `${totalRecaudado.toLocaleString()} MXN`;
+            document.getElementById("resumenPagosTotal").innerText = `$${totalRecaudado.toLocaleString()} MXN`;
             lista.innerHTML = html || '<p class="text-xs text-slate-400 italic text-center py-2">No hay negocios registrados.</p>';
         }
 
@@ -3760,21 +3816,20 @@ Ingresa el monto recibido ($ MXN):`, montoSugerido);
             const usuario = document.getElementById("nuevoColUser").value.trim();
             const password = document.getElementById("nuevoColPass").value.trim();
             const whatsapp = document.getElementById("nuevoColWp").value.trim();
-            const diaPago = parseInt(document.getElementById("nuevoDiaPago").value.trim() || 15);
+            const diaPago = parseInt(document.getElementById("nuevoDiaPago").value);
             const mostrarDireccion = document.getElementById("nuevoMostrarDir").checked;
-            const fechaRegistro = obtenerFechaLocalISO();
 
             if (password.length < 6) {
                 alert("La contraseña debe tener al menos 6 caracteres.");
                 return;
             }
 
-            const duplicado = catGlobal.some(c => (c.usuario || "").toLowerCase() === usuario.toLowerCase());
-            if (duplicado) {
-                alert("Ese nombre de usuario ya está asignado a otro negocio.");
+            if (catGlobal.some(c => (c.usuario || "").toLowerCase() === usuario.toLowerCase())) {
+                alert("Ese nombre de usuario ya está registrado.");
                 return;
             }
 
+            const emailAuth = usuarioAEmailInterno(usuario);
             const btnSubmit = e.target.querySelector('button[type="submit"]');
             const textoOriginal = btnSubmit ? btnSubmit.innerText : "Crear Cuenta";
             if (btnSubmit) {
@@ -3783,41 +3838,44 @@ Ingresa el monto recibido ($ MXN):`, montoSugerido);
             }
 
             try {
-                const emailAuth = usuarioAEmailInterno(usuario);
                 const authUid = await crearUsuarioAuthSecundario(emailAuth, password);
 
                 const id = 'col_' + Date.now();
-                const codigoCorto = 'CL-' + Math.floor(10 + Math.random() * 90);
+                const numeroSiguiente = catGlobal.length + 1;
+                const codigoCorto = `CL-${String(numeroSiguiente).padStart(2, '0')}`;
+                const fechaRegistro = obtenerFechaLocalISO();
 
-                const nuevoColObj = {
+                const nuevoCol = {
                     tipoPlan,
-                    nombre, 
-                    tipoNegocio, 
-                    direccion, 
-                    usuario, 
+                    nombre,
+                    tipoNegocio,
+                    direccion,
+                    usuario,
                     authUid,
-                    whatsapp, 
-                    diaPago, 
-                    mostrarDireccion, 
-                    activo: true, 
-                    whatsappActivo: true, 
-                    tarifaBusquedasActiva: false, 
-                    tarifaEstadisticasActiva: true, 
+                    whatsapp,
+                    whatsappActivo: true,
+                    paginaActiva: false,
+                    paginaUrl: '',
+                    mostrarDireccion,
+                    diaPago,
+                    activo: true,
+                    tarifaEstadisticasActiva: true,
+                    tarifaBusquedasActiva: false,
                     codigoCorto,
                     fechaRegistro
                 };
 
-                await db.ref(`colectivos/${id}`).set(nuevoColObj);
-                catGlobal.push({ id, ...nuevoColObj });
+                await db.ref(`colectivos/${id}`).set(nuevoCol);
+                catGlobal.push({ id, ...nuevoCol });
                 destinatariosMensajeIds.push(id);
-                e.target.reset();
                 cerrarModalNuevoColectivo();
+                e.target.reset();
                 renderizarDestinatariosMensajeAdmin();
                 renderizarAdminPagos();
                 renderizarAdminColectivos();
-                alert("Cuenta registrada con éxito en Firebase Auth y Base de Datos.\nUsuario: " + usuario + "\nPlan: " + (tipoPlan === 'solo_promociones' ? 'Solo Promociones (Máx 2)' : 'Catálogo Completo') + " | Código: " + codigoCorto);
+                alert(`Negocio registrado en Firebase Authentication con código único: ${codigoCorto}`);
             } catch (err) {
-                alert("No se pudo registrar el negocio: " + traducirErrorFirebaseAuth(err));
+                alert("No se pudo crear la cuenta: " + traducirErrorFirebaseAuth(err));
             } finally {
                 if (btnSubmit) {
                     btnSubmit.disabled = false;
@@ -3826,11 +3884,12 @@ Ingresa el monto recibido ($ MXN):`, montoSugerido);
             }
         }
 
-        function toggleActivoColectivo(colId, nuevoEstado) {
-            db.ref(`colectivos/${colId}/activo`).set(nuevoEstado).then(() => {
+        function toggleActivoColectivo(colId, estado) {
+            db.ref(`colectivos/${colId}/activo`).set(estado).then(() => {
                 const col = catGlobal.find(c => c.id === colId);
-                if (col) col.activo = nuevoEstado;
+                if (col) col.activo = estado;
                 renderizarDestinatariosMensajeAdmin();
+                renderizarAdminPagos();
                 renderizarAdminColectivos();
                 renderizarPromocionAleatoria();
                 filtrarProductos(true);
@@ -3838,10 +3897,26 @@ Ingresa el monto recibido ($ MXN):`, montoSugerido);
         }
 
         function eliminarColectivo(colId) {
-            if (confirm("¿Estás seguro de eliminar este negocio y sus accesos?")) {
-                db.ref(`colectivos/${colId}`).remove().then(() => {
+            if (confirm("¿Seguro que deseas eliminar este negocio y todos sus artículos/promociones?")) {
+                const updates = {};
+                updates[`colectivos/${colId}`] = null;
+                updates[`estadisticas/${colId}`] = null;
+                Object.keys(productosGlobal).forEach(prodId => {
+                    if (productosGlobal[prodId] && productosGlobal[prodId].colectivoId === colId) {
+                        updates[`productos/${prodId}`] = null;
+                        delete productosGlobal[prodId];
+                    }
+                });
+                Object.keys(promocionesGlobal).forEach(promoId => {
+                    if (promocionesGlobal[promoId] && promocionesGlobal[promoId].colectivoId === colId) {
+                        updates[`promociones/${promoId}`] = null;
+                        delete promocionesGlobal[promoId];
+                    }
+                });
+                db.ref().update(updates).then(() => {
                     catGlobal = catGlobal.filter(c => c.id !== colId);
                     destinatariosMensajeIds = destinatariosMensajeIds.filter(id => id !== colId);
+                    delete estadisticasGlobal[colId];
                     renderizarDestinatariosMensajeAdmin();
                     renderizarAdminPagos();
                     renderizarAdminColectivos();
