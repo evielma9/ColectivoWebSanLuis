@@ -759,6 +759,13 @@
                 </div>
                 
                 <div class="bg-amber-50 border border-amber-200 p-2.5 rounded-xl space-y-2">
+                    <div class="flex items-start gap-2">
+                        <input type="checkbox" id="promoMostrarInfo" checked class="w-4 h-4 mt-0.5 text-amber-600 rounded shrink-0">
+                        <label for="promoMostrarInfo" class="font-semibold text-slate-800 cursor-pointer leading-snug">
+                            Mostrar información debajo de la imagen
+                            <span class="block text-[10px] font-normal text-slate-500">Si lo desactivas, se mostrará únicamente tu imagen más grande en la portada (al tocarla se verán todos los datos).</span>
+                        </label>
+                    </div>
                     <div class="flex items-center gap-2">
                         <input type="checkbox" id="promoEnvioGratis" checked class="w-4 h-4 text-amber-600 rounded">
                         <label for="promoEnvioGratis" class="font-semibold text-slate-700 cursor-pointer">Aplicar Envío Gratis / Servicio incluido</label>
@@ -1730,6 +1737,7 @@
             const tarjetasHtml = seleccionadas.map(({ id: promoId, promo, col }) => {
                 const tipoNegocio = col.tipoNegocio || 'Servicio';
                 const nombreCol = `${tipoNegocio}: ${col.nombre}`;
+                const mostrarInfo = promo.mostrarInfo !== false;
                 const mostrarDir = col.mostrarDireccion !== false;
                 let ubicacionPromoHtml = '';
                 if (mostrarDir && col.direccion) {
@@ -1751,8 +1759,10 @@
                 const permiteWpPromo = promo.whatsappActivo !== false && col.whatsappActivo !== false;
                 const mensajeWp = encodeURIComponent(`Hola, vi su anuncio "${promo.titulo}" (${precioActualFmt} MXN) de ${nombreCol} en GoShopping San Luis R C. Me interesa más información.`);
 
+                const alturaImagenClase = mostrarInfo ? "h-24 sm:h-32" : "h-40 sm:h-52 flex-1";
+
                 const imgHtml = promo.imagen
-                    ? `<div class="relative w-full h-24 sm:h-32 overflow-hidden bg-slate-100 cursor-pointer shrink-0" onclick="verDetallePromocion('${escaparAtributoJs(promoId)}')" title="Clic para ver imagen completa y detalles">
+                    ? `<div class="relative w-full ${alturaImagenClase} overflow-hidden bg-slate-100 cursor-pointer shrink-0" onclick="verDetallePromocion('${escaparAtributoJs(promoId)}')" title="Clic para ver imagen completa y detalles">
                            <img src="${escaparHtml(promo.imagen)}" loading="lazy" decoding="async" alt="${escaparHtml(promo.titulo)}" class="w-full h-full object-cover group-hover:scale-105 transition duration-300">
                            <span class="absolute top-1.5 left-1.5 bg-[#0B2A4A]/95 backdrop-blur-xs text-teal-300 border border-teal-400/30 text-[8px] px-1.5 py-0.5 rounded-full font-extrabold uppercase tracking-wider inline-flex items-center gap-1 shadow-xs">
                                <i class="fa-solid fa-star text-amber-400"></i> Destacado
@@ -1761,12 +1771,12 @@
                                <i class="fa-solid fa-eye text-teal-300"></i> Ver más
                            </span>
                        </div>`
-                    : `<div class="relative w-full h-24 sm:h-32 bg-gradient-to-br from-[#0B2A4A] via-slate-800 to-emerald-950 flex flex-col items-center justify-center text-white shrink-0 cursor-pointer" onclick="verDetallePromocion('${escaparAtributoJs(promoId)}')" title="Clic para ver detalles">
+                    : `<div class="relative w-full ${alturaImagenClase} bg-gradient-to-br from-[#0B2A4A] via-slate-800 to-emerald-950 flex flex-col items-center justify-center text-white shrink-0 cursor-pointer" onclick="verDetallePromocion('${escaparAtributoJs(promoId)}')" title="Clic para ver detalles">
                            <span class="absolute top-1.5 left-1.5 bg-rose-600 text-white text-[8px] px-1.5 py-0.5 rounded-full font-extrabold uppercase tracking-wider inline-flex items-center gap-1">
                                <i class="fa-solid fa-star text-amber-300"></i> Destacado
                            </span>
                            <i class="fa-solid fa-bullhorn text-lg sm:text-xl text-teal-300"></i>
-                           <span class="text-[9px] font-bold uppercase mt-0.5 text-slate-200">Ver Promoción</span>
+                           <span class="text-[9px] font-bold uppercase mt-0.5 text-slate-200">${mostrarInfo ? 'Ver Promoción' : escaparHtml(promo.titulo)}</span>
                        </div>`;
 
                 const btnWpHtml = permiteWpPromo
@@ -1775,23 +1785,27 @@
                        </a>`
                     : '';
 
+                const bloqueInfoHtml = mostrarInfo ? `
+                    <div class="p-2 flex items-center gap-2 bg-white flex-1 cursor-pointer" onclick="verDetallePromocion('${escaparAtributoJs(promoId)}')" title="Ver detalles completos de la promoción">
+                        ${renderizarBloquePrecioTarjeta(promo.precio, promo.precioAnterior)}
+                        <div class="min-w-0 flex-1 space-y-0.5">
+                            <h4 class="font-bold text-[11px] sm:text-xs text-[#0B2A4A] leading-tight line-clamp-1 group-hover:text-teal-800 transition" title="${escaparHtml(promo.titulo)}">${escaparHtml(promo.titulo)}</h4>
+                            <p class="text-[10px] text-slate-500 line-clamp-1 leading-tight">${escaparHtml(promo.descripcion || '')}</p>
+                            <div class="flex items-center justify-between gap-1 pt-0.5">
+                                <div class="min-w-0 flex-1">
+                                    <p class="text-[10px] font-bold text-slate-700 truncate leading-tight" title="${escaparHtml(nombreCol)}">${escaparHtml(nombreCol)}</p>
+                                    ${ubicacionPromoHtml}
+                                </div>
+                                ${btnWpHtml}
+                            </div>
+                        </div>
+                    </div>
+                ` : '';
+
                 return `
                     <div class="h-full bg-white border border-slate-200/80 rounded-xl overflow-hidden shadow-xs hover:shadow-md transition flex flex-col justify-between group">
                         ${imgHtml}
-                        <div class="p-2 flex items-center gap-2 bg-white flex-1 cursor-pointer" onclick="verDetallePromocion('${escaparAtributoJs(promoId)}')" title="Ver detalles completos de la promoción">
-                            ${renderizarBloquePrecioTarjeta(promo.precio, promo.precioAnterior)}
-                            <div class="min-w-0 flex-1 space-y-0.5">
-                                <h4 class="font-bold text-[11px] sm:text-xs text-[#0B2A4A] leading-tight line-clamp-1 group-hover:text-teal-800 transition" title="${escaparHtml(promo.titulo)}">${escaparHtml(promo.titulo)}</h4>
-                                <p class="text-[10px] text-slate-500 line-clamp-1 leading-tight">${escaparHtml(promo.descripcion || '')}</p>
-                                <div class="flex items-center justify-between gap-1 pt-0.5">
-                                    <div class="min-w-0 flex-1">
-                                        <p class="text-[10px] font-bold text-slate-700 truncate leading-tight" title="${escaparHtml(nombreCol)}">${escaparHtml(nombreCol)}</p>
-                                        ${ubicacionPromoHtml}
-                                    </div>
-                                    ${btnWpHtml}
-                                </div>
-                            </div>
-                        </div>
+                        ${bloqueInfoHtml}
                     </div>
                 `;
             }).join('');
@@ -3085,6 +3099,9 @@
                     const metricas = obtenerMetricasItem(promoId);
                     const anteriorLimpio = String(promo.precioAnterior ?? "").trim();
                     const precioAnteriorHtml = anteriorLimpio ? `<span class="text-slate-400 line-through mr-1 font-normal">${escaparHtml(formatearPrecioConSigno(anteriorLimpio))}</span>` : '';
+                    const badgeSoloImagen = promo.mostrarInfo === false
+                        ? `<span class="bg-sky-100 text-sky-900 border border-sky-200 px-1.5 py-0.2 rounded font-bold"><i class="fa-regular fa-image mr-0.5"></i>Solo imagen</span>`
+                        : '';
 
                     html += `
                         <div class="bg-amber-50/40 hover:bg-amber-50/80 border border-amber-200/80 p-2 rounded-lg flex justify-between items-center gap-2 transition">
@@ -3095,6 +3112,7 @@
                                     <p class="text-[10px] text-slate-500 truncate">Vigencia: ${escaparHtml(promo.fechaInicio)} al ${escaparHtml(promo.fechaFin)}</p>
                                     <div class="flex items-center gap-2 flex-wrap pt-0.5 text-[10px]">
                                         <span class="text-[#7A1C32] font-normal">${precioAnteriorHtml}${escaparHtml(formatearPrecioConSigno(promo.precio))} MXN</span>
+                                        ${badgeSoloImagen}
                                         <span class="text-slate-500"><i class="fa-solid fa-eye mr-0.5"></i>${metricas.vistas}</span>
                                         <span class="text-teal-700 font-semibold"><i class="fa-brands fa-whatsapp mr-0.5"></i>${metricas.whatsapp}</span>
                                     </div>
@@ -3255,6 +3273,7 @@
             document.getElementById("formPromo").reset();
             document.getElementById("promoId").value = "";
             document.getElementById("promoPrecioAnterior").value = "";
+            document.getElementById("promoMostrarInfo").checked = true;
             document.getElementById("previewPromoImg").innerHTML = "";
             promoImgTempBase64 = "";
             document.getElementById("tituloFormPromo").innerText = "Crear Promoción / Anuncio con Vigencia";
@@ -3272,6 +3291,7 @@
             document.getElementById("promoFechaFin").value = promo.fechaFin || '';
             document.getElementById("promoPrecioAnterior").value = promo.precioAnterior || '';
             document.getElementById("promoPrecio").value = promo.precio || '';
+            document.getElementById("promoMostrarInfo").checked = promo.mostrarInfo !== false;
             document.getElementById("promoEnvioGratis").checked = promo.envioGratis !== false;
             document.getElementById("promoWpActivo").checked = promo.whatsappActivo !== false;
 
@@ -3316,6 +3336,7 @@
             const precio = document.getElementById("promoPrecio").value.trim().replace(/^\$+/, '');
             const fechaInicio = document.getElementById("promoFechaInicio").value;
             const fechaFin = document.getElementById("promoFechaFin").value;
+            const mostrarInfo = document.getElementById("promoMostrarInfo").checked;
             const envioGratis = document.getElementById("promoEnvioGratis").checked;
             const whatsappActivo = document.getElementById("promoWpActivo").checked;
 
@@ -3332,6 +3353,7 @@
                 precio,
                 fechaInicio,
                 fechaFin,
+                mostrarInfo,
                 envioGratis,
                 whatsappActivo,
                 imagen: imagenFinal
@@ -3734,10 +3756,7 @@
                 renderizarDestinatariosMensajeAdmin();
                 renderizarAdminPagos();
                 renderizarAdminColectivos();
-                alert(`¡Negocio "${sol.nombreNegocio}" creado y aprobado!
-Usuario: ${usuario}
-Contraseña: ${password}
-Categoría: ${tipoNegocio}`);
+                alert(`¡Negocio "${sol.nombreNegocio}" creado y aprobado!\nUsuario: ${usuario}\nContraseña: ${password}\nCategoría: ${tipoNegocio}`);
             } catch (err) {
                 alert(traducirErrorFirebaseAuth(err));
             }
@@ -3759,19 +3778,11 @@ Categoría: ${tipoNegocio}`);
             }
 
             const urlSitio = window.location.origin + window.location.pathname;
-            const mensaje = `¡Hola *${sol.nombreNegocio}*! Bienvenido(a) a *GoShopping San Luis R C* 🎉
-
-` +
-                `Tu cuenta ya está lista para que empieces a subir tus artículos y promociones:
-
-` +
-                `• *Enlace:* ${urlSitio}
-` +
-                `• *Usuario:* ${usuario}
-` +
-                `• *Contraseña:* ${password}
-
-` +
+            const mensaje = `¡Hola *${sol.nombreNegocio}*! Bienvenido(a) a *GoShopping San Luis R C* 🎉\n\n` +
+                `Tu cuenta ya está lista para que empieces a subir tus artículos y promociones:\n\n` +
+                `• *Enlace:* ${urlSitio}\n` +
+                `• *Usuario:* ${usuario}\n` +
+                `• *Contraseña:* ${password}\n\n` +
                 `Entra al menú de las 3 líneas (izquierda) -> *Acceso Negocios* para ingresar a tu panel. ¡Mucho éxito en tus ventas!`;
 
             const urlWp = `https://wa.me/${telefonoCliente}?text=${encodeURIComponent(mensaje)}`;
@@ -3876,8 +3887,8 @@ Categoría: ${tipoNegocio}`);
                 return `
                     <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-semibold border ${suspendido ? 'bg-amber-50 text-amber-900 border-amber-300' : 'bg-sky-50 text-[#0B2A4A] border-sky-200'} shadow-2xs">
                         <span class="truncate max-w-[160px]" title="${escaparHtml(c.nombre)}">${escaparHtml(c.nombre)}</span>
-                        ${suspendido ? '<span class="text-[9px] text-amber-700 font-bold">(Susp.)</span>' : ''}
-                        <button type="button" onclick="eliminarDestinatarioMensajeAdmin('${escaparAtributoJs(c.id)}')" class="w-4 h-4 rounded-full bg-rose-100 hover:bg-rose-600 text-rose-700 hover:text-white flex items-center justify-center transition shrink-0" title="Remover a ${escaparHtml(c.nombre)} del mensaje">
+                        ${suspendido ? '<span class="text-[9px] text-rose-600 font-bold">(Susp.)</span>' : ''}
+                        <button type="button" onclick="eliminarDestinatarioMensajeAdmin('${escaparAtributoJs(c.id)}')" class="w-4 h-4 rounded-full bg-slate-200/80 hover:bg-rose-600 text-slate-600 hover:text-white inline-flex items-center justify-center transition shrink-0" title="Eliminar este negocio de la lista">
                             <i class="fa-solid fa-xmark text-[9px]"></i>
                         </button>
                     </span>
@@ -3887,45 +3898,46 @@ Categoría: ${tipoNegocio}`);
 
         function enviarMensajeInternoNegocios() {
             const asunto = document.getElementById("adminMsgAsunto").value.trim();
-            const tipo = document.getElementById("adminMsgTipo").value;
             const texto = document.getElementById("adminMsgTexto").value.trim();
-            const paraTodosActivos = Boolean(document.getElementById("checkMensajeGlobalActivo")?.checked);
+            const tipo = document.getElementById("adminMsgTipo").value;
+            const paraTodosActivos = document.getElementById("checkMensajeGlobalActivo")?.checked !== false;
 
-            if (!texto) {
-                alert("Por favor escribe el mensaje que deseas enviar a los negocios.");
+            if (!asunto || !texto) {
+                alert("Por favor escribe el asunto y el contenido del mensaje.");
                 return;
             }
+
             if (!paraTodosActivos && destinatariosMensajeIds.length === 0) {
-                alert("No hay ningún negocio seleccionado para recibir el mensaje.");
+                alert("Debe haber al menos un negocio en la lista o activar el modo Global para todo negocio.");
                 return;
             }
 
             const seleccionSet = new Set(destinatariosMensajeIds);
             const excluidosIds = catGlobal.filter(c => !seleccionSet.has(c.id)).map(c => c.id);
 
-            const msgId = 'msg_' + Date.now();
-            const nuevoMensaje = {
-                asunto: asunto || "Aviso de Administración",
-                tipo,
+            const msgId = "msg_" + Date.now();
+            const fecha = obtenerFechaLocalISO();
+            const payload = {
+                asunto,
                 texto,
+                tipo,
+                fecha,
+                timestamp: Date.now(),
                 activo: true,
                 paraTodosActivos,
                 destinatarios: [...destinatariosMensajeIds],
-                excluidos: excluidosIds,
-                leidos: {},
-                fecha: obtenerFechaLocalISO(),
-                timestamp: Date.now()
+                excluidos: excluidosIds
             };
 
-            db.ref(`mensajesAdmin/${msgId}`).set(nuevoMensaje).then(() => {
-                mensajesAdminGlobal[msgId] = nuevoMensaje;
+            db.ref(`mensajesAdmin/${msgId}`).set(payload).then(() => {
+                mensajesAdminGlobal[msgId] = payload;
                 document.getElementById("adminMsgAsunto").value = "";
                 document.getElementById("adminMsgTexto").value = "";
                 renderizarHistorialMensajesAdmin();
                 const resumenAlcance = paraTodosActivos
-                    ? `Mensaje activo publicado para todos los negocios que inicien sesión${excluidosIds.length > 0 ? ` (${excluidosIds.length} negocio(s) removido(s))` : ''}.`
-                    : `Mensaje enviado correctamente a ${destinatariosMensajeIds.length} negocio(s).`;
-                alert(resumenAlcance);
+                    ? `ACTIVO para todos los negocios que entren a su sesión${excluidosIds.length > 0 ? ` (${excluidosIds.length} excluidos)` : ''}.`
+                    : `enviado a ${destinatariosMensajeIds.length} negocio(s) seleccionado(s).`;
+                alert(`Aviso publicado correctamente: ${resumenAlcance}`);
             });
         }
 
@@ -3934,38 +3946,41 @@ Categoría: ${tipoNegocio}`);
             const texto = document.getElementById("adminMsgTexto").value.trim();
 
             if (!texto) {
-                alert("Por favor escribe el mensaje antes de generar los envíos por WhatsApp.");
-                return;
-            }
-            if (destinatariosMensajeIds.length === 0) {
-                alert("No hay ningún negocio seleccionado en la lista.");
+                alert("Escribe primero el contenido del mensaje que deseas enviar por WhatsApp.");
                 return;
             }
 
-            const seleccionSet = new Set(destinatariosMensajeIds);
-            const seleccionados = catGlobal.filter(c => seleccionSet.has(c.id));
+            if (destinatariosMensajeIds.length === 0) {
+                alert("No hay destinatarios seleccionados. Incluye al menos un negocio.");
+                return;
+            }
+
             const contenedor = document.getElementById("contenedorLinksWpMasivo");
             const lista = document.getElementById("listaLinksWpMasivo");
+            if (!contenedor || !lista) return;
 
-            const cuerpoMensaje = asunto
-                ? `*${asunto}* - GoShopping San Luis R C\n\n${texto}`
-                : `*Aviso GoShopping San Luis R C*\n\n${texto}`;
+            const seleccionSet = new Set(destinatariosMensajeIds);
+            const destinatarios = catGlobal.filter(c => seleccionSet.has(c.id));
 
-            lista.innerHTML = seleccionados.map(c => {
-                const wpLimpio = String(c.whatsapp || "").replace(/\D/g, "");
+            lista.innerHTML = destinatarios.map(c => {
+                const wpLimpio = (c.whatsapp || "").replace(/\D/g, "");
+                const encabezado = asunto ? `*${asunto}*\n\n` : "";
+                const cuerpo = `Hola *${c.nombre}*, te escribimos de *GoShopping San Luis R C*:\n\n${encabezado}${texto}`;
+                const urlWp = `https://wa.me/${wpLimpio}?text=${encodeURIComponent(cuerpo)}`;
+
                 if (!wpLimpio) {
                     return `
-                        <div class="bg-white border border-slate-200 p-2 rounded-lg flex items-center justify-between text-[11px] opacity-60">
-                            <span class="truncate font-semibold text-slate-700">${escaparHtml(c.nombre)}</span>
-                            <span class="text-[10px] text-rose-600 font-bold">Sin WhatsApp</span>
+                        <div class="bg-slate-100 border border-slate-200 rounded-lg px-2.5 py-1.5 flex items-center justify-between text-[11px] text-slate-400">
+                            <span class="truncate">${escaparHtml(c.nombre)}</span>
+                            <span>Sin WhatsApp</span>
                         </div>
                     `;
                 }
-                const urlWp = `https://wa.me/${wpLimpio}?text=${encodeURIComponent(cuerpoMensaje)}`;
+
                 return `
-                    <a href="${urlWp}" target="_blank" rel="noopener noreferrer" onclick="this.classList.add('bg-emerald-100','border-emerald-400')" class="bg-white hover:bg-emerald-50 border border-emerald-200 p-2 rounded-lg flex items-center justify-between gap-2 text-[11px] transition shadow-2xs">
-                        <span class="truncate font-bold text-slate-800">${escaparHtml(c.nombre)}</span>
-                        <span class="bg-teal-600 text-white px-2 py-0.5 rounded font-bold text-[10px] shrink-0 inline-flex items-center gap-1">
+                    <a href="${urlWp}" target="_blank" rel="noopener noreferrer" class="bg-white hover:bg-emerald-100 border border-emerald-200 rounded-lg px-2.5 py-1.5 flex items-center justify-between gap-2 text-[11px] font-semibold text-slate-800 transition">
+                        <span class="truncate">${escaparHtml(c.nombre)}</span>
+                        <span class="bg-teal-600 text-white px-2 py-0.5 rounded text-[10px] font-bold shrink-0 inline-flex items-center gap-1">
                             <i class="fa-brands fa-whatsapp"></i> Enviar
                         </span>
                     </a>
@@ -3975,109 +3990,65 @@ Categoría: ${tipoNegocio}`);
             contenedor.classList.remove("hidden");
         }
 
-        function toggleActivoMensajeAdmin(msgId) {
-            const msg = mensajesAdminGlobal[msgId];
-            if (!msg) return;
-            const nuevoEstado = msg.activo === false ? true : false;
+        function toggleActivoMensajeAdmin(msgId, nuevoEstado) {
             db.ref(`mensajesAdmin/${msgId}/activo`).set(nuevoEstado).then(() => {
-                msg.activo = nuevoEstado;
-                renderizarHistorialMensajesAdmin();
-            });
-        }
-
-        function toggleExclusionNegocioEnMensajeExistente(msgId, colId) {
-            const msg = mensajesAdminGlobal[msgId];
-            if (!msg) return;
-
-            let excluidos = Array.isArray(msg.excluidos)
-                ? [...msg.excluidos]
-                : (msg.excluidos ? Object.keys(msg.excluidos).filter(k => msg.excluidos[k]) : []);
-
-            let destinatarios = Array.isArray(msg.destinatarios)
-                ? [...msg.destinatarios]
-                : (msg.destinatarios ? Object.keys(msg.destinatarios).filter(k => msg.destinatarios[k]) : []);
-
-            if (excluidos.includes(colId)) {
-                excluidos = excluidos.filter(id => id !== colId);
-                if (!destinatarios.includes(colId)) destinatarios.push(colId);
-            } else {
-                excluidos.push(colId);
-                destinatarios = destinatarios.filter(id => id !== colId);
-            }
-
-            db.ref(`mensajesAdmin/${msgId}`).update({
-                excluidos,
-                destinatarios
-            }).then(() => {
-                msg.excluidos = excluidos;
-                msg.destinatarios = destinatarios;
+                if (mensajesAdminGlobal[msgId]) {
+                    mensajesAdminGlobal[msgId].activo = nuevoEstado;
+                }
                 renderizarHistorialMensajesAdmin();
             });
         }
 
         function eliminarMensajeAdmin(msgId) {
-            if (!confirm("¿Eliminar este aviso del historial?")) return;
-            db.ref(`mensajesAdmin/${msgId}`).remove().then(() => {
-                delete mensajesAdminGlobal[msgId];
-                renderizarHistorialMensajesAdmin();
-            });
+            if (confirm("¿Eliminar este aviso para todos los negocios?")) {
+                db.ref(`mensajesAdmin/${msgId}`).remove().then(() => {
+                    delete mensajesAdminGlobal[msgId];
+                    renderizarHistorialMensajesAdmin();
+                });
+            }
         }
 
         function renderizarHistorialMensajesAdmin() {
-            const cont = document.getElementById("historialMensajesAdmin");
-            if (!cont) return;
+            const lista = document.getElementById("historialMensajesAdmin");
+            if (!lista) return;
 
-            const lista = Object.keys(mensajesAdminGlobal || {})
-                .map(id => ({ id, ...mensajesAdminGlobal[id] }))
-                .sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
+            const keys = Object.keys(mensajesAdminGlobal).sort((a, b) => {
+                return (mensajesAdminGlobal[b]?.timestamp || 0) - (mensajesAdminGlobal[a]?.timestamp || 0);
+            });
 
-            if (lista.length === 0) {
-                cont.innerHTML = '<p class="text-[11px] text-slate-400 italic py-1">Aún no has enviado avisos a los negocios.</p>';
+            if (keys.length === 0) {
+                lista.innerHTML = '<p class="text-[11px] text-slate-400 italic text-center py-2">Aún no se han publicado avisos en el panel.</p>';
                 return;
             }
 
-            cont.innerHTML = lista.slice(0, 8).map(m => {
+            lista.innerHTML = keys.map(msgId => {
+                const m = mensajesAdminGlobal[msgId];
+                if (!m) return '';
                 const estaActivo = m.activo !== false;
-                const excluidos = Array.isArray(m.excluidos)
-                    ? m.excluidos
-                    : (m.excluidos ? Object.keys(m.excluidos).filter(k => m.excluidos[k]) : []);
-
-                const alcanceTxt = m.paraTodosActivos
-                    ? `Activo en sesión para todos (${excluidos.length} removido${excluidos.length === 1 ? '' : 's'})`
-                    : `${(Array.isArray(m.destinatarios) ? m.destinatarios.length : Object.keys(m.destinatarios || {}).length)} destinatario(s)`;
-
-                const chipsExcluidosHtml = excluidos.length > 0
-                    ? `<div class="flex flex-wrap items-center gap-1 pt-1 border-t border-slate-100">
-                           <span class="text-[9px] text-rose-700 font-bold">Removidos:</span>
-                           ${excluidos.map(exId => {
-                               const colEx = catGlobal.find(c => c.id === exId);
-                               return `<button type="button" onclick="toggleExclusionNegocioEnMensajeExistente('${escaparAtributoJs(m.id)}', '${escaparAtributoJs(exId)}')" class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded bg-rose-50 hover:bg-emerald-50 text-rose-800 hover:text-emerald-800 border border-rose-200 text-[9px] font-semibold" title="Volver a incluir a ${escaparHtml(colEx ? colEx.nombre : exId)}">+ ${escaparHtml(colEx ? colEx.nombre : exId)}</button>`;
-                           }).join('')}
-                       </div>`
-                    : '';
+                const excluidosCount = Array.isArray(m.excluidos) ? m.excluidos.length : 0;
+                const alcanceTexto = m.paraTodosActivos
+                    ? `Todos los negocios activos${excluidosCount > 0 ? ` (-${excluidosCount} excl.)` : ''}`
+                    : `${Array.isArray(m.destinatarios) ? m.destinatarios.length : 0} negocios`;
 
                 return `
-                    <div class="py-2 first:pt-1 ${estaActivo ? '' : 'opacity-65'} space-y-1">
-                        <div class="flex items-start justify-between gap-2">
-                            <div class="min-w-0 flex-1">
-                                <div class="flex items-center gap-1.5 flex-wrap">
-                                    <span class="font-bold text-slate-900 truncate">${escaparHtml(m.asunto || 'Aviso')}</span>
-                                    <span class="text-[9px] ${estaActivo ? 'bg-emerald-100 text-emerald-800' : 'bg-slate-200 text-slate-600'} px-1.5 py-0.2 rounded font-bold">${estaActivo ? 'Activo' : 'Pausado'}</span>
-                                    <span class="text-[10px] text-sky-700 font-semibold">${escaparHtml(alcanceTxt)}</span>
-                                    <span class="text-[10px] text-slate-400">${escaparHtml(m.fecha || '')}</span>
-                                </div>
-                                <p class="text-[11px] text-slate-600 line-clamp-2 mt-0.5">${escaparHtml(m.texto || '')}</p>
+                    <div class="py-2 flex items-start justify-between gap-2 text-[11px] ${estaActivo ? '' : 'opacity-50'}">
+                        <div class="min-w-0 flex-1 space-y-0.5">
+                            <div class="flex items-center gap-1.5 flex-wrap">
+                                <span class="font-bold text-slate-900 truncate">${escaparHtml(m.asunto || 'Sin asunto')}</span>
+                                <span class="text-[10px] font-semibold ${estaActivo ? 'text-emerald-700' : 'text-slate-500'}">(${estaActivo ? 'Activo' : 'Pausado'})</span>
+                                <span class="text-[10px] text-sky-700 font-semibold">· ${alcanceTexto}</span>
+                                <span class="text-[10px] text-slate-400">· ${escaparHtml(m.fecha || '')}</span>
                             </div>
-                            <div class="flex items-center gap-1 shrink-0">
-                                <button type="button" onclick="toggleActivoMensajeAdmin('${escaparAtributoJs(m.id)}')" class="px-2 py-1 rounded text-[10px] font-semibold ${estaActivo ? 'bg-amber-100 hover:bg-amber-200 text-amber-900' : 'bg-emerald-100 hover:bg-emerald-200 text-emerald-900'}" title="${estaActivo ? 'Pausar aviso' : 'Activar aviso'}">
-                                    ${estaActivo ? 'Pausar' : 'Activar'}
-                                </button>
-                                <button type="button" onclick="eliminarMensajeAdmin('${escaparAtributoJs(m.id)}')" class="w-6 h-6 rounded bg-rose-100 hover:bg-rose-200 text-rose-700 flex items-center justify-center" title="Eliminar aviso">
-                                    <i class="fa-solid fa-trash text-[10px]"></i>
-                                </button>
-                            </div>
+                            <p class="text-slate-600 line-clamp-1">${escaparHtml(m.texto || '')}</p>
                         </div>
-                        ${chipsExcluidosHtml}
+                        <div class="flex items-center gap-1 shrink-0">
+                            <button type="button" onclick="toggleActivoMensajeAdmin('${escaparAtributoJs(msgId)}', ${!estaActivo})" class="w-6 h-6 rounded flex items-center justify-center ${estaActivo ? 'bg-amber-100 hover:bg-amber-200 text-amber-800' : 'bg-emerald-100 hover:bg-emerald-200 text-emerald-800'}" title="${estaActivo ? 'Pausar aviso' : 'Reactivar aviso'}">
+                                <i class="fa-solid ${estaActivo ? 'fa-pause' : 'fa-play'} text-[10px]"></i>
+                            </button>
+                            <button type="button" onclick="eliminarMensajeAdmin('${escaparAtributoJs(msgId)}')" class="w-6 h-6 rounded bg-rose-50 hover:bg-rose-100 text-rose-600 flex items-center justify-center" title="Eliminar aviso">
+                                <i class="fa-solid fa-trash text-[10px]"></i>
+                            </button>
+                        </div>
                     </div>
                 `;
             }).join('');
@@ -4129,15 +4100,15 @@ Categoría: ${tipoNegocio}`);
 
         function renderizarAnalisisBusquedasAdmin() {
             const contenedor = document.getElementById("listaBusquedasAdmin");
-            const fechaInicio = document.getElementById("adminBusquedaFechaInicio")?.value || "";
-            const fechaFin = document.getElementById("adminBusquedaFechaFin")?.value || "";
+            const fechaInicio = document.getElementById("adminBusquedaFechaInicio").value;
+            const fechaFin = document.getElementById("adminBusquedaFechaFin").value;
 
             const conteoTerminos = {};
             Object.keys(busquedasGlobal).forEach(k => {
                 const item = busquedasGlobal[k];
-                if (item && item.termino) {
-                    if (fechaInicio && item.fecha && item.fecha < fechaInicio) return;
-                    if (fechaFin && item.fecha && item.fecha > fechaFin) return;
+                if (item && item.termino && item.fecha) {
+                    if (fechaInicio && item.fecha < fechaInicio) return;
+                    if (fechaFin && item.fecha > fechaFin) return;
                     const term = item.termino.trim().toLowerCase();
                     conteoTerminos[term] = (conteoTerminos[term] || 0) + 1;
                 }
@@ -4151,9 +4122,9 @@ Categoría: ${tipoNegocio}`);
             let html = "";
             arrayBusquedas.forEach((item, idx) => {
                 html += `
-                    <div class="flex justify-between items-center py-2 px-1 text-xs">
-                        <span class="font-medium text-slate-900"><strong class="text-indigo-700 mr-1">${idx + 1}.</strong> "${escaparHtml(item.termino)}"</span>
-                        <span class="text-indigo-900 font-bold text-[11px]">${item.cantidad} búsquedas</span>
+                    <div class="flex justify-between items-center py-2 px-1 text-xs gap-2">
+                        <span class="font-medium text-slate-900 truncate"><strong class="text-indigo-700 mr-1">${idx + 1}.</strong> "${escaparHtml(item.termino)}"</span>
+                        <span class="text-indigo-900 font-bold text-[11px] shrink-0">${item.cantidad} búsquedas</span>
                     </div>
                 `;
             });
@@ -4162,21 +4133,141 @@ Categoría: ${tipoNegocio}`);
         }
 
         function limpiarRegistroBusquedas() {
-            if (!confirm("¿Borrar todo el historial de búsquedas de usuarios?")) return;
-            db.ref("busquedasUsuarios").remove().then(() => {
-                busquedasGlobal = {};
-                renderizarAnalisisBusquedasAdmin();
+            if (confirm("¿Deseas borrar todo el historial de búsquedas de usuarios?")) {
+                db.ref('busquedasUsuarios').remove().then(() => {
+                    busquedasGlobal = {};
+                    renderizarAnalisisBusquedasAdmin();
+                });
+            }
+        }
+
+        function renderizarAdminPagos() {
+            const lista = document.getElementById("listaPagosMensualesAdmin");
+            const mesSeleccionado = document.getElementById("filtroMesPagoAdmin")?.value || obtenerMesActualISO();
+            
+            let html = "";
+            let countPagados = 0;
+            let countPendientes = 0;
+            let totalRecaudado = 0;
+
+            const pagosMes = pagosGlobal[mesSeleccionado] || {};
+
+            catGlobal.forEach(c => {
+                const registroPago = pagosMes[c.id];
+                const estaPagado = Boolean(registroPago && registroPago.pagado);
+                const tipo = c.tipoNegocio || 'Colectivo';
+                const esSoloPromo = esCuentaSoloPromociones(c);
+                const badgePlan = esSoloPromo ? `<span class="bg-amber-100 text-amber-900 px-1.5 py-0.2 rounded text-[10px] font-bold">Solo Promos</span>` : '';
+
+                if (estaPagado) {
+                    countPagados++;
+                    totalRecaudado += Number(registroPago.monto || 0);
+                    html += `
+                        <div class="py-2.5 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
+                            <div>
+                                <div class="flex items-center gap-1.5 flex-wrap">
+                                    <span class="font-bold text-slate-900">${escaparHtml(c.nombre)}</span>
+                                    <span class="text-[10px] text-slate-500">(${escaparHtml(tipo)})</span>
+                                    ${badgePlan}
+                                    <span class="text-[10px] text-slate-400 font-mono">[${escaparHtml(c.codigoCorto || 'N/A')}]</span>
+                                </div>
+                                <p class="text-[11px] text-emerald-700 font-semibold mt-0.5">
+                                    <i class="fa-solid fa-circle-check"></i> Pagado el <strong>${escaparHtml(registroPago.fechaPago)}</strong> — Monto: <strong>$${Number(registroPago.monto).toLocaleString()} MXN</strong>
+                                </p>
+                            </div>
+                            <button onclick="desmarcarPagoMes('${escaparAtributoJs(c.id)}', '${escaparAtributoJs(mesSeleccionado)}')" class="bg-rose-50 hover:bg-rose-100 text-rose-700 px-2.5 py-1 rounded text-[11px] font-bold transition">
+                                Anular Pago
+                            </button>
+                        </div>
+                    `;
+                } else {
+                    countPendientes++;
+                    const fechaHoyDefault = obtenerFechaLocalISO();
+                    const montoSugerido = esSoloPromo ? "200" : "350";
+                    html += `
+                        <div class="py-2.5 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
+                            <div>
+                                <div class="flex items-center gap-1.5 flex-wrap">
+                                    <span class="font-bold text-slate-900">${escaparHtml(c.nombre)}</span>
+                                    <span class="text-[10px] text-slate-500">(${escaparHtml(tipo)})</span>
+                                    ${badgePlan}
+                                    <span class="text-[10px] text-slate-400">Corte día: <strong>${escaparHtml(c.diaPago)}</strong></span>
+                                </div>
+                                <p class="text-[11px] text-rose-600 font-semibold mt-0.5">
+                                    <i class="fa-solid fa-clock"></i> Pendiente de pago en ${escaparHtml(mesSeleccionado)}
+                                </p>
+                            </div>
+                            <div class="flex items-center gap-1.5 w-full sm:w-auto flex-wrap">
+                                <input type="number" id="montoPago_${escaparHtml(c.id)}" placeholder="$ MXN" value="${montoSugerido}" min="0" class="w-20 p-1.5 border border-slate-200 rounded bg-slate-50 text-xs font-bold text-slate-800 outline-none">
+                                <input type="date" id="fechaPago_${escaparHtml(c.id)}" value="${fechaHoyDefault}" class="p-1.5 border border-slate-200 rounded bg-slate-50 text-xs text-slate-700 outline-none">
+                                <button onclick="registrarPagoMes('${escaparAtributoJs(c.id)}', '${escaparAtributoJs(mesSeleccionado)}')" class="bg-emerald-600 hover:bg-emerald-700 text-white px-2.5 py-1.5 rounded text-xs font-bold shadow-2xs transition flex items-center gap-1">
+                                    <i class="fa-solid fa-check"></i> Pagar
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                }
+            });
+
+            document.getElementById("resumenPagosPagados").innerText = countPagados;
+            document.getElementById("resumenPagosPendientes").innerText = countPendientes;
+            document.getElementById("resumenPagosTotal").innerText = `$${totalRecaudado.toLocaleString()}`;
+            lista.innerHTML = html || '<p class="text-slate-400 italic text-center py-2">No hay negocios registrados.</p>';
+        }
+
+        function registrarPagoMes(colectivoId, mes) {
+            const montoInput = document.getElementById(`montoPago_${colectivoId}`);
+            const fechaInput = document.getElementById(`fechaPago_${colectivoId}`);
+            const monto = parseFloat(montoInput.value) || 0;
+            const fechaPago = fechaInput.value || obtenerFechaLocalISO();
+
+            if (monto <= 0) {
+                alert("Por favor ingresa un monto válido.");
+                return;
+            }
+
+            const datosPago = {
+                pagado: true,
+                monto: monto,
+                fechaPago: fechaPago
+            };
+
+            db.ref(`pagos/${mes}/${colectivoId}`).set(datosPago).then(() => {
+                if (!pagosGlobal[mes]) pagosGlobal[mes] = {};
+                pagosGlobal[mes][colectivoId] = datosPago;
+                renderizarAdminPagos();
+                renderizarAdminColectivos();
+                alert("Pago registrado correctamente.");
             });
         }
 
+        function desmarcarPagoMes(colectivoId, mes) {
+            if (confirm("¿Seguro que deseas anular este registro de pago?")) {
+                db.ref(`pagos/${mes}/${colectivoId}`).remove().then(() => {
+                    if (pagosGlobal[mes]) delete pagosGlobal[mes][colectivoId];
+                    renderizarAdminPagos();
+                    renderizarAdminColectivos();
+                });
+            }
+        }
+
+        function renderizarCategoriasAdmin() {
+            const lista = document.getElementById("listaCategoriasAdmin");
+            lista.innerHTML = categoriasDinamicas.map(cat => `
+                <span class="bg-white border border-slate-200 px-3 py-1 rounded-full text-xs font-medium flex items-center gap-2 shadow-2xs">
+                    ${escaparHtml(cat)}
+                    <button onclick="eliminarCategoriaAdmin('${escaparAtributoJs(cat)}')" class="text-rose-500 hover:text-rose-700 font-bold" title="Eliminar"><i class="fa-solid fa-xmark"></i></button>
+                </span>
+            `).join('');
+        }
+
         function agregarCategoriaAdmin() {
-            const input = document.getElementById("nuevaCategoriaInput");
-            const nueva = input.value.trim();
-            if (!nueva) return;
-            if (!categoriasDinamicas.includes(nueva)) {
-                categoriasDinamicas.push(nueva);
+            const val = document.getElementById("nuevaCategoriaInput").value.trim();
+            if (!val) return;
+            if (!categoriasDinamicas.includes(val)) {
+                categoriasDinamicas.push(val);
                 db.ref("categorias").set(categoriasDinamicas).then(() => {
-                    input.value = "";
+                    document.getElementById("nuevaCategoriaInput").value = "";
                     renderizarCategoriasAdmin();
                     inicializarCategoriasUI();
                 });
@@ -4184,149 +4275,250 @@ Categoría: ${tipoNegocio}`);
         }
 
         function eliminarCategoriaAdmin(cat) {
-            if (!confirm(`¿Eliminar la categoría "${cat}"?`)) return;
-            categoriasDinamicas = categoriasDinamicas.filter(c => c !== cat);
-            db.ref("categorias").set(categoriasDinamicas).then(() => {
-                renderizarCategoriasAdmin();
-                inicializarCategoriasUI();
-            });
+            if (confirm(`¿Eliminar la categoría "${cat}"?`)) {
+                categoriasDinamicas = categoriasDinamicas.filter(c => c !== cat);
+                db.ref("categorias").set(categoriasDinamicas).then(() => {
+                    renderizarCategoriasAdmin();
+                    inicializarCategoriasUI();
+                });
+            }
         }
 
-        function renderizarCategoriasAdmin() {
-            const cont = document.getElementById("listaCategoriasAdmin");
-            cont.innerHTML = categoriasDinamicas.map(cat => `
-                <span class="inline-flex items-center gap-1.5 bg-white border border-teal-300 text-[#0B2A4A] px-2.5 py-1 rounded-full text-xs font-semibold">
-                    ${escaparHtml(cat)}
-                    <button type="button" onclick="eliminarCategoriaAdmin('${escaparAtributoJs(cat)}')" class="text-rose-500 hover:text-rose-700" title="Eliminar"><i class="fa-solid fa-xmark text-[10px]"></i></button>
+        function renderizarTiposNegocioAdmin() {
+            const lista = document.getElementById("listaTiposNegocioAdmin");
+            lista.innerHTML = tiposNegocioDinamicos.map(t => `
+                <span class="bg-white border border-slate-200 px-3 py-1 rounded-full text-xs font-medium flex items-center gap-2 shadow-2xs">
+                    ${escaparHtml(t)}
+                    <button onclick="eliminarTipoNegocioAdmin('${escaparAtributoJs(t)}')" class="text-rose-500 hover:text-rose-700 font-bold" title="Eliminar"><i class="fa-solid fa-xmark"></i></button>
                 </span>
             `).join('');
         }
 
         function agregarTipoNegocioAdmin() {
-            const input = document.getElementById("nuevoTipoNegocioInput");
-            const nuevo = input.value.trim();
-            if (!nuevo) return;
-            if (!tiposNegocioDinamicos.includes(nuevo)) {
-                tiposNegocioDinamicos.push(nuevo);
+            const val = document.getElementById("nuevoTipoNegocioInput").value.trim();
+            if (!val) return;
+            if (!tiposNegocioDinamicos.includes(val)) {
+                tiposNegocioDinamicos.push(val);
                 db.ref("tiposNegocio").set(tiposNegocioDinamicos).then(() => {
-                    input.value = "";
+                    document.getElementById("nuevoTipoNegocioInput").value = "";
                     renderizarTiposNegocioAdmin();
                     actualizarSelectTiposNegocioAdmin();
                 });
             }
         }
 
-        function eliminarTipoNegocioAdmin(tipo) {
-            if (tiposNegocioDinamicos.length <= 1) {
-                alert("Debe existir al menos un tipo de negocio.");
-                return;
+        function eliminarTipoNegocioAdmin(t) {
+            if (confirm(`¿Eliminar el tipo de negocio "${t}"?`)) {
+                tiposNegocioDinamicos = tiposNegocioDinamicos.filter(item => item !== t);
+                db.ref("tiposNegocio").set(tiposNegocioDinamicos).then(() => {
+                    renderizarTiposNegocioAdmin();
+                    actualizarSelectTiposNegocioAdmin();
+                });
             }
-            if (!confirm(`¿Eliminar el tipo de negocio "${tipo}"?`)) return;
-            tiposNegocioDinamicos = tiposNegocioDinamicos.filter(t => t !== tipo);
-            db.ref("tiposNegocio").set(tiposNegocioDinamicos).then(() => {
-                renderizarTiposNegocioAdmin();
-                actualizarSelectTiposNegocioAdmin();
-            });
         }
 
-        function renderizarTiposNegocioAdmin() {
-            const cont = document.getElementById("listaTiposNegocioAdmin");
-            cont.innerHTML = tiposNegocioDinamicos.map(tipo => `
-                <span class="inline-flex items-center gap-1.5 bg-white border border-amber-300 text-slate-900 px-2.5 py-1 rounded-full text-xs font-semibold">
-                    ${escaparHtml(tipo)}
-                    <button type="button" onclick="eliminarTipoNegocioAdmin('${escaparAtributoJs(tipo)}')" class="text-rose-500 hover:text-rose-700" title="Eliminar"><i class="fa-solid fa-xmark text-[10px]"></i></button>
-                </span>
-            `).join('');
-        }
-
-        function renderizarAdminPagos() {
+        function renderizarAdminColectivos() {
+            const lista = document.getElementById("listaColectivosAdmin");
             const mesSeleccionado = document.getElementById("filtroMesPagoAdmin")?.value || obtenerMesActualISO();
-            const contenedor = document.getElementById("listaPagosMensualesAdmin");
-            if (!contenedor) return;
+            const pagosMes = pagosGlobal[mesSeleccionado] || {};
 
-            let pagadosCount = 0;
-            let pendientesCount = 0;
-            let totalRecaudado = 0;
+            const adminFechaInicio = document.getElementById("adminFechaInicio")?.value || "";
+            const adminFechaFin = document.getElementById("adminFechaFin")?.value || "";
+
+            const filtrarPorPeriodo = (registrosObj) => {
+                let total = 0;
+                Object.keys(registrosObj).forEach(key => {
+                    const reg = registrosObj[key];
+                    if (!reg || !reg.fecha) return;
+                    if (adminFechaInicio && reg.fecha < adminFechaInicio) return;
+                    if (adminFechaFin && reg.fecha > adminFechaFin) return;
+                    total++;
+                });
+                return total;
+            };
+
             let html = "";
-
             catGlobal.forEach(c => {
-                const pagoMes = (pagosGlobal[c.id] && pagosGlobal[c.id][mesSeleccionado]) ? pagosGlobal[c.id][mesSeleccionado] : null;
-                const estaPagado = Boolean(pagoMes && pagoMes.pagado);
-                const montoActual = pagoMes && pagoMes.monto !== undefined ? pagoMes.monto : "";
-                const fechaPagoActual = pagoMes && pagoMes.fechaPago ? pagoMes.fechaPago : "";
+                const estaActivo = c.activo !== false;
+                const tipo = c.tipoNegocio || 'Colectivo';
+                const esSoloPromo = esCuentaSoloPromociones(c);
+                const tarifasActivas = c.tarifaEstadisticasActiva !== false;
+                const busquedasActivas = Boolean(c.tarifaBusquedasActiva);
+                const registroPago = pagosMes[c.id];
+                const pagadoMes = Boolean(registroPago && registroPago.pagado);
 
-                if (estaPagado) {
-                    pagadosCount++;
-                    totalRecaudado += parseFloat(montoActual) || 0;
-                } else {
-                    pendientesCount++;
-                }
+                const badgePlan = esSoloPromo
+                    ? `<span class="bg-amber-100 text-amber-900 border border-amber-300 px-1.5 py-0.2 rounded text-[10px] font-bold">Solo Promos (Máx 2)</span>`
+                    : `<span class="bg-sky-50 text-sky-900 border border-sky-200 px-1.5 py-0.2 rounded text-[10px] font-bold">Catálogo Completo</span>`;
 
-                const badgeEstado = estaPagado
-                    ? `<span class="bg-emerald-100 text-emerald-800 border border-emerald-300 px-2 py-0.5 rounded text-[10px] font-bold">Pagado ${fechaPagoActual ? `(${escaparHtml(fechaPagoActual)})` : ''}</span>`
-                    : `<span class="bg-rose-100 text-rose-800 border border-rose-300 px-2 py-0.5 rounded text-[10px] font-bold">Pendiente (Día ${escaparHtml(c.diaPago || 'N/A')})</span>`;
+                const badgePago = pagadoMes
+                    ? `<span class="bg-emerald-50 text-emerald-700 border border-emerald-200 px-1.5 py-0.2 rounded text-[10px] font-bold"><i class="fa-solid fa-check"></i> Pagado (${escaparHtml(mesSeleccionado)})</span>`
+                    : `<span class="bg-amber-50 text-amber-700 border border-amber-200 px-1.5 py-0.2 rounded text-[10px] font-bold"><i class="fa-solid fa-clock"></i> Pendiente (${escaparHtml(mesSeleccionado)})</span>`;
+
+                const datosCol = estadisticasGlobal[c.id] || {};
+                const visitasCol = filtrarPorPeriodo(datosCol.visitas || {});
+                const wpCol = filtrarPorPeriodo(datosCol.whatsapp || {});
+                const convCol = visitasCol > 0 ? Math.round((wpCol / visitasCol) * 100) : 0;
+
+                const statsBadgeHtml = `
+                    <span class="text-[10px] text-slate-600 font-semibold">
+                        · <i class="fa-solid fa-eye text-slate-500"></i> ${visitasCol} | <i class="fa-brands fa-whatsapp text-teal-600"></i> ${wpCol} (${convCol}%)
+                    </span>
+                `;
+
+                const opcionesPlan = `
+                    <select onchange="cambiarPlanColectivoAdmin('${escaparAtributoJs(c.id)}', this.value)" class="p-1 border border-slate-200 rounded bg-slate-50 text-[10px] font-bold text-[#0B2A4A] outline-none" title="Cambiar modalidad">
+                        <option value="catalogo" ${!esSoloPromo ? 'selected' : ''}>Plan: Catálogo</option>
+                        <option value="solo_promociones" ${esSoloPromo ? 'selected' : ''}>Plan: Solo Promos</option>
+                    </select>
+                `;
+
+                const opcionesTipo = tiposNegocioDinamicos.map(t => `<option value="${escaparHtml(t)}" ${t === tipo ? 'selected' : ''}>${escaparHtml(t)}</option>`).join('');
 
                 html += `
-                    <div class="py-2.5 first:pt-1 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 text-xs">
-                        <div class="min-w-0">
+                    <div class="py-3 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 text-xs ${estaActivo ? '' : 'opacity-65'}">
+                        <div class="space-y-1 flex-1 min-w-0">
                             <div class="flex items-center gap-2 flex-wrap">
-                                <span class="font-bold text-slate-900">${escaparHtml(c.nombre)}</span>
-                                <span class="text-[10px] bg-slate-100 text-slate-700 px-1.5 py-0.2 rounded font-semibold">${escaparHtml(c.tipoNegocio || 'Colectivo')}</span>
-                                ${badgeEstado}
+                                <span class="font-bold text-slate-900 text-sm">${escaparHtml(c.nombre)}</span>
+                                ${badgePlan}
+                                <span class="text-[10px] font-mono text-slate-400">[${escaparHtml(c.codigoCorto || 'CL-00')}]</span>
+                                <span class="font-bold text-[10px] ${estaActivo ? 'text-emerald-700' : 'text-rose-700'}">· ${estaActivo ? 'Activo' : 'Suspendido'}</span>
+                                ${badgePago}
+                                ${statsBadgeHtml}
                             </div>
-                            <p class="text-[10px] text-slate-500 mt-0.5">Usuario: <strong>${escaparHtml(c.usuario)}</strong> | Día corte: ${escaparHtml(c.diaPago || 'N/A')}</p>
-                        </div>
-
-                        <div class="flex items-center gap-1.5 w-full sm:w-auto justify-end flex-wrap">
-                            <input type="number" id="montoPago_${escaparHtml(c.id)}" value="${escaparHtml(montoActual)}" placeholder="Monto $" min="0" step="1" class="w-24 p-1.5 border rounded-lg text-xs bg-slate-50 outline-none">
-                            <input type="date" id="fechaPago_${escaparHtml(c.id)}" value="${escaparHtml(fechaPagoActual || obtenerFechaLocalISO())}" class="p-1.5 border rounded-lg text-xs bg-slate-50 outline-none">
-                            <button type="button" onclick="guardarEstadoPagoAdmin('${escaparAtributoJs(c.id)}', '${escaparAtributoJs(mesSeleccionado)}', true)" class="bg-emerald-600 hover:bg-emerald-700 text-white px-2.5 py-1.5 rounded-lg text-[11px] font-bold" title="Marcar como pagado">
-                                <i class="fa-solid fa-check"></i> Pagó
-                            </button>
-                            ${estaPagado ? `
-                                <button type="button" onclick="guardarEstadoPagoAdmin('${escaparAtributoJs(c.id)}', '${escaparAtributoJs(mesSeleccionado)}', false)" class="bg-rose-100 hover:bg-rose-200 text-rose-800 px-2 py-1.5 rounded-lg text-[11px] font-bold" title="Marcar como pendiente">
-                                    Pendiente
+                            <p class="text-[11px] text-slate-500">
+                                Usuario: <strong>${escaparHtml(c.usuario)}</strong> ${c.authUid ? '<span class="text-emerald-700 font-semibold">(Auth OK)</span>' : '<span class="text-rose-600 font-semibold">(Sin Auth)</span>'} | Corte: <strong>Día ${escaparHtml(c.diaPago)}</strong> | WA: ${escaparHtml(c.whatsapp)}
+                            </p>
+                            <div class="flex items-center gap-3 pt-0.5 flex-wrap text-[11px]">
+                                <label class="inline-flex items-center gap-1 font-semibold text-teal-800 cursor-pointer">
+                                    <input type="checkbox" ${tarifasActivas ? 'checked' : ''} onchange="toggleTarifaEstadisticasAdmin('${escaparAtributoJs(c.id)}', this.checked)" class="w-3.5 h-3.5 text-teal-600 rounded">
+                                    <span>Stats</span>
+                                </label>
+                                <label class="inline-flex items-center gap-1 font-semibold text-indigo-800 cursor-pointer">
+                                    <input type="checkbox" ${busquedasActivas ? 'checked' : ''} onchange="toggleTarifaBusquedasAdmin('${escaparAtributoJs(c.id)}', this.checked)" class="w-3.5 h-3.5 text-indigo-600 rounded">
+                                    <span>Búsquedas</span>
+                                </label>
+                                <button onclick="resetearEstadisticasColectivo('${escaparAtributoJs(c.id)}')" class="text-slate-500 hover:text-rose-700 font-semibold transition" title="Reiniciar estadísticas a 0">
+                                    <i class="fa-solid fa-rotate-left"></i> Reset Stats
                                 </button>
-                            ` : ''}
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-1.5 flex-wrap w-full sm:w-auto justify-end shrink-0">
+                            ${opcionesPlan}
+                            <select onchange="cambiarTipoColectivoAdmin('${escaparAtributoJs(c.id)}', this.value)" class="p-1 border border-slate-200 rounded bg-slate-50 text-[10px] font-semibold outline-none" title="Cambiar tipo de negocio">
+                                ${opcionesTipo}
+                            </select>
+                            <button onclick="cambiarDiaPagoColectivo('${escaparAtributoJs(c.id)}', ${c.diaPago})" class="bg-slate-100 hover:bg-slate-200 px-2 py-1 rounded text-[11px] font-semibold" title="Editar Día de Pago"><i class="fa-regular fa-calendar"></i></button>
+                            <button onclick="toggleActivoColectivo('${escaparAtributoJs(c.id)}', ${!estaActivo})" class="${estaActivo ? 'bg-amber-50 hover:bg-amber-100 text-amber-800' : 'bg-emerald-50 hover:bg-emerald-100 text-emerald-800'} px-2.5 py-1 rounded text-[11px] font-semibold">
+                                ${estaActivo ? 'Suspender' : 'Activar'}
+                            </button>
+                            <button onclick="eliminarColectivo('${escaparAtributoJs(c.id)}')" class="bg-rose-50 hover:bg-rose-100 text-rose-700 px-2.5 py-1 rounded text-[11px]" title="Eliminar">
+                                <i class="fa-solid fa-trash"></i>
+                            </button>
                         </div>
                     </div>
                 `;
             });
 
-            document.getElementById("resumenPagosPagados").innerText = pagadosCount;
-            document.getElementById("resumenPagosPendientes").innerText = pendientesCount;
-            document.getElementById("resumenPagosTotal").innerText = `$${totalRecaudado.toLocaleString()}`;
-            contenedor.innerHTML = html || '<p class="text-xs text-slate-400 italic text-center py-2">No hay negocios registrados.</p>';
+            lista.innerHTML = html || '<p class="text-slate-400 italic text-center py-3">No hay negocios registrados.</p>';
         }
 
-        function guardarEstadoPagoAdmin(colId, mes, pagado) {
-            const montoInput = document.getElementById(`montoPago_${colId}`);
-            const fechaInput = document.getElementById(`fechaPago_${colId}`);
-            const monto = montoInput ? (parseFloat(montoInput.value) || 0) : 0;
-            const fechaPago = fechaInput && fechaInput.value ? fechaInput.value : obtenerFechaLocalISO();
-
-            if (pagado && monto <= 0) {
-                alert("Ingresa el monto del pago antes de marcar como pagado.");
-                return;
-            }
-
-            const registroPago = {
-                pagado,
-                monto: pagado ? monto : 0,
-                fechaPago: pagado ? fechaPago : ""
-            };
-
-            db.ref(`pagos/${colId}/${mes}`).set(registroPago).then(() => {
-                if (!pagosGlobal[colId]) pagosGlobal[colId] = {};
-                pagosGlobal[colId][mes] = registroPago;
-                renderizarAdminPagos();
+        function cambiarPlanColectivoAdmin(id, nuevoPlan) {
+            db.ref(`colectivos/${id}/tipoPlan`).set(nuevoPlan).then(() => {
+                const col = catGlobal.find(c => c.id === id);
+                if (col) col.tipoPlan = nuevoPlan;
                 renderizarAdminColectivos();
+                renderizarAdminPagos();
+                renderizarPromocionAleatoria();
+                filtrarProductos(true);
             });
+        }
+
+        function resetearEstadisticasColectivo(colectivoId) {
+            if (confirm("¿Seguro que deseas reiniciar las estadísticas (visitas y clics de WhatsApp) de este negocio a 0?")) {
+                db.ref(`estadisticas/${colectivoId}`).remove().then(() => {
+                    delete estadisticasGlobal[colectivoId];
+                    renderizarAdminColectivos();
+                    alert("Estadísticas reiniciadas a cero.");
+                });
+            }
+        }
+
+        function toggleTarifaEstadisticasAdmin(id, estado) {
+            db.ref(`colectivos/${id}/tarifaEstadisticasActiva`).set(estado).then(() => {
+                const col = catGlobal.find(c => c.id === id);
+                if (col) col.tarifaEstadisticasActiva = estado;
+            });
+        }
+
+        function toggleTarifaBusquedasAdmin(id, estado) {
+            db.ref(`colectivos/${id}/tarifaBusquedasActiva`).set(estado).then(() => {
+                const col = catGlobal.find(c => c.id === id);
+                if (col) col.tarifaBusquedasActiva = estado;
+            });
+        }
+
+        function cambiarTipoColectivoAdmin(id, nuevoTipo) {
+            db.ref(`colectivos/${id}/tipoNegocio`).set(nuevoTipo).then(() => {
+                const col = catGlobal.find(c => c.id === id);
+                if (col) col.tipoNegocio = nuevoTipo;
+                renderizarPromocionAleatoria();
+                filtrarProductos(true);
+            });
+        }
+
+        function cambiarDiaPagoColectivo(id, diaActual) {
+            const nuevoDia = prompt("Ingresa el nuevo día de corte mensual (1 al 30):", diaActual);
+            if (nuevoDia && !isNaN(nuevoDia) && nuevoDia >= 1 && nuevoDia <= 30) {
+                db.ref(`colectivos/${id}/diaPago`).set(parseInt(nuevoDia)).then(() => {
+                    const col = catGlobal.find(c => c.id === id);
+                    if (col) col.diaPago = parseInt(nuevoDia);
+                    renderizarAdminColectivos();
+                    renderizarAdminPagos();
+                });
+            }
+        }
+
+        function toggleActivoColectivo(id, estado) {
+            db.ref(`colectivos/${id}/activo`).set(estado).then(() => {
+                const col = catGlobal.find(c => c.id === id);
+                if (col) col.activo = estado;
+                renderizarAdminColectivos();
+                renderizarPromocionAleatoria();
+                filtrarProductos(true);
+            });
+        }
+
+        function eliminarColectivo(id) {
+            if (confirm("¿Seguro de eliminar este negocio y todos sus artículos/promociones?")) {
+                db.ref(`colectivos/${id}`).remove().then(() => {
+                    Object.keys(productosGlobal).forEach(prodId => {
+                        if (productosGlobal[prodId] && productosGlobal[prodId].colectivoId === id) {
+                            db.ref(`productos/${prodId}`).remove();
+                            delete productosGlobal[prodId];
+                        }
+                    });
+                    Object.keys(promocionesGlobal).forEach(promoId => {
+                        if (promocionesGlobal[promoId] && promocionesGlobal[promoId].colectivoId === id) {
+                            db.ref(`promociones/${promoId}`).remove();
+                            delete promocionesGlobal[promoId];
+                        }
+                    });
+                    db.ref(`estadisticas/${id}`).remove();
+                    catGlobal = catGlobal.filter(c => c.id !== id);
+                    destinatariosMensajeIds = destinatariosMensajeIds.filter(did => did !== id);
+                    promosAleatoriasSeleccionadasIds = promosAleatoriasSeleccionadasIds.filter(pid => promocionesGlobal[pid]);
+                    renderizarDestinatariosMensajeAdmin();
+                    renderizarAdminPagos();
+                    renderizarAdminColectivos();
+                    renderizarPromocionAleatoria();
+                    filtrarProductos(true);
+                });
+            }
         }
 
         function abrirModalNuevoColectivo() {
             actualizarSelectTiposNegocioAdmin();
-            document.getElementById("nuevoColPlan").value = "catalogo";
             document.getElementById("modalNuevoColectivo").classList.remove("hidden");
         }
         function cerrarModalNuevoColectivo() {
@@ -4335,25 +4527,33 @@ Categoría: ${tipoNegocio}`);
 
         async function registrarColectivo(e) {
             e.preventDefault();
-            const tipoPlan = document.getElementById("nuevoColPlan").value || "catalogo";
+            const tipoPlan = document.getElementById("nuevoColPlan").value;
             const nombre = document.getElementById("nuevoColNombre").value.trim();
-            const tipoNegocio = document.getElementById("nuevoColTipo").value || tiposNegocioDinamicos[0] || "Colectivo";
+            const tipoNegocio = document.getElementById("nuevoColTipo").value;
             const direccion = document.getElementById("nuevoColDireccion").value.trim();
             const usuario = document.getElementById("nuevoColUser").value.trim();
-            const password = document.getElementById("nuevoColPass").value.trim();
+            const password = document.getElementById("nuevoColPass").value;
             const whatsapp = document.getElementById("nuevoColWp").value.trim();
             const diaPago = parseInt(document.getElementById("nuevoDiaPago").value);
             const mostrarDireccion = document.getElementById("nuevoMostrarDir").checked;
+            const fechaRegistro = obtenerFechaLocalISO();
 
-            if (password.length < 6) {
-                alert("La contraseña debe tener al menos 6 caracteres.");
+            if (!usuario || password.length < 6) {
+                alert("El usuario es obligatorio y la contraseña debe tener al menos 6 caracteres.");
                 return;
             }
 
-            const existe = catGlobal.some(c => c.usuario.toLowerCase() === usuario.toLowerCase());
+            const existe = catGlobal.some(c => (c.usuario || "").toLowerCase() === usuario.toLowerCase());
             if (existe) {
                 alert("Ese nombre de usuario ya está en uso.");
                 return;
+            }
+
+            const btnSubmit = e.target.querySelector('button[type="submit"]');
+            const textoOriginal = btnSubmit ? btnSubmit.innerText : "Crear Cuenta";
+            if (btnSubmit) {
+                btnSubmit.disabled = true;
+                btnSubmit.innerText = "Creando cuenta...";
             }
 
             try {
@@ -4364,9 +4564,8 @@ Categoría: ${tipoNegocio}`);
                 const numeroAleatorio = Math.floor(10 + Math.random() * 90);
                 const iniciales = nombre.replace(/[^a-zA-Z]/g, '').substring(0, 2).toUpperCase() || 'CL';
                 const codigoCorto = `${iniciales}-${numeroAleatorio}`;
-                const fechaRegistro = obtenerFechaLocalISO();
 
-                const nuevoCol = {
+                const nuevoNegocio = {
                     tipoPlan,
                     nombre,
                     tipoNegocio,
@@ -4386,192 +4585,23 @@ Categoría: ${tipoNegocio}`);
                     fechaRegistro
                 };
 
-                await db.ref(`colectivos/${id}`).set(nuevoCol);
-                catGlobal.push({ id, ...nuevoCol });
+                await db.ref(`colectivos/${id}`).set(nuevoNegocio);
+                catGlobal.push({ id, ...nuevoNegocio });
                 destinatariosMensajeIds.push(id);
                 cerrarModalNuevoColectivo();
+                e.target.reset();
                 renderizarDestinatariosMensajeAdmin();
                 renderizarAdminPagos();
                 renderizarAdminColectivos();
-                alert(`Cuenta creada y vinculada a Firebase Authentication.\nUsuario: ${usuario}\nContraseña: ${password}\nIdentificador: ${codigoCorto}`);
+                alert(`Cuenta creada correctamente en Firebase Auth y Database.\nUsuario: ${usuario}\nCódigo único: ${codigoCorto}`);
             } catch (err) {
                 alert(traducirErrorFirebaseAuth(err));
-            }
-        }
-
-        function renderizarAdminColectivos() {
-            const lista = document.getElementById("listaColectivosAdmin");
-            const mesSeleccionado = document.getElementById("filtroMesPagoAdmin")?.value || obtenerMesActualISO();
-            const fechaInicio = document.getElementById("adminFechaInicio")?.value || "";
-            const fechaFin = document.getElementById("adminFechaFin")?.value || "";
-            let html = "";
-
-            catGlobal.forEach(c => {
-                let prodCount = 0;
-                Object.keys(productosGlobal).forEach(pid => {
-                    if (productosGlobal[pid] && productosGlobal[pid].colectivoId === c.id) prodCount++;
-                });
-
-                let promoCount = 0;
-                Object.keys(promocionesGlobal).forEach(prid => {
-                    if (promocionesGlobal[prid] && promocionesGlobal[prid].colectivoId === c.id) promoCount++;
-                });
-
-                const datosStats = estadisticasGlobal[c.id] || {};
-                const visitasObj = datosStats.visitas || {};
-                const whatsappObj = datosStats.whatsapp || {};
-
-                let visitasRango = 0;
-                Object.keys(visitasObj).forEach(k => {
-                    const reg = visitasObj[k];
-                    if (reg && reg.fecha) {
-                        if (fechaInicio && reg.fecha < fechaInicio) return;
-                        if (fechaFin && reg.fecha > fechaFin) return;
-                        visitasRango++;
-                    }
-                });
-
-                let wpRango = 0;
-                Object.keys(whatsappObj).forEach(k => {
-                    const reg = whatsappObj[k];
-                    if (reg && reg.fecha) {
-                        if (fechaInicio && reg.fecha < fechaInicio) return;
-                        if (fechaFin && reg.fecha > fechaFin) return;
-                        wpRango++;
-                    }
-                });
-
-                const pagoMes = (pagosGlobal[c.id] && pagosGlobal[c.id][mesSeleccionado]) ? pagosGlobal[c.id][mesSeleccionado] : null;
-                const estaPagadoMes = Boolean(pagoMes && pagoMes.pagado);
-                const badgePagoMes = estaPagadoMes
-                    ? `<span class="bg-emerald-100 text-emerald-800 border border-emerald-300 px-2 py-0.5 rounded text-[10px] font-bold"><i class="fa-solid fa-circle-check mr-0.5"></i> Pagó ${mesSeleccionado} ($${pagoMes.monto || 0})</span>`
-                    : `<span class="bg-rose-100 text-rose-800 border border-rose-300 px-2 py-0.5 rounded text-[10px] font-bold"><i class="fa-solid fa-clock mr-0.5"></i> Sin pago ${mesSeleccionado}</span>`;
-
-                const soloPromos = esCuentaSoloPromociones(c);
-                const badgePlan = soloPromos
-                    ? `<span class="bg-amber-100 text-amber-900 border border-amber-300 px-2 py-0.5 rounded text-[10px] font-extrabold"><i class="fa-solid fa-star mr-0.5"></i> Solo Promos (${promoCount}/2)</span>`
-                    : `<span class="bg-teal-100 text-teal-900 border border-teal-300 px-2 py-0.5 rounded text-[10px] font-bold">Catálogo (${prodCount}/30) | Promos: ${promoCount}</span>`;
-
-                html += `
-                    <div class="py-3 first:pt-2 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 text-xs">
-                        <div class="space-y-1">
-                            <div class="flex items-center gap-2 flex-wrap">
-                                <h4 class="font-bold text-slate-900 text-sm">${escaparHtml(c.nombre)}</h4>
-                                <span class="bg-teal-100 text-teal-900 px-2 py-0.5 rounded font-semibold text-[10px]">${escaparHtml(c.tipoNegocio || 'Colectivo')}</span>
-                                ${badgePlan}
-                                <span class="bg-slate-200 text-slate-800 px-2 py-0.5 rounded font-mono font-bold text-[10px]">ID: ${escaparHtml(c.codigoCorto || 'CL-00')}</span>
-                                ${badgePagoMes}
-                                <span class="px-2 py-0.5 rounded text-[10px] font-bold ${c.activo !== false ? 'bg-teal-100 text-teal-800' : 'bg-rose-100 text-rose-800'}">${c.activo !== false ? 'Activo' : 'Suspendido'}</span>
-                            </div>
-                            <p class="text-slate-600">Usuario: <strong>${escaparHtml(c.usuario)}</strong> | WA: <strong>${escaparHtml(c.whatsapp)}</strong> | Día Pago: <strong>${escaparHtml(c.diaPago || 'N/A')}</strong></p>
-                            <p class="text-[10px] text-slate-500">Dirección: ${escaparHtml(c.direccion || 'No especificada')} (${c.mostrarDireccion !== false ? 'Visible' : 'Oculta'})</p>
-                            <div class="flex items-center gap-3 pt-1 flex-wrap">
-                                <span class="bg-slate-100 border text-slate-800 px-2 py-0.5 rounded text-[10px] font-bold"><i class="fa-solid fa-eye text-slate-500 mr-1"></i>Visitas: ${visitasRango}</span>
-                                <span class="bg-teal-50 border border-teal-200 text-teal-800 px-2 py-0.5 rounded text-[10px] font-bold"><i class="fa-brands fa-whatsapp text-teal-600 mr-1"></i>Clics WA: ${wpRango}</span>
-                            </div>
-                            <div class="flex items-center gap-4 pt-1 flex-wrap">
-                                <label class="inline-flex items-center gap-1.5 cursor-pointer font-semibold text-teal-900">
-                                    <input type="checkbox" ${c.tarifaEstadisticasActiva !== false ? 'checked' : ''} onchange="toggleTarifaEstadisticasAdmin('${escaparAtributoJs(c.id)}', this.checked)" class="w-3.5 h-3.5 text-teal-600 rounded">
-                                    <span>Estadísticas</span>
-                                </label>
-                                <label class="inline-flex items-center gap-1.5 cursor-pointer font-semibold text-indigo-900">
-                                    <input type="checkbox" ${c.tarifaBusquedasActiva ? 'checked' : ''} onchange="toggleTarifaBusquedasAdmin('${escaparAtributoJs(c.id)}', this.checked)" class="w-3.5 h-3.5 text-indigo-600 rounded">
-                                    <span>Tarifa Búsquedas</span>
-                                </label>
-                            </div>
-                        </div>
-                        <div class="flex flex-wrap gap-1.5 w-full sm:w-auto justify-end">
-                            <button onclick="cambiarPlanColectivoAdmin('${escaparAtributoJs(c.id)}', '${soloPromos ? 'catalogo' : 'solo_promociones'}')" class="bg-amber-100 hover:bg-amber-200 text-amber-950 px-2.5 py-1.5 rounded font-semibold" title="Cambiar modalidad de cuenta">${soloPromos ? 'Pasar a Catálogo' : 'Pasar a Solo Promos'}</button>
-                            <button onclick="editarDiaPagoAdmin('${escaparAtributoJs(c.id)}', ${c.diaPago || 15})" class="bg-slate-100 hover:bg-slate-200 text-slate-800 px-2.5 py-1.5 rounded font-semibold">Día Pago</button>
-                            <button onclick="toggleActivoColectivoAdmin('${escaparAtributoJs(c.id)}', ${c.activo === false})" class="px-2.5 py-1.5 rounded font-semibold ${c.activo !== false ? 'bg-amber-100 text-amber-800 hover:bg-amber-200' : 'bg-teal-100 text-teal-800 hover:bg-teal-200'}">${c.activo !== false ? 'Suspender' : 'Activar'}</button>
-                            <button onclick="eliminarColectivoAdmin('${escaparAtributoJs(c.id)}')" class="bg-rose-100 hover:bg-rose-200 text-rose-700 px-2.5 py-1.5 rounded font-semibold"><i class="fa-solid fa-trash"></i></button>
-                        </div>
-                    </div>
-                `;
-            });
-            lista.innerHTML = html || '<p class="text-slate-400 text-xs italic text-center py-4">No hay negocios registrados.</p>';
-        }
-
-        function cambiarPlanColectivoAdmin(colId, nuevoPlan) {
-            const label = nuevoPlan === 'solo_promociones' ? 'Solo Promoción / Anuncios (Máx. 2)' : 'Catálogo Completo (Hasta 30 artículos)';
-            if (!confirm(`¿Cambiar el plan de este negocio a "${label}"?`)) return;
-            db.ref(`colectivos/${colId}/tipoPlan`).set(nuevoPlan).then(() => {
-                const c = catGlobal.find(item => item.id === colId);
-                if (c) c.tipoPlan = nuevoPlan;
-                renderizarAdminColectivos();
-                renderizarPromocionAleatoria();
-                filtrarProductos(true);
-            });
-        }
-
-        function toggleTarifaEstadisticasAdmin(colId, activa) {
-            db.ref(`colectivos/${colId}/tarifaEstadisticasActiva`).set(activa).then(() => {
-                const c = catGlobal.find(item => item.id === colId);
-                if (c) c.tarifaEstadisticasActiva = activa;
-            });
-        }
-
-        function toggleTarifaBusquedasAdmin(colId, activa) {
-            db.ref(`colectivos/${colId}/tarifaBusquedasActiva`).set(activa).then(() => {
-                const c = catGlobal.find(item => item.id === colId);
-                if (c) c.tarifaBusquedasActiva = activa;
-            });
-        }
-
-        function editarDiaPagoAdmin(colId, diaActual) {
-            const nuevoDia = prompt("Nuevo día de pago (1 al 30):", diaActual);
-            if (nuevoDia !== null) {
-                const d = parseInt(nuevoDia);
-                if (d >= 1 && d <= 30) {
-                    db.ref(`colectivos/${colId}/diaPago`).set(d).then(() => {
-                        const c = catGlobal.find(item => item.id === colId);
-                        if (c) c.diaPago = d;
-                        renderizarAdminPagos();
-                        renderizarAdminColectivos();
-                    });
-                } else {
-                    alert("Ingresa un día válido entre 1 y 30.");
+            } finally {
+                if (btnSubmit) {
+                    btnSubmit.disabled = false;
+                    btnSubmit.innerText = textoOriginal;
                 }
             }
-        }
-
-        function toggleActivoColectivoAdmin(colId, nuevoEstado) {
-            db.ref(`colectivos/${colId}/activo`).set(nuevoEstado).then(() => {
-                const c = catGlobal.find(item => item.id === colId);
-                if (c) c.activo = nuevoEstado;
-                renderizarAdminColectivos();
-                renderizarPromocionAleatoria();
-                filtrarProductos(true);
-            });
-        }
-
-        function eliminarColectivoAdmin(colId) {
-            if (!confirm("¿Eliminar permanentemente este negocio y todos sus artículos/promociones?")) return;
-            db.ref(`colectivos/${colId}`).remove().then(() => {
-                catGlobal = catGlobal.filter(c => c.id !== colId);
-                destinatariosMensajeIds = destinatariosMensajeIds.filter(id => id !== colId);
-                Object.keys(productosGlobal).forEach(pid => {
-                    if (productosGlobal[pid] && productosGlobal[pid].colectivoId === colId) {
-                        db.ref(`productos/${pid}`).remove();
-                        delete productosGlobal[pid];
-                    }
-                });
-                Object.keys(promocionesGlobal).forEach(prid => {
-                    if (promocionesGlobal[prid] && promocionesGlobal[prid].colectivoId === colId) {
-                        db.ref(`promociones/${prid}`).remove();
-                        delete promocionesGlobal[prid];
-                    }
-                });
-                db.ref(`pagos/${colId}`).remove();
-                delete pagosGlobal[colId];
-                db.ref(`estadisticas/${colId}`).remove();
-                delete estadisticasGlobal[colId];
-                renderizarDestinatariosMensajeAdmin();
-                renderizarAdminPagos();
-                renderizarAdminColectivos();
-                renderizarPromocionAleatoria();
-                filtrarProductos(true);
-            });
         }
     </script>
 </body>
